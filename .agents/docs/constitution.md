@@ -18,6 +18,12 @@ Existing Spanish documentation remains in its original language. The agent guida
 
 ## Current state and unresolved decisions
 
-At initialization, the project contains content documentation and local agent tooling, but no Angular workspace, package manifest, application code, test configuration, or CI. No build or test command is established yet. The MCP's Angular CLI 22.2.7 pin does not select the application's Angular version.
+The repository now contains an Angular application and a first client-rendered presentation homepage for Black Talon [URSS], a growing Latin American PokeMMO clan. Its agreed visual direction uses retro and pixel-art accents while keeping body text readable. Local development, test, and build commands are documented in the README. The homepage presents the clan, its activities and leadership; it does not establish a backend or publishing workflow.
 
-The clan's concrete details, activity descriptions, initial resources and memories still need input. Visual direction, rendering strategy, content storage and publishing workflow, hosting, and application dependency choices have not been agreed. In particular, recurring publication of memories is a requirement, not evidence of an implemented publishing mechanism.
+The global visual foundation uses Pixelify Sans for headings and Verdana for readable body text. Light and dark themes follow the system by default. A single borderless theme button shows the opposite theme's icon (moon in light mode, sun in dark mode), animates the transition unless reduced motion is requested, and remembers an explicit choice locally. Semantic visual tokens live in `src/styles.css`.
+
+The homepage is a clan presentation, not a promotional landing page. Its sticky header has no in-page section navigation. The content is one column with only “Sobre nosotros” and “Actividades” sections, using bold uppercase headings underlined across the available width rather than bordered panels. Avoid repeated clan tags and keep regional context in the introduction. Leadership figures appear after the introduction in a wrapping flow, with individual replaceable transparent PNGs in `public/admins/`; their initial shared pixel character is original placeholder art, not an official PokeMMO asset. Informational sections are not focusable; keyboard focus remains visible on interactive controls.
+
+Activities are Misiones, Sorteos, Eventos Semanales, and Academia 'Red Wings Academy'. Their links intentionally prevent navigation until dedicated pages are implemented; they do not establish routes or completed activity pages.
+
+Resources and memories remain future content. Content storage, recurring publication, hosting, and deployment remain unresolved; the homepage is not evidence of a publishing mechanism.

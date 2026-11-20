@@ -32,7 +32,8 @@ MCP availability depends on the operator's environment; verify access when neede
 | Server | When to use and constraints |
 | --- | --- |
 | angular-cli (project-local) | Official Angular documentation and best practices. Configured with CLI 22.2.7 and `--read-only`; this is a tool version, not an application version. Align documentation with the application version once one exists. |
+| playwright (project-local) | Browser testing when creating or changing pages: screenshots, responsive layouts, interactions and console checks using pinned MCP 0.0.86, headless Chromium and an isolated profile. Requires the matching Playwright browser and a trusted project; availability depends on the local environment and session reload. |
 | context7 (user-level) | Library and framework documentation, including dependencies beyond Angular. Queries go to an external service; check version and source. |
 | gh_grep (user-level) | Public GitHub code examples when useful; examples are not authoritative project requirements. |
-| raven (user-level) | Project context and tracked work, subject to inherited identity and lifecycle controls. No project identity has been resolved; do not guess a reference or register automatically. |
+| raven (user-level) | Project context and tracked work, subject to inherited identity and lifecycle controls. The root `.raven-memory.json` identifies this project; resolve it before identity-dependent work. |
 | engram (user-level) | Relevant collaborative knowledge when available; historical records do not establish current scope or permission. |
