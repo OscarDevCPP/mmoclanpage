@@ -139,12 +139,17 @@ describe('Presentación y guía', () => {
     const fixture = TestBed.createComponent(Missions); await fixture.whenStable();
     const page = fixture.nativeElement as HTMLElement;
     expect(page.textContent).toContain('Escena 1/6'); expect(localStorage.getItem('black-talon.missions.presentation.v1')).toBeNull();
+    expect(page.querySelector('.scene-stage .dialogue')).toBeNull();
+    expect(page.querySelector('.scene-stage')?.nextElementSibling?.classList.contains('dialogue')).toBe(true);
+    expect(page.querySelector('.bubble')?.textContent).not.toContain('ejemplos');
     for (let i = 0; i < 5; i++) { fixture.componentInstance.step(1); fixture.detectChanges(); }
     expect(page.textContent).toContain('Escena 6/6'); fixture.componentInstance.step(1); fixture.detectChanges();
     expect(localStorage.getItem('black-talon.missions.presentation.v1')).toBe('seen');
     expect(page.querySelectorAll('.scene')).toHaveLength(6); expect(page.querySelectorAll('.index a')).toHaveLength(6);
+    expect(page.querySelector('.index')?.nextElementSibling?.classList.contains('replay')).toBe(true);
+    expect(page.querySelector('#bienvenida')?.textContent).toContain('Meowth, Geodude');
     expect(page.querySelector('.scene img[src*="maykelsito"]')).toBeNull(); expect(page.querySelector('.bubble')).toBeNull();
-    expect(page.textContent).toContain('MISION SEMANAL'); expect(page.textContent).toContain('nunca envía correos');
+    expect(page.textContent).toContain('MISION SEMANAL'); expect(page.textContent).toContain('no envía correos');
     fixture.componentInstance.replay(); fixture.detectChanges(); expect(page.textContent).toContain('Escena 1/6');
     expect(TestBed.createComponent(Missions).componentInstance.guide()).toBe(true);
   });
@@ -178,7 +183,7 @@ describe('Regresión de navegación y presentación', () => {
     await harness.navigateByUrl('/actividades/misiones#tablon', Missions);
     expect(harness.routeNativeElement?.querySelector('#tablon')).not.toBeNull();
     expect(localStorage.getItem('black-talon.missions.presentation.v1')).toBeNull();
-    (harness.routeNativeElement!.querySelector('.intro button') as HTMLButtonElement).click();
+    (harness.routeNativeElement!.querySelector('.replay') as HTMLButtonElement).click();
     await harness.fixture.whenStable(); harness.detectChanges();
     expect(harness.routeNativeElement?.textContent).toContain('Escena 1/6');
     expect(TestBed.inject(Router).url).toBe('/actividades/misiones');
@@ -199,7 +204,7 @@ describe('Regresión de navegación y presentación', () => {
     expect(page.querySelector('.silhouette.revealed')).not.toBeNull();
     const restored = TestBed.createComponent(Missions); await restored.whenStable();
     expect(restored.nativeElement.querySelectorAll('.scene')).toHaveLength(6);
-    (page.querySelector('.intro button') as HTMLButtonElement).click(); fixture.detectChanges();
+    (page.querySelector('.replay') as HTMLButtonElement).click(); fixture.detectChanges();
     expect(page.textContent).toContain('Escena 1/6');
     (page.querySelector('.cinema-top button') as HTMLButtonElement).click(); fixture.detectChanges();
     expect(page.querySelectorAll('.scene')).toHaveLength(6);
@@ -219,5 +224,36 @@ describe('Regresión de navegación y presentación', () => {
     window.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight' })); fixture.detectChanges();
     expect(page.textContent).toContain('Escena 2/6');
     input.remove(); fixture.destroy();
+  });
+});
+
+describe('Aislamiento cinematográfico', () => {
+  beforeEach(() => { localStorage.clear(); vi.spyOn(window, 'scrollTo').mockImplementation(() => {}); });
+  afterEach(() => { localStorage.clear(); vi.restoreAllMocks(); });
+  it('retira la navegación global y la restaura en guía, repetición y salida', async () => {
+    const { Router } = await import('@angular/router');
+    const { routes } = await import('./app.routes');
+    TestBed.configureTestingModule({ providers: [provideRouter(routes)] });
+    const fixture = TestBed.createComponent(App); fixture.detectChanges();
+    const router = TestBed.inject(Router);
+    await router.navigateByUrl('/actividades/misiones'); fixture.detectChanges(); await fixture.whenStable(); fixture.detectChanges();
+    const page = fixture.nativeElement as HTMLElement;
+    expect(page.querySelector('.site-header, footer, .skip-link, nav')).toBeNull();
+    expect(page.querySelector('.cinema-top button')?.getAttribute('aria-label')).toBe('Saltar a la guía');
+    expect(page.querySelector('.cinema-controls button:last-child')?.getAttribute('aria-label')).toBe('Siguiente');
+    for (let i = 0; i < 6; i++) {
+      expect(page.querySelector('.scene-stage')?.getAttribute('data-scene')).toBe(String(i));
+      (page.querySelector('.cinema-controls button:last-child') as HTMLButtonElement).click(); fixture.detectChanges();
+    }
+    expect(page.querySelector('.site-header')).not.toBeNull(); expect(page.querySelector('footer')).not.toBeNull();
+    expect(page.querySelectorAll('.index ol > li')).toHaveLength(6);
+    expect(page.querySelector('#bienvenida h2')?.textContent).toBe('Cómo funcionan las misiones');
+    expect(page.querySelector('#tablon')?.textContent).toContain('Maykelsito publica');
+    expect(page.querySelector('#tablon')?.textContent).not.toContain('Yo publico');
+    (page.querySelector('.replay') as HTMLButtonElement).click(); fixture.detectChanges();
+    expect(page.querySelector('.site-header, footer, .skip-link')).toBeNull();
+    await router.navigateByUrl('/actividades'); fixture.detectChanges();
+    expect(page.querySelector('.site-header')).not.toBeNull(); expect(page.querySelector('footer')).not.toBeNull();
+    fixture.destroy();
   });
 });

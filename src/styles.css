@@ -124,3 +124,6 @@ app-missions .ticket-active { animation:ticket-pop .45s ease-out; } @keyframes t
 app-missions .clearing-supplies { position:relative; z-index:1; transform:scale(.8); transform-origin:bottom; } app-missions button { cursor:pointer; } app-missions button:hover, app-missions button:focus-visible { filter:brightness(1.12); } app-missions .papers button:hover, app-missions .papers button:focus-visible { translate:0 -6px; box-shadow:7px 12px #34251c88; } @media (prefers-reduced-motion: reduce) { app-missions .papers button:hover, app-missions .papers button:focus-visible { translate:none; } }
 
 app-missions .papers button[aria-pressed="true"] { outline: 4px solid #fff8ef; outline-offset: 3px; background: #f9e5b8; box-shadow: 7px 9px #34251c88; }
+/* Programmatic landmarks are not interactive controls. */
+#contenido:focus { outline: none; }
+.immersive-main { width: 100%; min-height: 100dvh; }

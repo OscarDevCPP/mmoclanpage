@@ -1,3 +1,4 @@
+import { PresentationState } from './presentation-state';
 import { Component, DestroyRef, ElementRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { skip } from 'rxjs';
@@ -9,18 +10,27 @@ const KEY = 'black-talon.missions.presentation.v1';
   selector: 'app-missions', host: { '(window:keydown)': 'onKey($event)' }, imports: [RouterLink, NgTemplateOutlet], templateUrl: './missions.html', styleUrls: ['./missions.css', './mission-guide.css']
 })
 export class Missions {
+  private readonly presentation = inject(PresentationState);
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   readonly scenes = [
-    { hint: 'Meowth, Geodude, Piedra Eterna, Carbón y Moneda Amuleto son ejemplos ilustrativos, no la misión vigente.', id: 'bienvenida', title: 'Bienvenido al claro', text: '¡Bienvenido a las misiones semanales! Participa capturando Pokémon y reuniendo objetos según las características y cantidades del anuncio.' },
+    { id: 'bienvenida', title: 'Cómo funcionan las misiones', text: '¡Bienvenido a las misiones semanales! Participa capturando Pokémon y reuniendo objetos según las características y cantidades del anuncio.' },
     { id: 'tablon', title: 'El tablón semanal', text: 'Yo publico la misión de cada semana en WhatsApp y Discord. Consulta allí las capturas, los objetos y la recompensa. El plazo va de lunes a sábado.' },
     { id: 'revision', title: 'La mesa de comprobación', text: 'Antes de entregar, compara las características de tus capturas y las cantidades de objetos con el anuncio de esa semana.' },
-    { id: 'correo', title: 'Correo dentro del juego', text: 'Dentro de PokeMMO, envía lo solicitado a maykelsito con el asunto MISION SEMANAL. Si no cabe todo, repártelo en varios correos. Esta web es una demostración y nunca envía correos.' },
+    { id: 'correo', title: 'Correo dentro del juego', text: 'Dentro de PokeMMO, envíame lo solicitado a maykelsito con el asunto MISION SEMANAL. Si no cabe todo, repártelo en varios correos.' },
     { id: 'premio', title: 'El premio semanal', text: 'El premio cambia cada semana: un Pokémon 2x31 preparado con el nivel, entrenamiento, habilidad y movimientos del anuncio. Suele estar orientado a eventos, incursiones o uso semicompetitivo. El envío comienza a medianoche del sábado al domingo y termina como máximo el lunes siguiente.' },
     { id: 'despedida', title: 'Un extra en el camino', text: 'Algunas semanas puede haber un ticket gratuito para un sorteo u otra mecánica adicional. No está garantizado: revisa el anuncio. Consulta los canales del clan para conocer los detalles.' }
   ];
+  readonly guideText: Record<string, string> = {
+    bienvenida: 'Las misiones semanales consisten en capturar Pokémon y reunir objetos con las características y cantidades indicadas en el anuncio. Meowth, Geodude, Piedra Eterna, Carbón y Moneda Amuleto son ejemplos ilustrativos, no la misión vigente.',
+    tablon: 'Maykelsito publica las misiones semanales en WhatsApp y Discord. Cada anuncio especifica las capturas, los objetos y la recompensa. El plazo para participar va de lunes a sábado.',
+    revision: 'Antes de entregar, cada participante debe comprobar las características de las capturas y las cantidades de objetos frente al anuncio semanal.',
+    correo: 'Dentro de PokeMMO, se envía lo solicitado a maykelsito con el asunto MISION SEMANAL. Si no cabe todo en uno, se pueden utilizar varios correos.',
+    premio: 'La recompensa varía cada semana: un Pokémon 2x31 preparado con el nivel, entrenamiento, habilidad y movimientos anunciados, normalmente orientado a incursiones, eventos o uso semicompetitivo. Se envía desde la medianoche del sábado al domingo y, como máximo, hasta el lunes siguiente.',
+    despedida: 'Algunas semanas puede incluirse un ticket gratuito para un sorteo u otra mecánica adicional. Este beneficio no está garantizado y debe confirmarse en el anuncio.'
+  };
   readonly index = signal(0);
   readonly guide = signal(this.initialGuide());
   private initialGuide(): boolean {
@@ -28,8 +38,10 @@ export class Missions {
     try { return localStorage.getItem(KEY) === 'seen'; } catch { return false; }
   }
   constructor() {
+    this.presentation.active.set(!this.guide());
+    this.destroyRef.onDestroy(() => this.presentation.active.set(false));
     this.route.fragment.pipe(skip(1), takeUntilDestroyed()).subscribe(fragment => {
-      if (this.scenes.some(scene => scene.id === fragment)) this.guide.set(true);
+      if (this.scenes.some(scene => scene.id === fragment)) { this.guide.set(true); this.presentation.active.set(false); }
     });
   }
   private focus(selector: string) {
@@ -53,11 +65,11 @@ export class Missions {
   }
   finish() {
     try { localStorage.setItem(KEY, 'seen'); } catch { /* preference remains in this view */ }
-    this.guide.set(true); this.focus('.intro h1');
+    this.guide.set(true); this.presentation.active.set(false); this.focus('.intro h1');
   }
   replay() {
     if (this.route.snapshot.fragment) void this.router.navigate([], { relativeTo: this.route, fragment: undefined, replaceUrl: true });
-    this.index.set(0); this.guide.set(false); this.focus('.cinematic h2');
+    this.index.set(0); this.guide.set(false); this.presentation.active.set(true); this.focus('.cinematic h2');
   }
   onKey(event: KeyboardEvent) {
     if (this.guide() || event.repeat || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || event.defaultPrevented) return;

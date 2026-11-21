@@ -1,4 +1,5 @@
 import { NavigationStart, Router, RouterLink, RouterOutlet, Scroll } from '@angular/router';
+import { PresentationState } from './presentation-state';
 import { ViewportScroller } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
@@ -13,6 +14,7 @@ const THEME_KEY = 'black-talon.theme';
   styleUrl: './app.css',
 })
 export class App {
+  readonly presentation = inject(PresentationState);
   private readonly router = inject(Router);
   get currentPath(): string { return this.router.url.split(/[?#]/)[0]; }
   readonly theme = signal<Theme>(this.readTheme());
