@@ -27,11 +27,12 @@ describe('Página de Black Talon', () => {
     expect(page.querySelector('time')?.getAttribute('datetime')).toBe('2026-08-07');
     expect(page.querySelector('.identity img')?.getAttribute('src')).toContain('clan-logo.jpeg');
     const links = Array.from(page.querySelectorAll<HTMLAnchorElement>('.activity-list a'));
-    expect(links).toHaveLength(3);
+    expect(links).toHaveLength(4);
     expect(links[0].getAttribute('href')).toBe('/actividades/misiones');
     expect(links[1].getAttribute('href')).toBe('/actividades/sorteos');
     expect(links[2].getAttribute('href')).toBe('/actividades/eventos-semanales');
-    expect(page.querySelectorAll('.activity-unavailable')).toHaveLength(1);
+    expect(links[3].getAttribute('href')).toBe('/actividades/red-wings-academy');
+    expect(page.querySelectorAll('.activity-unavailable')).toHaveLength(0);
     expect(page.textContent).not.toContain('GhotyFly');
   });
 });

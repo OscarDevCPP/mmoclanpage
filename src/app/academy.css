@@ -1,0 +1,9 @@
+.academy-art { position: relative; overflow: hidden; background: #6c4540; border: 6px solid #50372d; height: clamp(300px, 36vw, 460px); }
+.academy-art img { display: block; width: 100%; height: 100%; object-fit: contain; image-rendering: pixelated; }
+.atmosphere { background: linear-gradient(#281719c9,#171013ec), url('/activities/red-wings-academy.png') center / cover; }
+
+.referente { margin: 1.5rem 0 2.5rem; }
+.referente .academy-art { height: clamp(220px, 27vw, 340px); }
+.referente-info { display: flex; align-items: center; gap: 1rem; }
+.referente-info img { width: 64px; height: 96px; object-fit: contain; image-rendering: pixelated; }
+.referente-info p { margin: 0; }

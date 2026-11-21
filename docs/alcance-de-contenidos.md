@@ -26,6 +26,12 @@ Para comprar, la persona indica los números deseados y confirma su disponibilid
 
 El anuncio semanal incluye un enlace externo para seguir la cuenta regresiva durante la semana. El domingo a las 12 del mediodía, hora de Perú, esa página elige y revela al ganador al llegar la hora. Si el número ganador no fue comprado, se realiza un sorteo adicional entre participantes. La recaudación consigue el premio y el excedente alimenta fondos para eventos, premios y wars del clan.
 
+### Red Wings Academy
+
+Red Wings Academy ofrece clases gratuitas para miembros del clan sobre farmeos, crianza, PvP, economía y mecánicas. Se requiere un mínimo de tres alumnos: con tres se forma un Link de cuatro con el instructor; con más, se acuerda un lugar y se usa el chat normal del juego. Instructor y alumnos acuerdan tema, día y hora. El grupo de WhatsApp dedicado sirve para anuncios, coordinación y propuestas.
+
+maykelsito es referente de PvP, HuronVNLZ de PvP y PvE y Socamaru de PvE, sin formar una plantilla fija ni exclusiva. Cualquier miembro con ganas de ayudar y compartir puede enseñar tras coordinar con Socamaru y anunciar la clase en el grupo. Las clases intermedias o avanzadas son una posibilidad futura, no una oferta vigente.
+
 ## 3. Recursos
 
 Contenidos útiles para los miembros del clan y los jugadores de PokeMMO:
