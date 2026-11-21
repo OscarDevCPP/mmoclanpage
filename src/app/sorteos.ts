@@ -16,12 +16,12 @@ export class Sorteos {
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   readonly scenes = [
-    { id: 'anuncio', title: 'El sorteo semanal', text: '¡Bienvenido! Cada semana anuncio un sorteo con un premio cosmético o un Pokémon. Revisa el anuncio para conocer los detalles.' },
-    { id: 'numeros', title: 'Números y límites', text: 'En cada anuncio indico cuántos números hay, su precio y el máximo por persona. Pueden cambiar según el premio y la participación.' },
-    { id: 'ticket', title: 'Un ticket de misiones', text: 'Si recibes un ticket gratuito por misiones, cuenta dentro del límite. Por ejemplo, con un máximo de tres, uno gratis deja espacio para comprar dos.' },
-    { id: 'participar', title: 'Cómo participar', text: 'Dime los números que deseas y confirma conmigo su disponibilidad por WhatsApp o Discord, o por susurro en el juego si estoy conectado. No uses correo: no permite confirmar la disponibilidad.' },
-    { id: 'resultado', title: 'El momento del sorteo', text: 'El anuncio semanal siempre incluye un enlace externo donde puedes seguir la cuenta regresiva durante la semana. El domingo a las 12 del mediodía de Perú, esa página elige y revela al ganador al llegar la hora.' },
-    { id: 'fondos', title: 'Para seguir compartiendo', text: 'Si sale un número no comprado, hay un sorteo adicional entre participantes. La recaudación consigue el premio y lo restante apoya eventos, premios y wars del clan.' }
+    { id: 'anuncio', image: '/sorteos/anuncio.svg', alt: 'Socamaru junto al tablón de anuncio y un regalo', title: 'El sorteo semanal', text: '¡Bienvenido! Cada semana anuncio un sorteo con un premio cosmético o un Pokémon. Revisa el anuncio para conocer los detalles.' },
+    { id: 'numeros', image: '/sorteos/numeros.svg', alt: 'Tablero de números y monedas que representan disponibilidad y precio', title: 'Números y límites', text: 'En cada anuncio indico cuántos números hay, su precio y el máximo por persona. Pueden cambiar según el premio y la participación.' },
+    { id: 'ticket', image: '/sorteos/ticket.svg', alt: 'Lista de misiones y tickets de recompensa', title: 'Un ticket de misiones', text: 'Si recibes un ticket gratuito por misiones, cuenta dentro del límite. Por ejemplo, con un máximo de tres, uno gratis deja espacio para comprar dos.' },
+    { id: 'participar', image: '/sorteos/participar.svg', alt: 'Mensaje para coordinar la participación con Socamaru', title: 'Cómo participar', text: 'Dime los números que deseas y confirma conmigo su disponibilidad por WhatsApp o Discord, o por susurro en el juego si estoy conectado. No uses correo: no permite confirmar la disponibilidad.' },
+    { id: 'resultado', image: '/sorteos/resultado.svg', alt: 'Reloj y sobre que representan la espera y la revelación del resultado', title: 'El momento del sorteo', text: 'El anuncio semanal siempre incluye un enlace externo donde puedes seguir la cuenta regresiva durante la semana. El domingo a las 12 del mediodía de Perú, esa página elige y revela al ganador al llegar la hora.' },
+    { id: 'fondos', image: '/sorteos/fondos.svg', alt: 'Monedas destinadas a un cofre y a eventos del clan', title: 'Para seguir compartiendo', text: 'Si sale un número no comprado, hay un sorteo adicional entre participantes. La recaudación consigue el premio y lo restante apoya eventos, premios y wars del clan.' }
   ];
   readonly guideText: Record<string, string> = {
     anuncio: 'Socamaru anuncia un sorteo semanal cuyo premio es un cosmético o un Pokémon. Cada participante debe consultar el anuncio correspondiente.',

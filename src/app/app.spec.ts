@@ -322,3 +322,32 @@ describe('Sorteos', () => {
     expect(fixture.componentInstance.guide()).toBe(true);
   });
 });
+
+describe('Ilustraciones de sorteos', () => {
+  it('usa seis imágenes distintas y cada sección de la guía reutiliza su escena', async () => {
+    localStorage.clear();
+    TestBed.configureTestingModule({ providers: [provideRouter([])] });
+    const { Sorteos } = await import('./sorteos');
+    const fixture = TestBed.createComponent(Sorteos);
+    await fixture.whenStable();
+    const page = fixture.nativeElement as HTMLElement;
+    const scenes = fixture.componentInstance.scenes;
+    expect(new Set(scenes.map(scene => scene.image)).size).toBe(6);
+    for (const [index, scene] of scenes.entries()) {
+      fixture.componentInstance.index.set(index);
+      await fixture.whenStable();
+      const image = page.querySelector<HTMLImageElement>('.cinema-art img')!;
+      expect(image.getAttribute('src')).toBe(scene.image);
+      expect(image.alt).toBe(scene.alt);
+    }
+    fixture.componentInstance.finish();
+    await fixture.whenStable();
+    for (const scene of scenes) {
+      const image = page.querySelector<HTMLImageElement>(`#${scene.id} img`)!;
+      expect(image.getAttribute('src')).toBe(scene.image);
+      expect(image.alt).toBe(scene.alt);
+    }
+    fixture.destroy();
+    localStorage.clear();
+  });
+});

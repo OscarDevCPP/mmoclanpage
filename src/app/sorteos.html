@@ -4,7 +4,7 @@
     <div class="cinema-content">
       <div class="cinema-top"><p>Sorteos semanales · Escena {{ index() + 1 }}/6</p><button class="icon-button" type="button" aria-label="Saltar a la guía" title="Saltar a la guía" data-tooltip="Saltar a la guía" (click)="finish()"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5l10 7-10 7zM19 5v14"/></svg></button></div>
       <h2 tabindex="-1">{{ scenes[index()].title }}</h2>
-      <div class="scene-stage" [attr.data-scene]="index()"><div class="cinema-art"><ng-container *ngTemplateOutlet="art; context: { $implicit: true }" /></div></div>
+      <div class="scene-stage" [attr.data-scene]="index()"><div class="cinema-art"><ng-container *ngTemplateOutlet="art; context: { $implicit: scenes[index()], priority: true }" /></div></div>
       <div class="dialogue" [attr.data-scene]="index()"><img ngSrc="/admins/Socamaru.png" width="320" height="480" alt=""><div class="bubble"><strong>Socamaru</strong><p>{{ scenes[index()].text }}</p></div></div>
       <div class="cinema-controls"><button class="icon-button" type="button" aria-label="Anterior" title="Anterior" data-tooltip="Anterior" (click)="step(-1)" [disabled]="index() === 0"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4l-8 8 8 8"/></svg></button><button class="icon-button" type="button" [attr.aria-label]="index() === 5 ? 'Ir a la guía' : 'Siguiente'" [attr.title]="index() === 5 ? 'Ir a la guía' : 'Siguiente'" [attr.data-tooltip]="index() === 5 ? 'Ir a la guía' : 'Siguiente'" (click)="step(1)"><svg viewBox="0 0 24 24" aria-hidden="true">@if (index() === 5) { <path d="M4 12l5 5L20 5"/> } @else { <path d="M9 4l8 8-8 8"/> }</svg></button></div>
     </div>
@@ -15,10 +15,10 @@
   <nav class="index" aria-label="Índice de sorteos"><ol>@for (scene of scenes; track scene.id) { <li><a routerLink="." [fragment]="scene.id">{{ scene.title }}</a></li> }</ol></nav>
   <button class="icon-button replay" type="button" aria-label="Volver a ver la presentación" title="Volver a ver la presentación" data-tooltip="Volver a ver la presentación" (click)="replay()"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="8" width="13" height="11" rx="1"/><path d="M16 11l5-3v11l-5-3z"/><circle cx="7" cy="5" r="2"/><circle cx="13" cy="5" r="2"/></svg></button>
   @for (scene of scenes; track scene.id; let first = $first) {
-    <section [id]="scene.id" tabindex="-1" class="scene"><h2>{{ scene.title }}</h2><ng-container *ngTemplateOutlet="art; context: { $implicit: first }" /><p>{{ guideText[scene.id] }}</p></section>
+    <section [id]="scene.id" tabindex="-1" class="scene"><h2>{{ scene.title }}</h2><ng-container *ngTemplateOutlet="art; context: { $implicit: scene, priority: first }" /><p>{{ guideText[scene.id] }}</p></section>
   }
   <p><a routerLink="/actividades">Volver a Actividades</a></p>
 }
-<ng-template #art let-priority>
-  <div class="sorteos-art"><img ngSrc="/activities/sorteos.png" alt="Socamaru junto a un regalo en el escenario del sorteo" fill [priority]="priority"></div>
+<ng-template #art let-scene let-priority="priority">
+  <div class="sorteos-art"><img [ngSrc]="scene.image" [alt]="scene.alt" fill [priority]="priority"></div>
 </ng-template>
