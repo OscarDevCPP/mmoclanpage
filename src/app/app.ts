@@ -9,12 +9,20 @@ const THEME_KEY = 'black-talon.theme';
 
 @Component({
   selector: 'app-root',
+  host: { '(document:keydown.escape)': 'closeNavigation(true)' },
   imports: [RouterOutlet, RouterLink],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
 export class App {
   readonly presentation = inject(PresentationState);
+  readonly navigationOpen = signal(false);
+
+  closeNavigation(restoreFocus = false): void {
+    if (!this.navigationOpen()) return;
+    this.navigationOpen.set(false);
+    if (restoreFocus) document.getElementById('navigation-toggle')?.focus();
+  }
   private readonly router = inject(Router);
   get currentPath(): string { return this.router.url.split(/[?#]/)[0]; }
   readonly theme = signal<Theme>(this.readTheme());
@@ -32,7 +40,10 @@ export class App {
     let navigationSequence = 0;
     const destroyRef = inject(DestroyRef);
     router.events.pipe(takeUntilDestroyed()).subscribe(event => {
-      if (event instanceof NavigationStart) navigationSequence++;
+      if (event instanceof NavigationStart) {
+        navigationSequence++;
+        this.closeNavigation();
+      }
       if (!(event instanceof Scroll)) return;
       const tree = router.parseUrl(router.url);
       const path = tree.root.toString();

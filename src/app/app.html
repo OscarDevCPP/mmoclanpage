@@ -2,10 +2,20 @@
 <a class="skip-link" [routerLink]="currentPath" fragment="contenido" (click)="focusMain()">Saltar al contenido</a>
 <header class="site-header">
   <div class="header-inner">
-    <span class="wordmark">Black Talon</span>
+    <a class="wordmark" routerLink="/" aria-label="Black Talon, ir al inicio">Black Talon</a>
+    <nav id="section-navigation" class="section-nav" [class.is-open]="navigationOpen()" aria-label="Secciones principales">
+      <a routerLink="/actividades" (click)="closeNavigation()" [attr.aria-current]="currentPath.startsWith('/actividades') ? 'page' : null">Actividades</a>
+      <span aria-disabled="true">Recursos</span>
+      <span aria-disabled="true">Recuerdos</span>
+    </nav>
     <button class="theme-toggle" type="button" [attr.aria-label]="activeTheme() === 'light' ? 'Cambiar a tema oscuro' : 'Cambiar a tema claro'" [attr.title]="activeTheme() === 'light' ? 'Cambiar a tema oscuro' : 'Cambiar a tema claro'" (click)="setTheme(activeTheme() === 'light' ? 'dark' : 'light')">
       <svg class="theme-icon moon" [class.visible]="activeTheme() === 'light'" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M20.5 15.5A8.5 8.5 0 0 1 8.5 3.5a8.5 8.5 0 1 0 12 12Z"/></svg>
       <svg class="theme-icon sun" [class.visible]="activeTheme() === 'dark'" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42m0-14.14-1.42 1.42M6.35 17.65l-1.42 1.42"/></svg>
+    </button>
+    <button id="navigation-toggle" class="navigation-toggle" type="button" [attr.aria-label]="navigationOpen() ? 'Cerrar navegación' : 'Abrir navegación'" [attr.aria-expanded]="navigationOpen()" aria-controls="section-navigation" (click)="navigationOpen.set(!navigationOpen())">
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        @if (navigationOpen()) { <path d="M6 6l12 12M6 18L18 6"/> } @else { <path d="M4 6h16M4 12h16M4 18h16"/> }
+      </svg>
     </button>
   </div>
 </header>
