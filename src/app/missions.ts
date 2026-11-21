@@ -16,12 +16,12 @@ export class Missions {
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   readonly scenes = [
-    { id: 'bienvenida', title: 'Cómo funcionan las misiones', text: '¡Bienvenido a las misiones semanales! Participa capturando Pokémon y reuniendo objetos según las características y cantidades del anuncio.' },
-    { id: 'tablon', title: 'El tablón semanal', text: 'Yo publico la misión de cada semana en WhatsApp y Discord. Consulta allí las capturas, los objetos y la recompensa. El plazo va de lunes a sábado.' },
-    { id: 'revision', title: 'La mesa de comprobación', text: 'Antes de entregar, compara las características de tus capturas y las cantidades de objetos con el anuncio de esa semana.' },
-    { id: 'correo', title: 'Correo dentro del juego', text: 'Dentro de PokeMMO, envíame lo solicitado a maykelsito con el asunto MISION SEMANAL. Si no cabe todo, repártelo en varios correos.' },
-    { id: 'premio', title: 'El premio semanal', text: 'El premio cambia cada semana: un Pokémon 2x31 preparado con el nivel, entrenamiento, habilidad y movimientos del anuncio. Suele estar orientado a eventos, incursiones o uso semicompetitivo. El envío comienza a medianoche del sábado al domingo y termina como máximo el lunes siguiente.' },
-    { id: 'despedida', title: 'Un extra en el camino', text: 'Algunas semanas puede haber un ticket gratuito para un sorteo u otra mecánica adicional. No está garantizado: revisa el anuncio. Consulta los canales del clan para conocer los detalles.' }
+    { id: 'bienvenida', title: 'Cómo funcionan las misiones', text: '¡Bienvenido, causa! En las misiones semanales toca capturar Pokémon y reunir objetos. Mira bien las características y cantidades del anuncio, ¡que empezamos!' },
+    { id: 'tablon', title: 'El tablón semanal', text: 'Cada semana publico la misión en WhatsApp y Discord. Ahí encontrarás las capturas, los objetos y la recompensa. Tienes de lunes a sábado para participar.' },
+    { id: 'revision', title: 'La mesa de comprobación', text: 'Antes de entregar, revisa las características y cuenta los objetos. Como en una buena receta: ¡que no falte ningún ingrediente del anuncio!' },
+    { id: 'correo', title: 'Correo dentro del juego', text: 'En PokeMMO, envíame lo solicitado a maykelsito con el asunto MISION SEMANAL. Si no entra todo en un correo, repártelo en varios.' },
+    { id: 'premio', title: 'El premio semanal', text: '¡Y ahora el premio! Cada semana cambia: es un Pokémon 2x31 con el nivel, entrenamiento, habilidad y movimientos del anuncio. Suele servir para eventos, incursiones o uso semicompetitivo. Lo envío desde la medianoche del sábado al domingo hasta, como máximo, el lunes siguiente.' },
+    { id: 'despedida', title: 'Un extra en el camino', text: 'A veces también puede haber un ticket gratis para un sorteo u otra mecánica adicional. No está garantizado, así que revisa el anuncio y los canales del clan. ¡Nos vemos en la misión, bro!' }
   ];
   readonly guideText: Record<string, string> = {
     bienvenida: 'Las misiones semanales consisten en capturar Pokémon y reunir objetos con las características y cantidades indicadas en el anuncio. Meowth, Geodude, Piedra Eterna, Carbón y Moneda Amuleto son ejemplos ilustrativos, no la misión vigente.',
