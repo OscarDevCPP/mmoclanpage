@@ -18,7 +18,9 @@ export class Events {
     { title: 'Cada evento es diferente', speaker: 'Socamaru', text: 'Los administradores organizamos cada encuentro y explicamos sus reglas.', image: 'reglas' },
     { title: 'Premios y resultados', speaker: 'HuronVNLZ', text: 'Las recompensas y el número de puestos premiados pueden variar según el evento.', image: 'premios' },
     { title: 'Nuestros recuerdos', speaker: 'maykelsito', text: 'Aquí guardamos algunos de los momentos que compartimos juntos.', image: 'recuerdos' },
+    { title: 'Juntos en cada encuentro', speaker: 'Socamaru', text: 'Los eventos nos unen: son una oportunidad para conocernos, divertirnos y compartir con amigos y compañerismo. ¡Nos vemos en el próximo encuentro!', image: 'union' },
   ];
+  readonly closingMembers = ['Socamaru', 'HuronVNLZ', 'maykelsito'];
   readonly index = signal(0);
   readonly album = signal(this.seen());
   private seen(): boolean { try { return localStorage.getItem(KEY) === 'seen'; } catch { return false; } }
