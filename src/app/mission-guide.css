@@ -1,0 +1,20 @@
+.cinematic { position: relative; overflow: hidden; margin: 2rem 0; background: #222b2a; color: #fff8ed; border: 5px solid #50372d; }
+.atmosphere { position: absolute; inset: -20px; background: linear-gradient(#1a2633aa,#1b211ce8), url('/missions/encounters.svg') center / cover; filter: blur(12px); opacity: .6; pointer-events: none; }
+.cinema-content { position: relative; padding: clamp(1rem,3vw,2rem); }
+.cinema-top, .cinema-controls { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.cinematic h2 { margin: 1rem 0; font-size: clamp(1.7rem,3vw,2.6rem); }
+.cinema-art { max-width: 700px; margin: 0 auto; }
+.cinema-art > * { min-height: 180px; }
+.dialogue { display: flex; align-items: center; gap: 1rem; margin: 1.3rem auto; max-width: 900px; }
+.dialogue img { width: clamp(45px,10vw,90px); image-rendering: pixelated; flex: none; }
+.bubble { background: #fff8e9; color: #251d1b; border: 4px solid #af8e6a; border-radius: 18px; padding: 1rem 1.3rem; font: 1.1rem/1.6 Verdana,sans-serif; }
+.bubble strong { color: #722a25; } .bubble p { margin: .4rem 0 0; }
+@media (prefers-reduced-motion: no-preference) { .dialogue img { animation: float 3s ease-in-out infinite; } @keyframes float { 50% { transform: translateY(-5px); } } }
+@media (max-width: 500px) { .bubble { font-size: 1rem; padding: .8rem; } .dialogue { gap: .5rem; } }
+.finds > span { display: grid; justify-items: center; gap: .3rem; }
+.papers span { position: relative; background: repeating-linear-gradient(#ead1a4 0 23px,#c9ae85 24px 25px); box-shadow: 5px 6px #34251c88; transform: rotate(-2deg); }
+.papers span:nth-child(2) { transform: rotate(2deg); }
+.papers span::before { content: '◆'; position: absolute; top: 2px; left: 45%; color: #a12724; }
+.bubble { position: relative; }
+.bubble::before { content: ''; position: absolute; left: -15px; top: 50%; border: 8px solid transparent; border-right-color: #af8e6a; transform: translateY(-50%); }
+.bubble .hint { font-size: .9em; }
