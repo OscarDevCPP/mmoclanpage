@@ -1,8 +1,8 @@
 import { NavigationStart, Router, RouterLink, RouterOutlet, Scroll } from '@angular/router';
 import { PresentationState } from './presentation-state';
-import { ViewportScroller } from '@angular/common';
+import { DOCUMENT, ViewportScroller } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
+import { afterNextRender, Component, computed, DestroyRef, inject, signal } from '@angular/core';
 
 type Theme = 'system' | 'light' | 'dark';
 const THEME_KEY = 'black-talon.theme';
@@ -15,27 +15,27 @@ const THEME_KEY = 'black-talon.theme';
   styleUrl: './app.css',
 })
 export class App {
+  private readonly document = inject(DOCUMENT);
   readonly presentation = inject(PresentationState);
   readonly navigationOpen = signal(false);
 
   closeNavigation(restoreFocus = false): void {
     if (!this.navigationOpen()) return;
     this.navigationOpen.set(false);
-    if (restoreFocus) document.getElementById('navigation-toggle')?.focus();
+    if (restoreFocus) this.document.getElementById('navigation-toggle')?.focus();
   }
   private readonly router = inject(Router);
   get currentPath(): string { return this.router.url.split(/[?#]/)[0]; }
-  readonly theme = signal<Theme>(this.readTheme());
-  private readonly media = typeof window.matchMedia === 'function'
-    ? window.matchMedia('(prefers-color-scheme: dark)') : null;
-  private readonly systemDark = signal(this.media?.matches ?? false);
+  readonly theme = signal<Theme>('system');
+  private media: MediaQueryList | null = null;
+  private readonly systemDark = signal(false);
   readonly activeTheme = computed(() => this.theme() === 'system'
     ? (this.systemDark() ? 'dark' : 'light') : this.theme());
 
   constructor() {
     const router = this.router;
     const scroller = inject(ViewportScroller);
-    scroller.setOffset(() => [0, (document.querySelector('.site-header')?.getBoundingClientRect().height ?? 60) + 16]);
+    scroller.setOffset(() => [0, (this.document.querySelector('.site-header')?.getBoundingClientRect().height ?? 60) + 16]);
     let previousPath = '';
     let navigationSequence = 0;
     const destroyRef = inject(DestroyRef);
@@ -57,19 +57,24 @@ export class App {
         queueMicrotask(() => {
           if (destroyRef.destroyed || sequence !== navigationSequence || router.url !== url) return;
           scroller.scrollToAnchor(fragment);
-          document.getElementById(fragment)?.focus({ preventScroll: true });
+          this.document.getElementById(fragment)?.focus({ preventScroll: true });
         });
       } else if (pathChanged) {
-        document.getElementById('contenido')?.focus({ preventScroll: true });
+        this.document.getElementById('contenido')?.focus({ preventScroll: true });
       }
     });
-    this.applyTheme(this.theme());
     const onChange = (event: MediaQueryListEvent) => this.systemDark.set(event.matches);
-    this.media?.addEventListener('change', onChange);
+    afterNextRender(() => {
+      this.media = typeof window.matchMedia === 'function' ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+      this.systemDark.set(this.media?.matches ?? false);
+      this.theme.set(this.readTheme());
+      this.applyTheme(this.theme());
+      this.media?.addEventListener('change', onChange);
+    });
     destroyRef.onDestroy(() => this.media?.removeEventListener('change', onChange));
   }
 
-  focusMain(): void { document.getElementById('contenido')?.focus({ preventScroll: true }); }
+  focusMain(): void { this.document.getElementById('contenido')?.focus({ preventScroll: true }); }
 
   setTheme(value: string): void {
     if (value !== 'system' && value !== 'light' && value !== 'dark') return;
@@ -93,7 +98,7 @@ export class App {
   }
 
   private applyTheme(value: Theme): void {
-    if (value === 'system') document.documentElement.removeAttribute('data-theme');
-    else document.documentElement.dataset['theme'] = value;
+    if (value === 'system') this.document.documentElement.removeAttribute('data-theme');
+    else this.document.documentElement.dataset['theme'] = value;
   }
 }

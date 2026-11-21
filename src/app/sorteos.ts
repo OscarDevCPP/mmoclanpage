@@ -1,8 +1,8 @@
 import { PresentationState } from './presentation-state';
-import { Component, DestroyRef, ElementRef, inject, signal } from '@angular/core';
+import { afterNextRender, Component, DestroyRef, ElementRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { skip } from 'rxjs';
-import { NgOptimizedImage, NgTemplateOutlet } from '@angular/common';
+import { NgOptimizedImage, NgTemplateOutlet, ViewportScroller } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 const KEY = 'black-talon.sorteos.presentation.v1';
@@ -11,6 +11,7 @@ const KEY = 'black-talon.sorteos.presentation.v1';
 })
 export class Sorteos {
   private readonly presentation = inject(PresentationState);
+  private readonly scroller = inject(ViewportScroller);
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -32,13 +33,26 @@ export class Sorteos {
     fondos: 'La recaudación se usa para conseguir el premio; lo restante se destina a fondos para eventos, premios y wars del clan.'
   };
   readonly index = signal(0);
-  readonly guide = signal(this.initialGuide());
+  readonly guide = signal(false);
   private initialGuide(): boolean {
     if (this.scenes.some(scene => scene.id === this.route.snapshot.fragment)) return true;
     try { return localStorage.getItem(KEY) === 'seen'; } catch { return false; }
   }
   constructor() {
-    this.presentation.active.set(!this.guide());
+    this.presentation.active.set(true);
+    afterNextRender(() => {
+      if (this.initialGuide()) {
+        this.guide.set(true);
+        this.presentation.active.set(false);
+        const fragment = this.route.snapshot.fragment;
+        if (fragment) setTimeout(() => {
+          if (this.destroyRef.destroyed) return;
+          this.scroller.scrollToAnchor(fragment);
+          const element = this.host.ownerDocument.getElementById(fragment);
+          element?.focus({ preventScroll: true });
+        });
+      }
+    });
     this.destroyRef.onDestroy(() => this.presentation.active.set(false));
     this.route.fragment.pipe(skip(1), takeUntilDestroyed()).subscribe(fragment => {
       if (this.scenes.some(scene => scene.id === fragment)) { this.guide.set(true); this.presentation.active.set(false); }

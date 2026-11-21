@@ -59,6 +59,8 @@ describe('Preferencia de tema', () => {
     expect(button.getAttribute('aria-label')).toBe('Cambiar a tema oscuro');
     const originalListener = listener;
     const restored = TestBed.createComponent(App);
+    expect(restored.componentInstance.theme()).toBe('system');
+    restored.detectChanges();
     expect(restored.componentInstance.theme()).toBe('light');
     fixture.destroy(); expect(remove).toHaveBeenCalledWith('change', originalListener);
     restored.destroy(); window.matchMedia = previous;
@@ -154,7 +156,10 @@ describe('Presentación y guía', () => {
     expect(page.querySelector('.scene img[src*="maykelsito"]')).toBeNull(); expect(page.querySelector('.bubble')).toBeNull();
     expect(page.textContent).toContain('MISION SEMANAL'); expect(page.textContent).toContain('no envía correos');
     fixture.componentInstance.replay(); fixture.detectChanges(); expect(page.textContent).toContain('Escena 1/6');
-    expect(TestBed.createComponent(Missions).componentInstance.guide()).toBe(true);
+    const restored = TestBed.createComponent(Missions);
+    expect(restored.componentInstance.guide()).toBe(false);
+    restored.detectChanges();
+    expect(restored.componentInstance.guide()).toBe(true);
   });
   it('salta con almacenamiento bloqueado y respeta edición al usar flechas', async () => {
     vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => { throw Error('blocked'); });
@@ -307,7 +312,10 @@ describe('Sorteos', () => {
     expect(fixture.componentInstance.scenes[3].text).toContain('No uses correo');
     expect(fixture.componentInstance.scenes[3].text).toContain('números que deseas');
     expect(fixture.componentInstance.scenes[4].text).toContain('durante la semana');
-    expect(TestBed.createComponent(Sorteos).componentInstance.guide()).toBe(true);
+    const restored = TestBed.createComponent(Sorteos);
+    expect(restored.componentInstance.guide()).toBe(false);
+    restored.detectChanges();
+    expect(restored.componentInstance.guide()).toBe(true);
     fixture.componentInstance.replay(); fixture.detectChanges();
     expect(page.textContent).toContain('Escena 1/6');
     fixture.componentInstance.finish(); expect(fixture.componentInstance.guide()).toBe(true);

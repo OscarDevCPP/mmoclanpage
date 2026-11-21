@@ -1,6 +1,6 @@
 # Black Talon [URSS]
 
-Página de presentación del clan latinoamericano de PokeMMO. La aplicación Angular se renderiza inicialmente en el navegador; no incluye servidor, gestor de contenidos ni configuración de despliegue.
+Página de presentación del clan latinoamericano de PokeMMO. La aplicación Angular pregenera HTML estático y se hidrata en el navegador; no requiere servidor de aplicación en producción, gestor de contenidos ni configuración de despliegue.
 
 ## Desarrollo local
 
@@ -18,7 +18,9 @@ npm test -- --watch=false
 npm run build
 ```
 
-La compilación se genera en `dist/black-talon/`. El contenido y el emblema son locales; no se necesitan servicios externos para mostrarlos.
+La compilación estática se genera en `dist/black-talon/browser/`: contiene `index.html`, un `index.html` por cada ruta y sus recursos. Sirve ese directorio con un servidor estático que resuelva índices de directorio; no necesita fallback SPA. Las URL usan la raíz (`/`) como base. El contenido y el emblema son locales; no se necesitan servicios externos para mostrarlos.
+
+En las cinco presentaciones, el HTML inicial contiene la primera escena. Tras la hidratación, una visita anterior o un fragmento de guía puede mostrar la guía o el álbum: podría verse brevemente la primera escena antes de ese cambio. La preferencia de tema se aplica antes del arranque cuando el almacenamiento está disponible; si está bloqueado, se sigue la preferencia del sistema. El HTML inicial de las presentaciones no contiene la guía completa.
 
 ## Imágenes del equipo
 

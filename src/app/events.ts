@@ -1,4 +1,4 @@
-import { Component, DestroyRef, ElementRef, inject, signal } from '@angular/core';
+import { afterNextRender, Component, DestroyRef, ElementRef, inject, signal } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { PresentationState } from './presentation-state';
@@ -22,9 +22,9 @@ export class Events {
   ];
   readonly closingMembers = ['Socamaru', 'HuronVNLZ', 'maykelsito'];
   readonly index = signal(0);
-  readonly album = signal(this.seen());
+  readonly album = signal(false);
   private seen(): boolean { try { return localStorage.getItem(KEY) === 'seen'; } catch { return false; } }
-  constructor() { this.presentation.active.set(!this.album()); this.destroyRef.onDestroy(() => this.presentation.active.set(false)); }
+  constructor() { this.presentation.active.set(true); afterNextRender(() => { if (this.seen()) { this.album.set(true); this.presentation.active.set(false); } }); this.destroyRef.onDestroy(() => this.presentation.active.set(false)); }
   private focus(selector: string) { setTimeout(() => { if (!this.destroyRef.destroyed) this.host.querySelector<HTMLElement>(selector)?.focus({ preventScroll: true }); }); }
   step(delta: number) { const next = this.index() + delta; if (next >= this.scenes.length) return this.finish(); if (next >= 0) { this.index.set(next); this.focus('.cinematic h2'); } }
   finish() { try { localStorage.setItem(KEY, 'seen'); } catch { /* storage can be unavailable */ } this.album.set(true); this.presentation.active.set(false); this.focus('.intro h1'); }

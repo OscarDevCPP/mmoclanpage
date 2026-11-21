@@ -1,8 +1,8 @@
 import { PresentationState } from './presentation-state';
-import { Component, DestroyRef, ElementRef, inject, signal } from '@angular/core';
+import { afterNextRender, Component, DestroyRef, ElementRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { skip } from 'rxjs';
-import { NgOptimizedImage, NgTemplateOutlet } from '@angular/common';
+import { NgOptimizedImage, NgTemplateOutlet, ViewportScroller } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 const KEY = 'black-talon.academy.presentation.v1';
@@ -11,6 +11,7 @@ const KEY = 'black-talon.academy.presentation.v1';
 })
 export class Academy {
   private readonly presentation = inject(PresentationState);
+  private readonly scroller = inject(ViewportScroller);
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -25,7 +26,7 @@ export class Academy {
     { id: 'socamaru', image: '/academy/socamaru.svg', alt: 'Ruta de exploración PvE y herramientas de aventura', title: 'PvE con Socamaru', speaker: 'Socamaru', text: 'Yo puedo compartirles lo que sé de PvE y algunos consejos para avanzar. Vamos con calma, que aprendemos juntos, jeje.' },
     { id: 'ensenar', image: '/academy/ensenar.svg', alt: 'Personas compartiendo conocimiento alrededor de una mesa', title: 'Una invitación abierta', speaker: 'Socamaru', text: 'Si tienes ganas de ayudar y compartir, tú también puedes enseñar. Coordina conmigo y anuncia tu clase en el grupo de WhatsApp de la Academia. ¡Será bonito aprender juntos!' }
   ];
-  readonly guide = signal(this.initialGuide());
+  readonly guide = signal(false);
   readonly sections = [
     { id: 'proposito', title: 'Propósito y temas', image: this.scenes[1], text: 'Red Wings Academy es un espacio para aprender y compartir entre miembros del clan. Sus temas incluyen farmeos, crianza, PvP, economía y mecánicas. Más adelante podrían organizarse clases intermedias o avanzadas.' },
     { id: 'requisitos', title: 'Requisitos y gratuidad', image: this.scenes[0], text: 'Las clases son gratuitas y exclusivas para miembros del clan. Se requiere un mínimo de 3 alumnos.' },
@@ -40,7 +41,20 @@ export class Academy {
     try { return localStorage.getItem(KEY) === 'seen'; } catch { return false; }
   }
   constructor() {
-    this.presentation.active.set(!this.guide());
+    this.presentation.active.set(true);
+    afterNextRender(() => {
+      if (this.initialGuide()) {
+        this.guide.set(true);
+        this.presentation.active.set(false);
+        const fragment = this.route.snapshot.fragment;
+        if (fragment) setTimeout(() => {
+          if (this.destroyRef.destroyed) return;
+          this.scroller.scrollToAnchor(fragment);
+          const element = this.host.ownerDocument.getElementById(fragment);
+          element?.focus({ preventScroll: true });
+        });
+      }
+    });
     this.destroyRef.onDestroy(() => this.presentation.active.set(false));
     this.route.fragment.pipe(skip(1), takeUntilDestroyed()).subscribe(fragment => {
       if (this.sections.some(section => section.id === fragment)) { this.guide.set(true); this.presentation.active.set(false); }
