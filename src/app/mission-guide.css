@@ -30,3 +30,7 @@
 .papers span::before { content: '◆'; position: absolute; top: 2px; left: 45%; color: #a12724; }
 @media (prefers-reduced-motion: no-preference) { .dialogue img { animation: float 1.4s ease-in-out infinite alternate; } @keyframes float { to { translate: 0 -6px; } } }
 @media (max-width: 600px) { .dialogue { gap: .5rem; } .dialogue img { width: clamp(64px, 20vw, 100px); } .bubble { padding: .75rem; font-size: 1rem; } }
+
+/* Keep hints inside the cinematic at its top and left edges. */
+.cinema-top .icon-button::after { top: calc(100% + 8px); bottom: auto; }
+.cinema-controls .icon-button:first-child::after { left: 0; right: auto; }
