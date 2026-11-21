@@ -8,7 +8,7 @@ import { RouterLink } from '@angular/router';
     <p>Compartimos retos, encuentros y espacios para aprender juntos en el clan.</p>
     <ul class="activity-list">
       <li><a routerLink="/actividades/misiones"><img src="/activities/misiones.png" alt=""><span>Misiones</span></a></li>
-      <li><div class="activity-unavailable"><img src="/activities/sorteos.png" alt=""><span>Sorteos</span><small>Próximamente</small></div></li>
+      <li><a routerLink="/actividades/sorteos"><img src="/activities/sorteos.png" alt=""><span>Sorteos</span></a></li>
       <li><div class="activity-unavailable"><img src="/activities/eventos-semanales.png" alt=""><span>Eventos semanales</span><small>Próximamente</small></div></li>
       <li><div class="activity-unavailable"><img src="/activities/red-wings-academy.png" alt=""><span>Academia 'Red Wings Academy'</span><small>Próximamente</small></div></li>
     </ul>`,

@@ -27,9 +27,10 @@ describe('Página de Black Talon', () => {
     expect(page.querySelector('time')?.getAttribute('datetime')).toBe('2026-08-07');
     expect(page.querySelector('.identity img')?.getAttribute('src')).toContain('clan-logo.jpeg');
     const links = Array.from(page.querySelectorAll<HTMLAnchorElement>('.activity-list a'));
-    expect(links).toHaveLength(1);
+    expect(links).toHaveLength(2);
     expect(links[0].getAttribute('href')).toBe('/actividades/misiones');
-    expect(page.querySelectorAll('.activity-unavailable')).toHaveLength(3);
+    expect(links[1].getAttribute('href')).toBe('/actividades/sorteos');
+    expect(page.querySelectorAll('.activity-unavailable')).toHaveLength(2);
     expect(page.textContent).not.toContain('GhotyFly');
   });
 });
@@ -255,5 +256,69 @@ describe('Aislamiento cinematográfico', () => {
     await router.navigateByUrl('/actividades'); fixture.detectChanges();
     expect(page.querySelector('.site-header')).not.toBeNull(); expect(page.querySelector('footer')).not.toBeNull();
     fixture.destroy();
+  });
+});
+
+describe('Sorteos', () => {
+  beforeEach(() => { localStorage.clear(); vi.spyOn(window, 'scrollTo').mockImplementation(() => {}); });
+  afterEach(() => { localStorage.clear(); vi.restoreAllMocks(); });
+  it('abre desde ambas tarjetas y admite fragmentos sin marcar la presentación', async () => {
+    const { Router } = await import('@angular/router');
+    const { RouterTestingHarness } = await import('@angular/router/testing');
+    const { routes } = await import('./app.routes');
+    const { Activities } = await import('./activities');
+    const { Sorteos } = await import('./sorteos');
+    TestBed.configureTestingModule({ providers: [provideRouter(routes)] });
+    const harness = await RouterTestingHarness.create();
+    for (const [url, component] of [['/', Home], ['/actividades', Activities]] as const) {
+      await harness.navigateByUrl(url, component);
+      (harness.routeNativeElement!.querySelector('a[href="/actividades/sorteos"]') as HTMLAnchorElement).click();
+      await harness.fixture.whenStable();
+      expect(TestBed.inject(Router).url).toBe('/actividades/sorteos');
+      expect(harness.routeNativeElement?.textContent).toContain('Escena 1/6');
+    }
+    await harness.navigateByUrl('/actividades/sorteos#resultado', Sorteos);
+    expect(harness.routeNativeElement?.querySelector('#resultado')).not.toBeNull();
+    expect(localStorage.getItem('black-talon.sorteos.presentation.v1')).toBeNull();
+    expect(harness.routeNativeElement?.querySelectorAll('.index a')).toHaveLength(6);
+    (harness.routeNativeElement!.querySelector('.replay') as HTMLButtonElement).click();
+    await harness.fixture.whenStable(); harness.detectChanges();
+    expect(harness.routeNativeElement?.textContent).toContain('Escena 1/6');
+  });
+  it('avanza, persiste independientemente al terminar, muestra las reglas y permite repetir', async () => {
+    const { Sorteos } = await import('./sorteos');
+    TestBed.configureTestingModule({ providers: [provideRouter([])] });
+    const fixture = TestBed.createComponent(Sorteos); await fixture.whenStable();
+    const page = fixture.nativeElement as HTMLElement;
+    expect(localStorage.getItem('black-talon.sorteos.presentation.v1')).toBeNull();
+    expect(page.querySelector('.scene-stage')?.nextElementSibling?.classList.contains('dialogue')).toBe(true);
+    for (let i = 0; i < 6; i++) { fixture.componentInstance.step(1); fixture.detectChanges(); }
+    expect(localStorage.getItem('black-talon.sorteos.presentation.v1')).toBe('seen');
+    expect(localStorage.getItem('black-talon.missions.presentation.v1')).toBeNull();
+    for (const term of ['cosmético', 'Pokémon', '15 números', '20k', '1 gratis', 'comprar 2', 'WhatsApp', 'Discord', 'susurro', 'domingo', 'Perú', 'enlace externo', 'no fue comprado', 'eventos, premios y wars']) expect(page.textContent).toContain(term);
+    expect(page.querySelector('#participar')?.textContent).toContain('indica los números que desea');
+    expect(page.querySelector('#participar')?.textContent).toContain('confirma su disponibilidad');
+    expect(page.querySelector('#participar')?.textContent).toContain('El correo no es válido para comprar porque no permite confirmar la disponibilidad');
+    expect(page.querySelector('#resultado')?.textContent).toContain('enlace externo donde se puede seguir la cuenta regresiva durante la semana');
+    expect(page.querySelector('#resultado')?.textContent).toContain('domingo a las 12 del mediodía, hora de Perú');
+    expect(page.querySelector('#resultado')?.textContent).toContain('elige y revela al ganador al llegar la hora');
+    expect(fixture.componentInstance.scenes[3].text).toContain('No uses correo');
+    expect(fixture.componentInstance.scenes[3].text).toContain('números que deseas');
+    expect(fixture.componentInstance.scenes[4].text).toContain('durante la semana');
+    expect(TestBed.createComponent(Sorteos).componentInstance.guide()).toBe(true);
+    fixture.componentInstance.replay(); fixture.detectChanges();
+    expect(page.textContent).toContain('Escena 1/6');
+    fixture.componentInstance.finish(); expect(fixture.componentInstance.guide()).toBe(true);
+  });
+  it('tolera almacenamiento bloqueado y controla flechas', async () => {
+    const { Sorteos } = await import('./sorteos');
+    vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => { throw Error('blocked'); });
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw Error('blocked'); });
+    TestBed.configureTestingModule({ providers: [provideRouter([])] });
+    const fixture = TestBed.createComponent(Sorteos); await fixture.whenStable();
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight' }));
+    expect(fixture.componentInstance.index()).toBe(1);
+    expect(() => fixture.componentInstance.finish()).not.toThrow();
+    expect(fixture.componentInstance.guide()).toBe(true);
   });
 });
