@@ -1,4 +1,4 @@
-<a class="skip-link" href="#contenido">Saltar al contenido</a>
+<a class="skip-link" [routerLink]="currentPath" fragment="contenido" (click)="focusMain()">Saltar al contenido</a>
 <header class="site-header">
   <div class="header-inner">
     <span class="wordmark">Black Talon</span>
@@ -9,35 +9,6 @@
   </div>
 </header>
 <main id="contenido" tabindex="-1" class="page-wrap">
-  <div class="identity">
-    <img ngSrc="clan-logo.jpeg" width="640" height="640" priority alt="Emblema de Black Talon: ave de alas rojas sobre un escudo" />
-    <div><p>PokeMMO</p><h1>Black Talon <span>[URSS]</span></h1><p>Fundado el <time datetime="2026-08-07">7 de agosto de 2026</time></p></div>
-  </div>
-  <section class="about" aria-labelledby="about-title">
-    <h2 id="about-title">Sobre nosotros</h2>
-    <div class="prose">
-      <p>Somos una comunidad latinoamericana de PokeMMO que está creciendo. Nos reúne el gusto por jugar, compartir lo que vamos descubriendo y acompañarnos mientras cada quien avanza a su ritmo. Entre conversaciones y partidas, vamos conociendo a las personas que forman parte del equipo.</p>
-      <p>Nos interesa el PvP y también nos apoyamos con los desafíos del PvE. Compartimos consejos, guías y clases para aprender entre todos; cuando alguien tiene una duda, intercambiar experiencias es una forma de seguir progresando juntos. Red Wings Academy forma parte de ese espacio dedicado al aprendizaje dentro del clan.</p>
-      <p>La vida del equipo también incluye misiones, sorteos y eventos semanales. Son distintas maneras de participar y compartir tiempo con el clan, además de seguir disfrutando del juego y de las experiencias que cada integrante trae a la comunidad.</p>
-      <p>Les presentamos a quienes acompañan al equipo:</p>
-    </div>
-    <div class="roster">
-      <figure><img src="admins/maykelsito.png" width="128" height="192" alt="Personaje de maykelsito" /><figcaption>maykelsito <span>(Líder)</span></figcaption></figure>
-      <figure><img src="admins/HuronVNLZ.png" width="128" height="192" alt="Personaje de HuronVNLZ" /><figcaption>HuronVNLZ <span>(Comandante)</span></figcaption></figure>
-      <figure><img src="admins/Socamaru.png" width="128" height="192" alt="Personaje de Socamaru" /><figcaption>Socamaru <span>(Comandante)</span></figcaption></figure>
-      <figure><img src="admins/GhostyFly.png" width="128" height="192" alt="Personaje de GhostyFly" /><figcaption>GhostyFly <span>(Subcomandante)</span></figcaption></figure>
-      <figure><img src="admins/Weonaso.png" width="128" height="192" alt="Personaje de Weonaso" /><figcaption>Weonaso <span>(Subcomandante)</span></figcaption></figure>
-    </div>
-  </section>
-  <section class="activities" aria-labelledby="activities-title">
-    <h2 id="activities-title">Actividades</h2>
-    <p class="activity-intro">Compartimos retos, encuentros y espacios para aprender juntos en el clan.</p>
-    <ul class="activity-list">
-      <li><a href="#" (click)="$event.preventDefault()"><img src="activities/misiones.png" width="1536" height="1024" loading="lazy" alt="" /><span>Misiones</span></a></li>
-      <li><a href="#" (click)="$event.preventDefault()"><img src="activities/sorteos.png" width="1536" height="1024" loading="lazy" alt="" /><span>Sorteos</span></a></li>
-      <li><a href="#" (click)="$event.preventDefault()"><img src="activities/eventos-semanales.png" width="1536" height="1024" loading="lazy" alt="" /><span>Eventos Semanales</span></a></li>
-      <li><a href="#" (click)="$event.preventDefault()"><img src="activities/red-wings-academy.png" width="1536" height="1024" loading="lazy" alt="" /><span>Academia 'Red Wings Academy'</span></a></li>
-    </ul>
-  </section>
+  <router-outlet />
 </main>
 <footer><div class="footer-inner">Black Talon · PokeMMO</div></footer>

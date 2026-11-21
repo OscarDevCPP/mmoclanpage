@@ -80,9 +80,9 @@ section h2 { font-family: var(--font-title); text-transform: uppercase; font-siz
 .roster figcaption span { display: block; font-size: .8rem; font-weight: normal; color: var(--muted); }
 .activity-intro { color: var(--muted); }
 .activity-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem 1.5rem; padding: 0; margin-top: 1.3rem; list-style: none; }
-.activity-list a { position: relative; isolation: isolate; display: block; aspect-ratio: 3 / 2; color: #fff8f2; text-decoration: none; }
+.activity-list a, .activity-unavailable { position: relative; isolation: isolate; display: block; aspect-ratio: 3 / 2; color: #fff8f2; text-decoration: none; }
 .activity-list img { display: block; width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; }
-.activity-list a::after { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(transparent 30%, rgb(0 0 0 / .9) 100%); pointer-events: none; }
+.activity-list a::after, .activity-unavailable::after { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(transparent 30%, rgb(0 0 0 / .9) 100%); pointer-events: none; }
 .activity-list span { position: absolute; inset-inline: 0; bottom: 0; z-index: 2; padding: .85rem 1rem; font-family: var(--font-title); font-size: clamp(1.25rem, 2.5vw, 1.75rem); font-weight: 700; line-height: 1.15; text-transform: uppercase; text-decoration: none; text-shadow: 1px 2px 0 #171515; overflow-wrap: anywhere; }
 .activity-list a:hover::after { background: linear-gradient(transparent 15%, rgb(0 0 0 / .95) 100%); }
 footer { color: var(--muted); }
@@ -99,4 +99,38 @@ footer { color: var(--muted); }
 @media (prefers-reduced-motion: reduce) {
   :root { scroll-behavior: auto; }
   .theme-icon { transition: none; }
+}
+
+.activity-unavailable small { position: absolute; z-index: 2; top: .75rem; right: .75rem; background: #291d1b; color: #fff8f2; padding: .3rem .6rem; }
+
+/* Original illustrated details for the missions journey. */
+app-missions .speech { position:relative; margin:1.4rem 0 1.4rem 100px; border:4px solid var(--border); border-radius:12px; box-shadow:5px 5px 0 #50372d55; }
+app-missions .speech::before { content:''; position:absolute; width:85px; height:115px; left:-105px; bottom:0; background:url('/admins/maykelsito.png') center bottom / contain no-repeat; image-rendering:pixelated; }
+app-missions .speech::after { content:''; position:absolute; left:-17px; bottom:28px; width:24px; height:24px; background:var(--surface); border-left:4px solid var(--border); border-bottom:4px solid var(--border); transform:rotate(45deg); }
+app-missions .speech > * { position:relative; z-index:1; }
+app-missions .finds button { display:grid; justify-items:center; gap:.3rem; flex:1 1 75px; }
+app-missions .find-icon { display:block; width:40px; height:40px; filter:drop-shadow(3px 4px #352926); }
+app-missions .stone { background:linear-gradient(135deg,#fff1b8,#b2ae91 45%,#696f69); clip-path:polygon(30% 2%,75% 8%,100% 38%,80% 90%,30% 100%,0 62%,8% 23%); }
+app-missions .coal { background:linear-gradient(135deg,#6a6870,#22202b 55%,#4a4040); clip-path:polygon(25% 5%,66% 0,95% 27%,100% 75%,65% 100%,10% 83%,0 42%); }
+app-missions .coin { border:5px double #8f6229; border-radius:50%; background:radial-gradient(circle,#fff0a6 20%,#d7a334 22% 54%,#ffe08a 56%); }
+app-missions .board { background:repeating-linear-gradient(2deg,#744642 0 42px,#50372d 43px 48px,#a27450 49px 51px); box-shadow:inset 0 0 0 8px #aa7950; }
+app-missions .papers button { position:relative; background:repeating-linear-gradient(#ead1a4 0 23px,#c9ae85 24px 25px); box-shadow:5px 6px #34251c88; transform:rotate(-2deg); }
+app-missions .papers button:nth-child(2) { transform:rotate(2deg); } app-missions .papers button::before { content:'◆'; position:absolute; top:2px; left:45%; color:#a12724; }
+app-missions .calendar { display:flex; flex-wrap:wrap; align-items:center; gap:.35rem; color:#32231b; background:#ebd3a8; padding:.6rem; width:max-content; max-width:100%; border:3px solid #b3946a; }
+app-missions .calendar b, app-missions .calendar small { flex-basis:100%; } app-missions .calendar span { display:grid; place-items:center; width:2rem; height:2rem; background:#963d33; color:white; font-weight:bold; }
+app-missions .supplies { display:flex; align-items:end; gap:.5rem; } app-missions .bag { position:relative; border-radius:35% 35% 15% 15%; box-shadow:inset 0 -15px #352921, 4px 5px #33241c88; } app-missions .bag::before { content:''; position:absolute; inset:-18px 20px auto; height:22px; border:6px solid #d3a36f; border-bottom:0; border-radius:15px 15px 0 0; } app-missions .bag i { display:block; height:30px; background:#a16d47; border-bottom:5px solid #d3a36f; } app-missions .bag b { font-size:2rem; }
+app-missions .ball { display:inline-block; width:38px; height:38px; flex:none; border:4px solid #302a2a; border-radius:50%; background:linear-gradient(#bb4740 0 43%,#302a2a 43% 57%,#eee0c7 57%); position:relative; } app-missions .ball::after { content:''; position:absolute; width:9px; height:9px; border:3px solid #302a2a; border-radius:50%; background:#fff; left:10px; top:10px; }
+app-missions .attachments { display:flex; gap:.6rem; align-items:center; } app-missions .attachments > * { opacity:.3; transition:opacity .2s, transform .2s; } app-missions .attachments .attached { opacity:1; transform:scale(1.12); } app-missions .parcel { display:grid; place-items:center; width:38px; height:38px; border:4px solid #6d4632; background:#c99055; }
+app-missions .stage { isolation:isolate; background:radial-gradient(ellipse at 50% 10%,#f8dea3 0,#aa806d 40%,#454458 85%); } app-missions .spotlight { position:absolute; inset:0 25% 15%; background:#ffe4a733; clip-path:polygon(40% 0,60% 0,100% 100%,0 100%); z-index:-1; } app-missions .silhouette { clip-path:polygon(15% 35%,0 0,34% 17%,50% 8%,70% 17%,100% 0,85% 35%,95% 75%,75% 100%,25% 100%,5% 75%); transition:transform .35s,opacity .35s; opacity:.25; transform:translateY(50px) scale(.7); } app-missions .silhouette.revealed { opacity:1; transform:translateY(0) scale(1); } app-missions .prize-box { z-index:1; background:repeating-linear-gradient(90deg,#9e4b35 0 22px,#e0ae65 23px 30px); color:#fff; border:5px ridge #6c3829; box-shadow:0 -9px #e0ae65,4px 5px #29232a88; } app-missions .prize-box span { display:block; font-size:1.5rem; }
+app-missions .ticket-active { animation:ticket-pop .45s ease-out; } @keyframes ticket-pop { 50% { transform:translateY(-20px) rotate(7deg) scale(1.1); } }
+app-missions .scene { animation:scene-enter .5s ease-out both; } @keyframes scene-enter { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:none; } }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior:auto !important; } app-missions *, app-missions *::before, app-missions *::after { animation:none !important; transition:none !important; scroll-behavior:auto !important; } }
+@media (max-width:400px) { app-missions .speech { margin-left:72px; } app-missions .speech::before { width:65px; left:-76px; } app-missions .calendar span { width:1.65rem; } }
+app-missions .clearing-supplies { position:relative; z-index:1; transform:scale(.8); transform-origin:bottom; } app-missions button { cursor:pointer; } app-missions button:hover, app-missions button:focus-visible { filter:brightness(1.12); } app-missions .papers button:hover, app-missions .papers button:focus-visible { translate:0 -6px; box-shadow:7px 12px #34251c88; } @media (prefers-reduced-motion: reduce) { app-missions .papers button:hover, app-missions .papers button:focus-visible { translate:none; } }
+
+app-missions .papers button[aria-pressed="true"] { outline: 4px solid #fff8ef; outline-offset: 3px; background: #f9e5b8; box-shadow: 7px 9px #34251c88; }
+@media (max-width:600px) {
+  app-missions .speech { margin: 1.4rem 0; }
+  app-missions .speech::before { position: static; display: block; width: 65px; height: 90px; margin-bottom: .5rem; }
+  app-missions .speech::after { display: none; }
 }
