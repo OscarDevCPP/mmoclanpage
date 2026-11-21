@@ -48,3 +48,7 @@ Los recursos se incorporarán progresivamente. Sus temas y categorías se concre
 Publicaciones con imágenes y capturas de eventos y momentos compartidos por el clan.
 
 Esta sección se ampliará con nuevas publicaciones a lo largo del tiempo.
+
+### Ampliar Recuerdos
+
+La página `/recuerdos` reúne cuatro momentos reales en orden de fecha; cuando coinciden, conserva el orden de las fuentes. Para añadir otro, incorporar el archivo original en `public/recuerdos/` y registrar fecha, título y relato verificados, un nombre de archivo único y el tipo explícito `image` o `video` en `src/app/memories.ts`. No hay sistema de carga ni administración. El video de los 12 Templos conserva sus controles; la descripción contextual no es una transcripción y el contenido del audio y la necesidad de subtítulos fieles siguen pendientes de verificar.

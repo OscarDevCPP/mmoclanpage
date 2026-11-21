@@ -6,7 +6,7 @@
     <nav id="section-navigation" class="section-nav" [class.is-open]="navigationOpen()" aria-label="Secciones principales">
       <a routerLink="/actividades" (click)="closeNavigation()" [attr.aria-current]="currentPath.startsWith('/actividades') ? 'page' : null">Actividades</a>
       <span aria-disabled="true">Recursos</span>
-      <span aria-disabled="true">Recuerdos</span>
+      <a routerLink="/recuerdos" (click)="closeNavigation()" [attr.aria-current]="currentPath === '/recuerdos' ? 'page' : null">Recuerdos</a>
     </nav>
     <button class="theme-toggle" type="button" [attr.aria-label]="activeTheme() === 'light' ? 'Cambiar a tema oscuro' : 'Cambiar a tema claro'" [attr.title]="activeTheme() === 'light' ? 'Cambiar a tema oscuro' : 'Cambiar a tema claro'" (click)="setTheme(activeTheme() === 'light' ? 'dark' : 'light')">
       <svg class="theme-icon moon" [class.visible]="activeTheme() === 'light'" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M20.5 15.5A8.5 8.5 0 0 1 8.5 3.5a8.5 8.5 0 1 0 12 12Z"/></svg>

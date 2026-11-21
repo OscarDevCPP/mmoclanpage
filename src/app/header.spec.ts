@@ -40,8 +40,8 @@ describe('Navegación del encabezado', () => {
     const page = fixture.nativeElement as HTMLElement;
     expect(page.textContent).not.toContain('Ver todas las actividades');
     const navigation = page.querySelector('.section-nav')!;
-    expect(navigation.querySelectorAll('a')).toHaveLength(1);
-    expect(Array.from(navigation.querySelectorAll('[aria-disabled="true"]')).map(e => e.textContent)).toEqual(['Recursos', 'Recuerdos']);
+    expect(navigation.querySelectorAll('a')).toHaveLength(2);
+    expect(Array.from(navigation.querySelectorAll('[aria-disabled="true"]')).map(e => e.textContent)).toEqual(['Recursos']);
     expect(navigation.querySelectorAll('[href="#"], button, [tabindex="0"]')).toHaveLength(0);
     (navigation.querySelector('a') as HTMLAnchorElement).click();
     await fixture.whenStable(); fixture.detectChanges();
