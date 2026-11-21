@@ -80,7 +80,7 @@ section h2 { font-family: var(--font-title); text-transform: uppercase; font-siz
 .roster figcaption span { display: block; font-size: .8rem; font-weight: normal; color: var(--muted); }
 .activity-intro { color: var(--muted); }
 .activity-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem 1.5rem; padding: 0; margin-top: 1.3rem; list-style: none; }
-.activity-list a { position: relative; isolation: isolate; display: block; aspect-ratio: 16 / 9; color: #fff8f2; text-decoration: none; }
+.activity-list a { position: relative; isolation: isolate; display: block; aspect-ratio: 3 / 2; color: #fff8f2; text-decoration: none; }
 .activity-list img { display: block; width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; }
 .activity-list a::after { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(transparent 30%, rgb(0 0 0 / .9) 100%); pointer-events: none; }
 .activity-list span { position: absolute; inset-inline: 0; bottom: 0; z-index: 2; padding: .85rem 1rem; font-family: var(--font-title); font-size: clamp(1.25rem, 2.5vw, 1.75rem); font-weight: 700; line-height: 1.15; text-transform: uppercase; text-decoration: none; text-shadow: 1px 2px 0 #171515; overflow-wrap: anywhere; }
