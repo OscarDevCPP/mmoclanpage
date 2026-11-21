@@ -48,11 +48,11 @@ describe('Recuerdos', () => {
     expect(articles).toHaveLength(5);
     const videoArticle = Array.from(articles).find(article => article.querySelector('video'))!;
     const video = videoArticle.querySelector('video')!;
-    expect(video.getAttribute('src')).toBe('/recuerdos/4_recuerdo_presentacion_2_los_12_templos.mp4');
+    expect(video.getAttribute('src')).toBe('recuerdos/4_recuerdo_presentacion_2_los_12_templos.mp4');
     const contextId = video.getAttribute('aria-describedby')!;
     expect(videoArticle.querySelector('p')?.id).toBe(contextId);
     expect(articles[0].querySelector('time')?.getAttribute('datetime')).toBe('2026-12-01');
-    expect(articles[0].querySelector('img')?.getAttribute('src')).toBe('/recuerdos/foto-posterior.jpeg');
+    expect(articles[0].querySelector('img')?.getAttribute('src')).toBe('recuerdos/foto-posterior.jpeg');
     expect(articles[0].querySelector('video')).toBeNull();
     localStorage.removeItem(key);
   });

@@ -1,3 +1,3 @@
 .sorteos-art { position: relative; overflow: hidden; background: #6c4540; border: 6px solid #50372d; height: clamp(300px, 36vw, 460px); }
 .sorteos-art img { display: block; width: 100%; height: 100%; object-fit: contain; image-rendering: pixelated; }
-.atmosphere { background: linear-gradient(#281719c9,#171013ec), url('/activities/sorteos.png') center / cover; }
+.atmosphere { background: linear-gradient(#281719c9,#171013ec), url('../../public/activities/sorteos.png') center / cover; }

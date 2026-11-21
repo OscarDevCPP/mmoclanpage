@@ -37,7 +37,7 @@ describe('Red Wings Academy', () => {
     for (const [index, scene] of component.scenes.entries()) {
       component.index.set(index); fixture.detectChanges();
       expect(page.querySelector('.cinema-art img')?.getAttribute('src')).toBe(scene.image);
-      expect(page.querySelector('.dialogue img')?.getAttribute('src')).toBe(`/admins/${scene.speaker}.png`);
+      expect(page.querySelector('.dialogue img')?.getAttribute('src')).toBe(`admins/${scene.speaker}.png`);
       expect(page.querySelector('.dialogue img')?.getAttribute('fetchpriority')).toBe('high');
     }
     component.step(1); fixture.detectChanges();
@@ -52,7 +52,7 @@ describe('Red Wings Academy', () => {
       const item = page.querySelectorAll<HTMLElement>('#referentes .referente')[index];
       expect(item.querySelector('strong')?.textContent).toBe(name);
       expect(item.querySelector('.referente-info')?.textContent).toContain(specialty);
-      expect(item.querySelector('.referente-info img')?.getAttribute('src')).toBe(`/admins/${name}.png`);
+      expect(item.querySelector('.referente-info img')?.getAttribute('src')).toBe(`admins/${name}.png`);
       expect(item.querySelector('.academy-art img')?.getAttribute('src')).toBe(component.scenes[index + 4].image);
     }
     expect(component.scenes[2].text).toContain('chat de equipo ni otros canales');

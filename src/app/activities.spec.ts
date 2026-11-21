@@ -24,7 +24,7 @@ describe('Resumen de actividades', () => {
       const item = items[index];
       const link = item.querySelector('a')!;
       expect(link.getAttribute('href')).toBe(`/actividades/${slug}`);
-      expect(link.querySelector('img')?.getAttribute('src')).toBe(`/activities/${slug}.png`);
+      expect(link.querySelector('img')?.getAttribute('src')).toBe(`activities/${slug}.png`);
       expect(link.textContent).toContain(title);
       expect(link.querySelector('a')).toBeNull();
       const summary = item.querySelector('p')!;

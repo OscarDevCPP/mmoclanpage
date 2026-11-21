@@ -5,7 +5,7 @@
       <div class="cinema-top"><p>Sorteos semanales · Escena {{ index() + 1 }}/6</p><button class="icon-button" type="button" aria-label="Saltar a la guía" title="Saltar a la guía" data-tooltip="Saltar a la guía" (click)="finish()"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5l10 7-10 7zM19 5v14"/></svg></button></div>
       <h2 tabindex="-1">{{ scenes[index()].title }}</h2>
       <div class="scene-stage" [attr.data-scene]="index()"><div class="cinema-art"><ng-container *ngTemplateOutlet="art; context: { $implicit: scenes[index()], priority: true }" /></div></div>
-      <div class="dialogue" [attr.data-scene]="index()"><img ngSrc="/admins/Socamaru.png" width="320" height="480" alt=""><div class="bubble"><strong>Socamaru</strong><p>{{ scenes[index()].text }}</p></div></div>
+      <div class="dialogue" [attr.data-scene]="index()"><img ngSrc="admins/Socamaru.png" width="320" height="480" alt=""><div class="bubble"><strong>Socamaru</strong><p>{{ scenes[index()].text }}</p></div></div>
       <div class="cinema-controls"><button class="icon-button" type="button" aria-label="Anterior" title="Anterior" data-tooltip="Anterior" (click)="step(-1)" [disabled]="index() === 0"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4l-8 8 8 8"/></svg></button><button class="icon-button" type="button" [attr.aria-label]="index() === 5 ? 'Ir a la guía' : 'Siguiente'" [attr.title]="index() === 5 ? 'Ir a la guía' : 'Siguiente'" [attr.data-tooltip]="index() === 5 ? 'Ir a la guía' : 'Siguiente'" (click)="step(1)"><svg viewBox="0 0 24 24" aria-hidden="true">@if (index() === 5) { <path d="M4 12l5 5L20 5"/> } @else { <path d="M9 4l8 8-8 8"/> }</svg></button></div>
     </div>
   </div>

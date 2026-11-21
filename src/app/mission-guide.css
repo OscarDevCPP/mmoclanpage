@@ -1,5 +1,5 @@
 .cinematic { position: relative; isolation: isolate; min-height: 100dvh; overflow: hidden; background: #171d1d; color: #fff8ed; display: grid; grid-template-columns: minmax(0, 1fr); place-items: center; }
-.atmosphere { position: absolute; z-index: -1; inset: -30px; background: linear-gradient(#141d20c9,#101713ec), url('/missions/encounters.svg') center / cover; filter: blur(20px); pointer-events: none; }
+.atmosphere { position: absolute; z-index: -1; inset: -30px; background: linear-gradient(#141d20c9,#101713ec), url('../../public/missions/encounters.svg') center / cover; filter: blur(20px); pointer-events: none; }
 .cinema-content { width: min(100%, 1200px); min-width: 0; padding: clamp(.75rem, 2vw, 1.5rem); }
 .cinema-top, .cinema-controls { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
 .cinema-top p { margin: 0; font-weight: bold; }
