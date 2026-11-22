@@ -17,3 +17,24 @@
 .compendium .state, .compendium .level { font: .8em Verdana, sans-serif; color: var(--muted); }
 .replay { margin-top: 1.2rem; }
 .replay::after { left: 0; right: auto; }
+.compendium .category { border-bottom: 1px solid var(--muted); }
+.compendium .category:first-of-type { border-top: 1px solid var(--muted); }
+.compendium summary { display: flex; align-items: center; gap: .75rem; min-height: 48px; padding: .6rem .3rem; cursor: pointer; list-style: none; }
+.compendium summary::-webkit-details-marker { display: none; }
+.compendium summary:focus-visible { outline: 3px solid var(--accent-text); outline-offset: 2px; }
+.compendium .category, .compendium .chapter, .compendium summary h3, .compendium summary h4 { min-width: 0; }
+.compendium summary h3, .compendium summary h4 { margin: 0; overflow-wrap: anywhere; }
+.compendium nav li, .compendium nav p { overflow-wrap: anywhere; }
+.compendium summary svg { width: 1.4rem; height: 1.4rem; flex: none; margin-left: auto; fill: none; stroke: currentColor; stroke-width: 2; transition: transform .2s ease; }
+.compendium details[open] > summary svg { transform: rotate(180deg); }
+.compendium .chapter { margin: .5rem 0; border-bottom: 1px solid var(--muted); }
+.compendium .chapter summary { padding-left: .8rem; }
+.compendium .chapter .state { margin-left: auto; min-width: 0; overflow-wrap: anywhere; }
+.compendium .chapter summary svg { margin-left: 0; }
+.compendium .category > p, .compendium .chapter > p { margin: .7rem .8rem; }
+@media (max-width: 400px) {
+  .compendium summary { gap: .4rem; }
+  .compendium .chapter summary { padding-left: .3rem; }
+  .compendium ul { padding-left: 1.1rem; }
+}
+@media (prefers-reduced-motion: reduce) { .compendium summary svg { transition: none; } }

@@ -35,6 +35,19 @@ describe('El Compendio', () => {
     expect(page.querySelector('.compendium')?.classList.contains('cinema-active')).toBe(false);
     expect(page.textContent).toContain('Recopilación de conocimientos prácticos con mucho cariño para la comunidad');
     expect(page.querySelectorAll('.chapter')).toHaveLength(5);
+    expect(page.querySelector('nav')?.getAttribute('aria-label')).toBe('Contenido del Compendio');
+    expect(page.querySelector('#indice')?.textContent).toBe('Contenido');
+    const categories = [...page.querySelectorAll<HTMLDetailsElement>('.category')];
+    const chapters = [...page.querySelectorAll<HTMLDetailsElement>('.chapter')];
+    expect(categories).toHaveLength(3);
+    expect([...categories, ...chapters].every(detail => !detail.open)).toBe(true);
+    expect(chapters.every(detail => detail.parentElement?.id === 'pvp')).toBe(true);
+    categories[0].open = true; categories[1].open = true;
+    chapters[0].open = true; chapters[1].open = true;
+    expect(categories[0].open && categories[1].open && chapters[0].open && chapters[1].open).toBe(true);
+    expect(page.querySelectorAll('summary button, summary a')).toHaveLength(0);
+    expect(page.querySelectorAll('.chapter summary .state')).toHaveLength(5);
+
     expect(page.textContent).toContain('Guías de PvE');
     expect(page.textContent).toContain('Eventos del juego');
     const links = [...page.querySelectorAll<HTMLAnchorElement>('.compendium a')];
