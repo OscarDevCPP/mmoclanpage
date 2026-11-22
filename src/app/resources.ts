@@ -20,9 +20,9 @@ export class Resources {
   readonly index = signal(0);
   // The browser parses noscript as text with scripting enabled. A single innerHTML
   // binding keeps Angular from hydrating child elements that do not exist there.
-  readonly noScriptContent = '<section><h1>Recursos</h1><p>Este espacio está en preparación; todavía no hay guías ni recursos publicados.</p><ul><li>Guías de PvP</li><li>Guías de PvE</li><li>Eventos del juego</li></ul><a href="./">Volver al inicio</a></section>';
+  readonly noScriptContent = '<section><h1>El Compendio</h1><p>Este espacio está en preparación; todavía no hay guías ni recursos publicados.</p><ul><li>Guías de PvP</li><li>Guías de PvE</li><li>Eventos del juego</li></ul><a href="./">Volver al inicio</a></section>';
   readonly scenes = [
-    { title: 'Un lugar para compartir', image: 'academy/bienvenida.svg', speaker: 'Socamaru', text: '¡Bienvenidos a Recursos! Aquí reunimos lo que vamos aprendiendo para compartirlo con el clan, jeje.' },
+    { title: 'Un lugar para compartir', image: 'academy/bienvenida.svg', speaker: 'Socamaru', text: '¡Bienvenidos al Compendio! Aquí reunimos lo que vamos aprendiendo para compartirlo con el clan, jeje.' },
     { title: 'Una duda', image: 'academy/temas.svg', speaker: 'GhostyFly', text: '¿Y qué podemos encontrar aquí? 😁' },
     { title: 'Entre combates y aventuras', image: 'academy/temas.svg', speaker: 'Socamaru', text: 'La idea es reunir guías de PvP y PvE, y recursos sobre eventos del juego. Así será más fácil encontrar lo que buscamos.' },
     { title: 'Por dónde empezar', image: 'academy/socamaru.svg', speaker: 'Weonaso', text: '¿Y si tengo dudas para avanzar en PvE?' },

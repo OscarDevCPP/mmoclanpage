@@ -20,12 +20,16 @@ describe('Libro de Recursos', () => {
     const host = fixture.nativeElement as HTMLElement;
     for (const root of ['.book-source', '.book-stage']) {
       const cover = host.querySelector(`${root} > .cover`)!;
+      expect(Array.from(host.querySelectorAll(`${root} .folio`), el => el.textContent)).toEqual(['El Compendio · Índice', 'El Compendio', 'El Compendio', 'El Compendio']);
+      expect(host.querySelector(`${root} > section:last-child`)?.textContent).toContain('El Compendio en preparación');
       expect(cover.querySelector('h2')?.textContent).toBe('El Compendio');
       expect(cover.textContent).toContain('«Recopilación de conocimientos prácticos con mucho cariño para la comunidad»');
       expect(host.querySelectorAll(`${root} .page-inner[tabindex]`)).toHaveLength(0);
       expect(host.querySelectorAll(`${root} h2[tabindex="-1"]`)).toHaveLength(6);
       expect(host.querySelectorAll(`${root} a[href]`).length).toBeGreaterThan(0);
     }
+    expect(host.querySelector('.replay')?.getAttribute('aria-label')).toBe('Volver a ver la presentación del Compendio');
+    expect(host.querySelector('.replay')?.getAttribute('title')).toBe('Volver a ver la presentación del Compendio');
     fixture.destroy();
   });
   it('conserva el documento original, inicia sobre clones y destruye el motor', async () => {

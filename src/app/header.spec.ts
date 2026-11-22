@@ -41,7 +41,7 @@ describe('Navegación del encabezado', () => {
     expect(page.textContent).not.toContain('Ver todas las actividades');
     const navigation = page.querySelector('.section-nav')!;
     expect(navigation.querySelectorAll('a')).toHaveLength(3);
-    expect(navigation.querySelector('a[href="/recursos"]')?.textContent).toBe('Recursos');
+    expect(navigation.querySelector('a[href="/recursos"]')?.textContent).toBe('El Compendio');
     expect(navigation.querySelectorAll('[href="#"], button, [tabindex="0"]')).toHaveLength(0);
     (navigation.querySelector('a') as HTMLAnchorElement).click();
     await fixture.whenStable(); fixture.detectChanges();

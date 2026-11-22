@@ -32,7 +32,7 @@ Red Wings Academy ofrece clases gratuitas para miembros del clan sobre farmeos, 
 
 maykelsito es referente de PvP, HuronVNLZ de PvP y PvE y Socamaru de PvE, sin formar una plantilla fija ni exclusiva. Cualquier miembro con ganas de ayudar y compartir puede enseñar tras coordinar con Socamaru y anunciar la clase en el grupo. Las clases intermedias o avanzadas son una posibilidad futura, no una oferta vigente.
 
-## 3. Recursos
+## 3. El Compendio
 
 Contenidos útiles para los miembros del clan y los jugadores de PokeMMO:
 
