@@ -24,7 +24,7 @@ En las cinco presentaciones, el HTML inicial contiene la primera escena. Tras la
 
 ## El Compendio
 
-El libro usa `@openpageflip/core` 0.7.0 (MIT), fijado en el lock. Su código se carga en el navegador al abrir el libro; el HTML de respaldo conserva las categorías si el motor no inicia. Las guías y sus fuentes están pendientes. Las hojas mantienen proporción 440:650, con desplazamiento interior para contenido largo: el motor no repagina textos automáticamente. Las flechas, los iconos y los gestos iniciados en los márgenes permiten navegar; los fragmentos identifican las categorías. La presentación se muestra en la primera visita y puede repetirse desde el libro.
+El libro está disponible en `/compendio`. La presentación guarda su estado en `black-talon.compendio.presentation.v1`; no se migra el estado anterior, por lo que puede mostrarse de nuevo una vez. El libro usa `@openpageflip/core` 0.7.0 (MIT), fijado en el lock. Su código se carga en el navegador al abrir el libro; el HTML de respaldo conserva las categorías si el motor no inicia. Las guías y sus fuentes están pendientes. Las hojas mantienen proporción 440:650, con desplazamiento interior para contenido largo: el motor no repagina textos automáticamente. Las flechas, los iconos y los gestos iniciados en los márgenes permiten navegar; los fragmentos identifican las categorías. La presentación se muestra en la primera visita y puede repetirse desde el libro.
 
 El motor modifica únicamente copias de las hojas dentro de un contenedor propio y se destruye al abandonar el libro; los originales Angular quedan como respaldo. El CSS del motor es global y su JavaScript se importa bajo demanda. La comparación exploratoria anterior permanece en la historia Git, no en la aplicación.
 

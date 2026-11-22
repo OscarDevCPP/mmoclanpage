@@ -3,7 +3,7 @@ import { NgOptimizedImage } from '@angular/common';
 import { PresentationState } from './presentation-state';
 import { ResourcesBook } from './resources-book';
 
-const KEY = 'black-talon.resources.presentation.v1';
+const KEY = 'black-talon.compendio.presentation.v1';
 
 @Component({
   selector: 'app-resources',

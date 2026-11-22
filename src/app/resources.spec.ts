@@ -5,15 +5,15 @@ import { RouterTestingHarness } from '@angular/router/testing';
 import { routes } from './app.routes';
 import { Resources } from './resources';
 
-const key = 'black-talon.resources.presentation.v1';
+const key = 'black-talon.compendio.presentation.v1';
 describe('Recursos', () => {
   beforeEach(() => { localStorage.clear(); vi.spyOn(window, 'scrollTo').mockImplementation(() => {}); });
   afterEach(() => { localStorage.clear(); vi.restoreAllMocks(); });
   it('navega a la ruta y presenta referentes, categorías y repetición', async () => {
     TestBed.configureTestingModule({ providers: [provideRouter(routes)] });
     const harness = await RouterTestingHarness.create();
-    const component = await harness.navigateByUrl('/recursos', Resources);
-    expect(TestBed.inject(Router).url).toBe('/recursos');
+    const component = await harness.navigateByUrl('/compendio', Resources);
+    expect(TestBed.inject(Router).url).toBe('/compendio');
     expect(document.title).toBe('El Compendio · Black Talon');
     expect(harness.routeNativeElement?.textContent).toContain('El Compendio · Escena 1/9');
     expect(harness.routeNativeElement?.textContent).toContain('¡Bienvenidos al Compendio!');
@@ -59,6 +59,16 @@ describe('Recursos', () => {
     }
     expect(fixture.nativeElement.textContent).toContain('Escena 1/9');
   });
+  it('ignora la clave anterior sin migrarla', async () => {
+    localStorage.setItem('black-talon.resources.presentation.v1', 'seen');
+    TestBed.configureTestingModule({ providers: [provideRouter([])] });
+    const fixture = TestBed.createComponent(Resources); await fixture.whenStable();
+    expect(fixture.componentInstance.guide()).toBe(false);
+    expect(localStorage.getItem(key)).toBeNull();
+    fixture.componentInstance.finish();
+    expect(localStorage.getItem(key)).toBe('seen');
+    expect(localStorage.getItem('black-talon.resources.presentation.v1')).toBe('seen');
+  });
   it('restaura estado visto después del primer render', async () => {
     localStorage.setItem(key, 'seen'); TestBed.configureTestingModule({ providers: [provideRouter([])] });
     const fixture = TestBed.createComponent(Resources); await fixture.whenStable();
@@ -78,7 +88,7 @@ describe('integración del libro de Recursos', () => {
     localStorage.setItem(key, 'seen');
     TestBed.configureTestingModule({ providers: [provideRouter(routes), { provide: BOOK_LOADER, useValue: async () => ({ createBook }) }] });
     const harness = await RouterTestingHarness.create();
-    const component = await harness.navigateByUrl('/recursos', Resources);
+    const component = await harness.navigateByUrl('/compendio', Resources);
     await harness.fixture.whenStable(); harness.detectChanges();
     expect(component.guide()).toBe(true);
     expect(createBook).toHaveBeenCalledTimes(1);

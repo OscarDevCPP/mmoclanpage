@@ -5,7 +5,7 @@
     <a class="wordmark" routerLink="/" aria-label="Black Talon, ir al inicio">Black Talon</a>
     <nav id="section-navigation" class="section-nav" [class.is-open]="navigationOpen()" aria-label="Secciones principales">
       <a routerLink="/actividades" (click)="closeNavigation()" [attr.aria-current]="currentPath.startsWith('/actividades') ? 'page' : null">Actividades</a>
-      <a routerLink="/recursos" (click)="closeNavigation()" [attr.aria-current]="currentPath === '/recursos' ? 'page' : null">El Compendio</a>
+      <a routerLink="/compendio" (click)="closeNavigation()" [attr.aria-current]="currentPath === '/compendio' ? 'page' : null">El Compendio</a>
       <a routerLink="/recuerdos" (click)="closeNavigation()" [attr.aria-current]="currentPath === '/recuerdos' ? 'page' : null">Recuerdos</a>
     </nav>
     <button class="theme-toggle" type="button" [attr.aria-label]="activeTheme() === 'light' ? 'Cambiar a tema oscuro' : 'Cambiar a tema claro'" [attr.title]="activeTheme() === 'light' ? 'Cambiar a tema oscuro' : 'Cambiar a tema claro'" (click)="setTheme(activeTheme() === 'light' ? 'dark' : 'light')">

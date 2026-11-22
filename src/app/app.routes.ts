@@ -3,7 +3,7 @@ import { Home } from './home';
 
 export const routes: Routes = [
   { path: '', component: Home, title: 'Black Talon', pathMatch: 'full' },
-  { path: 'recursos', title: 'El Compendio · Black Talon', loadComponent: () => import('./resources').then(m => m.Resources) },
+  { path: 'compendio', title: 'El Compendio · Black Talon', loadComponent: () => import('./resources').then(m => m.Resources) },
   { path: 'recuerdos', title: 'Recuerdos · Black Talon', loadComponent: () => import('./memories').then(m => m.Memories) },
   { path: 'actividades', title: 'Actividades · Black Talon', loadComponent: () => import('./activities').then(m => m.Activities) },
   { path: 'actividades/eventos-semanales', title: 'Eventos semanales · Black Talon', loadComponent: () => import('./events').then(m => m.Events) },

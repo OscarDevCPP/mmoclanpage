@@ -49,7 +49,7 @@ export class App {
       const path = tree.root.toString();
       const pathChanged = path !== previousPath;
       previousPath = path;
-      if (tree.fragment && path !== 'recursos') {
+      if (tree.fragment && path !== 'compendio') {
         // Run after all synchronous Scroll subscribers, including router restoration.
         const fragment = tree.fragment;
         const sequence = navigationSequence;

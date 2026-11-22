@@ -32,6 +32,22 @@ describe('Navegación del encabezado', () => {
     expect(toggle.getAttribute('aria-expanded')).toBe('false');
   });
 
+  it('navega al Compendio inmersivo y restaura la estructura al salir', async () => {
+    const fixture = TestBed.createComponent(App);
+    const router = TestBed.inject(Router);
+    await router.navigateByUrl('/'); await fixture.whenStable(); fixture.detectChanges();
+    const page = fixture.nativeElement as HTMLElement;
+    page.querySelector<HTMLAnchorElement>('a[href="/compendio"]')!.click();
+    await fixture.whenStable(); fixture.detectChanges();
+    expect(router.url).toBe('/compendio');
+    expect(page.querySelector('header')).toBeNull();
+    expect(page.querySelector('footer')).toBeNull();
+    expect(page.querySelector('main')?.classList.contains('immersive-main')).toBe(true);
+    await router.navigateByUrl('/'); await fixture.whenStable(); fixture.detectChanges();
+    expect(page.querySelector('header')).toBeTruthy();
+    expect(page.querySelector('footer')).toBeTruthy();
+  });
+
   it('enlaza a Actividades y vuelve al inicio desde Black Talon sin destinos provisionales', async () => {
     const fixture = TestBed.createComponent(App);
     const router = TestBed.inject(Router);
@@ -41,7 +57,7 @@ describe('Navegación del encabezado', () => {
     expect(page.textContent).not.toContain('Ver todas las actividades');
     const navigation = page.querySelector('.section-nav')!;
     expect(navigation.querySelectorAll('a')).toHaveLength(3);
-    expect(navigation.querySelector('a[href="/recursos"]')?.textContent).toBe('El Compendio');
+    expect(navigation.querySelector('a[href="/compendio"]')?.textContent).toBe('El Compendio');
     expect(navigation.querySelectorAll('[href="#"], button, [tabindex="0"]')).toHaveLength(0);
     (navigation.querySelector('a') as HTMLAnchorElement).click();
     await fixture.whenStable(); fixture.detectChanges();
