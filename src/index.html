@@ -6,9 +6,11 @@
     <base href="/" />
     <link rel="icon" type="image/jpeg" href="clan-logo.jpeg" />
     <script>
+      document.documentElement.dataset.js = 'true';
       try {
         const theme = localStorage.getItem('black-talon.theme');
         if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme;
+        if (localStorage.getItem('black-talon.compendio.presentation.v1') === 'seen') document.documentElement.dataset.compendioSeen = 'true';
       } catch { /* Storage can be unavailable. CSS follows the system preference. */ }
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />

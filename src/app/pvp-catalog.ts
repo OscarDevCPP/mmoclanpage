@@ -1,7 +1,7 @@
 export type PvpLevel = 'básico' | 'intermedio' | 'avanzado';
 
 type PendingTopic = { readonly status: 'pending'; readonly href?: never };
-type AvailableTopic = { readonly status: 'available'; readonly href: `#${string}` };
+type AvailableTopic = { readonly status: 'available'; readonly href: `/compendio/pvp/fundamentos#${string}` };
 export type PvpTopic = {
   readonly title: string;
   readonly level: PvpLevel;
@@ -9,9 +9,9 @@ export type PvpTopic = {
   readonly sections?: readonly string[];
 } & (PendingTopic | AvailableTopic);
 
-// The order is the learning path shown in the single hierarchical index.
+// Learning order is advisory; chapters organize the central index.
 export const PVP_TOPICS: readonly PvpTopic[] = [
-  { learningOrder: 1, level: 'básico', title: 'Introducción al competitivo', status: 'available', href: '#introduccion-competitivo' },
+  { learningOrder: 1, level: 'básico', title: 'Introducción al competitivo', status: 'available', href: '/compendio/pvp/fundamentos#introduccion-competitivo' },
   { learningOrder: 2, level: 'básico', title: 'La ficha de un Pokémon', status: 'pending' },
   { learningOrder: 3, level: 'básico', title: 'Tipos y daño', status: 'pending' },
   { learningOrder: 4, level: 'básico', title: 'Movimientos', status: 'pending' },
@@ -47,3 +47,12 @@ export const PVP_TOPICS: readonly PvpTopic[] = [
 ];
 
 export const PVP_DICTIONARY = { title: 'Diccionario de términos en inglés', status: 'pending' } as const;
+
+/** Chapter membership is separate from optional learning levels and does not create routes. */
+export const PVP_CHAPTERS = [
+  { title: 'Fundamentos del competitivo', orders: [1, 9, 2, 3, 4, 5, 6], status: 'partial' },
+  { title: 'Preparación de Pokémon', orders: [7, 10, 11, 8], status: 'pending' },
+  { title: 'Construcción de equipos', orders: [12, 13, 14, 15, 16, 22, 17], status: 'pending' },
+  { title: 'Decisiones en combate', orders: [18, 19, 20, 21], status: 'pending' },
+  { title: 'Análisis y mejora', orders: [23, 24], status: 'pending' },
+] as const;

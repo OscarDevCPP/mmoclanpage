@@ -1,114 +1,73 @@
 import { TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
 import { provideRouter, Router } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { routes } from './app.routes';
 import { Resources } from './resources';
+import { PvpFundamentos } from './pvp-fundamentos';
+import { PresentationState } from './presentation-state';
+import { PVP_CHAPTERS, PVP_TOPICS } from './pvp-catalog';
 
 const key = 'black-talon.compendio.presentation.v1';
-describe('Recursos', () => {
+describe('El Compendio', () => {
   beforeEach(() => { localStorage.clear(); vi.spyOn(window, 'scrollTo').mockImplementation(() => {}); });
   afterEach(() => { localStorage.clear(); vi.restoreAllMocks(); });
-  it('navega a la ruta y presenta referentes, categorías y repetición', async () => {
+  it('agrupa los 24 temas exactamente una vez sin publicar enlaces pendientes', () => {
+    const orders = PVP_CHAPTERS.flatMap(chapter => [...chapter.orders]);
+    expect(orders).toHaveLength(24);
+    expect(new Set(orders)).toEqual(new Set(PVP_TOPICS.map(topic => topic.learningOrder)));
+    expect(PVP_CHAPTERS).toHaveLength(5);
+    expect(PVP_TOPICS.find(topic => topic.learningOrder === 11)?.sections).toHaveLength(8);
+  });
+  it('primera visita, salto, índice, guía, regreso y repetición', async () => {
     TestBed.configureTestingModule({ providers: [provideRouter(routes)] });
     const harness = await RouterTestingHarness.create();
-    const component = await harness.navigateByUrl('/compendio', Resources);
-    expect(TestBed.inject(Router).url).toBe('/compendio');
-    expect(document.title).toBe('El Compendio · Black Talon');
-    expect(harness.routeNativeElement?.textContent).toContain('El Compendio · Escena 1/9');
-    expect(harness.routeNativeElement?.textContent).toContain('¡Bienvenidos al Compendio!');
-    const skip = harness.routeNativeElement?.querySelector('[aria-label="Saltar al Compendio"]');
-    expect(skip?.getAttribute('title')).toBe('Saltar al Compendio');
-    expect(skip?.getAttribute('data-tooltip')).toBe('Saltar al Compendio');
-    component.index.set(component.scenes.length - 1); harness.detectChanges();
-    const finish = harness.routeNativeElement?.querySelector('[aria-label="Ir al Compendio"]');
-    expect(finish?.getAttribute('title')).toBe('Ir al Compendio');
-    expect(finish?.getAttribute('data-tooltip')).toBe('Ir al Compendio');
-    component.index.set(0); harness.detectChanges();
+    let component = await harness.navigateByUrl('/compendio', Resources);
+    const state = TestBed.inject(PresentationState);
+    expect(state.active()).toBe(true);
     expect(harness.routeNativeElement?.textContent).toContain('Escena 1/9');
-    expect(component.scenes.map(s => s.speaker)).toEqual(['Socamaru', 'GhostyFly', 'Socamaru', 'Weonaso', 'Socamaru', 'HuronVNLZ', 'maykelsito', 'HuronVNLZ', 'Socamaru']);
-    expect(localStorage.getItem(key)).toBeNull();
-    for (let i = 0; i < component.scenes.length; i++) component.step(1);
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight' }));
+    expect(component.index()).toBe(1);
+    (harness.routeNativeElement?.querySelector('[aria-label="Saltar al Compendio"]') as HTMLButtonElement).click();
     harness.detectChanges();
     expect(localStorage.getItem(key)).toBe('seen');
-    for (const text of ['Guías de PvP', 'Guías de PvE', 'Eventos del juego', 'Introducción al competitivo']) expect(harness.routeNativeElement?.textContent).toContain(text);
-    expect(harness.routeNativeElement?.querySelectorAll('.resource-list a')).toHaveLength(0);
-    (harness.routeNativeElement?.querySelector('.replay') as HTMLButtonElement).click();
-    harness.detectChanges(); expect(component.index()).toBe(0); expect(component.guide()).toBe(false);
+    expect(state.active()).toBe(false);
+    const page = harness.routeNativeElement as HTMLElement;
+    expect(page.querySelector('.compendium')?.classList.contains('cinema-active')).toBe(false);
+    expect(page.textContent).toContain('Recopilación de conocimientos prácticos con mucho cariño para la comunidad');
+    expect(page.querySelectorAll('.chapter')).toHaveLength(5);
+    expect(page.textContent).toContain('Guías de PvE');
+    expect(page.textContent).toContain('Eventos del juego');
+    const links = [...page.querySelectorAll<HTMLAnchorElement>('.compendium a')];
+    expect(links).toHaveLength(5);
+    expect(links.every(a => a.pathname === '/compendio/pvp/fundamentos' && a.hash.startsWith('#introduccion-'))).toBe(true);
+    links[1].click(); await harness.fixture.whenStable();
+    expect(TestBed.inject(Router).url).toBe('/compendio/pvp/fundamentos#introduccion-competitivo');
+    expect(state.active()).toBe(false);
+    await harness.navigateByUrl('/compendio/pvp/fundamentos', PvpFundamentos);
+    component = await harness.navigateByUrl('/compendio', Resources);
+    await harness.fixture.whenStable(); harness.detectChanges();
+    expect(component.guide()).toBe(true);
+    expect(state.active()).toBe(false);
+    const replay = harness.routeNativeElement?.querySelector<HTMLButtonElement>('button[aria-label="Volver a ver la presentación del Compendio"]');
+    expect(replay).toBeTruthy();
+    expect(replay?.getAttribute('title')).toBe('Volver a ver la presentación del Compendio');
+    expect(replay?.getAttribute('data-tooltip')).toBe('Volver a ver la presentación del Compendio');
+    expect(replay?.querySelector('svg')?.getAttribute('aria-hidden')).toBe('true');
+    expect(replay?.textContent?.trim()).toBe('');
+    replay!.click();
+    harness.detectChanges(); expect(state.active()).toBe(true); expect(component.index()).toBe(0);
+    component.finish(); harness.detectChanges(); expect(state.active()).toBe(false);
+    await harness.navigateByUrl('/'); expect(state.active()).toBe(false);
   });
-  it('permite flechas, saltar y volver a entrar con almacenamiento bloqueado', async () => {
+  it('conserva el comportamiento si el almacenamiento está bloqueado', async () => {
     vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => { throw Error('blocked'); });
     vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw Error('blocked'); });
     TestBed.configureTestingModule({ providers: [provideRouter([])] });
     const fixture = TestBed.createComponent(Resources); await fixture.whenStable();
-    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight' })); expect(fixture.componentInstance.index()).toBe(1);
-    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft' })); expect(fixture.componentInstance.index()).toBe(0);
-    (fixture.nativeElement.querySelector('[aria-label="Saltar al Compendio"]') as HTMLButtonElement).click();
-    expect(fixture.componentInstance.guide()).toBe(true);
-    fixture.componentInstance.replay(); expect(fixture.componentInstance.guide()).toBe(false);
-  });
-  it('conserva categorías sin hijos Angular dentro de noscript', async () => {
-    TestBed.configureTestingModule({ providers: [provideRouter([])] });
-    const fixture = TestBed.createComponent(Resources); await fixture.whenStable();
-    const fallback = fixture.debugElement.query(By.css('noscript'));
-    expect(fallback.children).toHaveLength(0);
-    const parsed = new DOMParser().parseFromString((fallback.nativeElement as HTMLElement).innerHTML, 'text/html');
-    expect(parsed.querySelector('h1')?.textContent).toBe('El Compendio');
-    expect(parsed.body.textContent).toContain('Fuentes conceptuales:');
-    expect(parsed.querySelector('#introduccion-competitivo')).not.toBeNull();
-    expect(parsed.querySelector('a[href="https://www.smogon.com/articles/getting-started"]')).not.toBeNull();
-    for (const category of ['Guías de PvP', 'Guías de PvE', 'Eventos del juego']) {
-      expect(parsed.body.textContent).toContain(category);
-    }
-    expect(fixture.nativeElement.textContent).toContain('Escena 1/9');
-  });
-  it('ignora la clave anterior sin migrarla', async () => {
-    localStorage.setItem('black-talon.resources.presentation.v1', 'seen');
-    TestBed.configureTestingModule({ providers: [provideRouter([])] });
-    const fixture = TestBed.createComponent(Resources); await fixture.whenStable();
     expect(fixture.componentInstance.guide()).toBe(false);
-    expect(localStorage.getItem(key)).toBeNull();
-    fixture.componentInstance.finish();
-    expect(localStorage.getItem(key)).toBe('seen');
-    expect(localStorage.getItem('black-talon.resources.presentation.v1')).toBe('seen');
-  });
-  it('restaura estado visto después del primer render', async () => {
-    localStorage.setItem(key, 'seen'); TestBed.configureTestingModule({ providers: [provideRouter([])] });
-    const fixture = TestBed.createComponent(Resources); await fixture.whenStable();
-    expect(fixture.componentInstance.guide()).toBe(true);
-  });
-});
-
-describe('integración del libro de Recursos', () => {
-  afterEach(() => { localStorage.clear(); vi.restoreAllMocks(); });
-  it('repite la escena real, destruye y vuelve a crear el motor', async () => {
-    const { BOOK_LOADER } = await import('./resources-book');
-    const { BookMeasure } = await import('./book-measure');
-    const { sectionFragments } = await import('./book-fragments');
-    vi.spyOn(BookMeasure.prototype, 'paginate').mockImplementation(async sections => sections.map(section => {
-      const fragments = sectionFragments(section);
-      return { section: section.id, fragments, position: { section: section.id, block: fragments[0].block, offset: 0 } };
-    }));
-    const engines: { destroy: ReturnType<typeof vi.fn> }[] = [];
-    const createBook = vi.fn(() => {
-      const engine = { orientation: 'portrait', on: vi.fn(() => () => {}), flipTo: vi.fn(async () => true), destroy: vi.fn() };
-      engines.push(engine); return engine;
-    });
-    localStorage.setItem(key, 'seen');
-    TestBed.configureTestingModule({ providers: [provideRouter(routes), { provide: BOOK_LOADER, useValue: async () => ({ createBook }) }] });
-    const harness = await RouterTestingHarness.create();
-    const component = await harness.navigateByUrl('/compendio', Resources);
-    await harness.fixture.whenStable(); await new Promise(resolve => setTimeout(resolve, 80)); harness.detectChanges();
-    expect(component.guide()).toBe(true);
-    expect(createBook).toHaveBeenCalledTimes(1);
-    const button = harness.routeNativeElement?.querySelector<HTMLButtonElement>('.replay');
-    expect(button).toBeTruthy(); button?.click(); harness.detectChanges();
-    expect(component.guide()).toBe(false);
-    expect(harness.routeNativeElement?.textContent).toContain('Escena 1/9');
-    expect(engines[0].destroy).toHaveBeenCalledOnce();
-    component.finish(); harness.detectChanges(); await harness.fixture.whenStable(); await new Promise(resolve => setTimeout(resolve, 80)); harness.detectChanges();
-    expect(createBook).toHaveBeenCalledTimes(2);
-    await harness.navigateByUrl('/');
-    expect(engines[1].destroy).toHaveBeenCalledOnce();
+    fixture.componentInstance.finish(); expect(fixture.componentInstance.guide()).toBe(true);
+    expect(TestBed.inject(PresentationState).active()).toBe(false);
+    fixture.componentInstance.replay(); expect(TestBed.inject(PresentationState).active()).toBe(true);
+    fixture.destroy(); expect(TestBed.inject(PresentationState).active()).toBe(false);
   });
 });

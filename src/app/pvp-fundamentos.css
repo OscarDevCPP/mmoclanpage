@@ -1,0 +1,16 @@
+.guide { max-width: 72ch; font-size: clamp(1rem, 0.9rem + 0.35vw, 1.25rem); line-height: 1.7; }
+.guide a { color: var(--accent-text); text-underline-offset: .16em; }
+.guide header { margin: 2rem 0; }
+.guide h1 { font-family: var(--font-title); font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.1; }
+.guide header p { color: var(--muted); margin-top: .5rem; }
+.guide h2, .guide h3 { font-family: var(--font-title); line-height: 1.2; margin: 1.5em 0 .5em; }
+.guide section h2 { font-size: 1.8em; text-transform: none; border: 0; padding: 0; }
+.guide h3 { font-size: 1.3em; }
+.guide p, .guide ul { margin: 0 0 1em; }
+.guide li { margin-bottom: .4em; }
+.guide section { scroll-margin-top: 6rem; }
+.contents { border-left: .25rem solid var(--accent-text); padding-left: 1.2rem; }
+.contents h2 { font-size: 1.4em; }
+.diagram { width: min(100%, 25rem); height: auto; margin: 1.5rem auto; fill: none; stroke: var(--accent-text); stroke-width: 2; }
+.diagram rect { fill: var(--surface); }
+.diagram text { fill: var(--text); stroke: none; font: 14px Verdana, sans-serif; text-anchor: middle; }

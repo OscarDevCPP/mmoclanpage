@@ -1,7 +1,7 @@
-import type { BookSection } from './book-content';
+import type { GuideSection } from './guide-content';
 
-/** Existing Singles guide, represented once independently of its physical leaves. */
-export const BOOK_GUIDE: readonly BookSection[] = [
+/** Existing Singles guide, shared as semantic content. */
+export const PVP_GUIDE: readonly GuideSection[] = [
   {
     "id": "introduccion-competitivo",
     "blocks": [

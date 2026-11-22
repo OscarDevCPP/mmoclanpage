@@ -1,16 +1,15 @@
 import { afterNextRender, Component, DestroyRef, ElementRef, inject, signal } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
-import { DomSanitizer } from '@angular/platform-browser';
 import { PresentationState } from './presentation-state';
-import { ResourcesBook } from './resources-book';
-import { BOOK_NOSCRIPT } from './book-noscript';
+import { RouterLink } from '@angular/router';
+import { PVP_CHAPTERS, PVP_DICTIONARY, PVP_TOPICS } from './pvp-catalog';
 
 const KEY = 'black-talon.compendio.presentation.v1';
 
 @Component({
   selector: 'app-resources',
   host: { '(window:keydown)': 'onKey($event)' },
-  imports: [NgOptimizedImage, ResourcesBook],
+  imports: [NgOptimizedImage, RouterLink],
   templateUrl: './resources.html',
   styleUrls: ['./missions.css', './mission-guide.css', './resources.css'],
 })
@@ -20,9 +19,17 @@ export class Resources {
   private readonly destroyRef = inject(DestroyRef);
   readonly guide = signal(false);
   readonly index = signal(0);
-  // The browser parses noscript as text with scripting enabled. A single innerHTML
-  // binding keeps Angular from hydrating child elements that do not exist there.
-  readonly noScriptContent = inject(DomSanitizer).bypassSecurityTrustHtml(BOOK_NOSCRIPT);
+  readonly dictionary = PVP_DICTIONARY;
+  readonly chapters = PVP_CHAPTERS.map(chapter => ({
+    ...chapter,
+    topics: chapter.orders.map(order => PVP_TOPICS.find(topic => topic.learningOrder === order)!),
+  }));
+  readonly introduction = [
+    { id: 'introduccion-competitivo', title: 'Introducción al competitivo' },
+    { id: 'introduccion-turno', title: 'Un turno, varias preguntas' },
+    { id: 'introduccion-plan', title: 'Un equipo con un plan' },
+    { id: 'introduccion-practica', title: 'Antes de combatir' },
+  ];
   readonly scenes = [
     { title: 'Un lugar para compartir', image: 'academy/bienvenida.svg', speaker: 'Socamaru', text: '¡Bienvenidos al Compendio! Aquí reunimos lo que vamos aprendiendo para compartirlo con el clan, jeje.' },
     { title: 'Una duda', image: 'academy/temas.svg', speaker: 'GhostyFly', text: '¿Y qué podemos encontrar aquí? 😁' },
@@ -37,7 +44,8 @@ export class Resources {
   constructor() {
     this.presentation.active.set(true);
     afterNextRender(() => {
-      try { if (localStorage.getItem(KEY) === 'seen') { this.guide.set(true); } } catch { /* presentation remains available */ }
+      try { if (localStorage.getItem(KEY) === 'seen') { this.guide.set(true); this.presentation.active.set(false); } } catch { /* presentation remains available */ }
+      delete document.documentElement.dataset['compendioSeen'];
     });
     this.destroyRef.onDestroy(() => this.presentation.active.set(false));
   }
@@ -61,6 +69,8 @@ export class Resources {
   finish() {
     try { localStorage.setItem(KEY, 'seen'); } catch { /* retain state in this view */ }
     this.guide.set(true);
+    this.presentation.active.set(false);
+    this.focus('.compendium h1');
   }
   replay() { this.index.set(0); this.guide.set(false); this.presentation.active.set(true); this.focus('.cinematic h2'); }
   onKey(event: KeyboardEvent) {

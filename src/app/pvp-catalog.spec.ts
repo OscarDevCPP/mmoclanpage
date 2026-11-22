@@ -22,7 +22,7 @@ describe('catálogo PvP', () => {
 
   it('sólo señala la introducción como disponible y no da enlaces a pendientes', () => {
     expect(PVP_TOPICS.filter(topic => topic.status === 'available')).toEqual([
-      expect.objectContaining({ title: 'Introducción al competitivo', href: '#introduccion-competitivo' }),
+      expect.objectContaining({ title: 'Introducción al competitivo', href: '/compendio/pvp/fundamentos#introduccion-competitivo' }),
     ]);
     const pending = PVP_TOPICS.filter(topic => topic.status === 'pending');
     expect(pending).toHaveLength(23);

@@ -40,11 +40,18 @@ describe('Navegación del encabezado', () => {
     page.querySelector<HTMLAnchorElement>('a[href="/compendio"]')!.click();
     await fixture.whenStable(); fixture.detectChanges();
     expect(router.url).toBe('/compendio');
-    expect(page.querySelector('header')).toBeNull();
+    expect(page.querySelector('.site-header')).toBeNull();
     expect(page.querySelector('footer')).toBeNull();
     expect(page.querySelector('main')?.classList.contains('immersive-main')).toBe(true);
+    (page.querySelector('[aria-label="Saltar al Compendio"]') as HTMLButtonElement).click();
+    fixture.detectChanges();
+    expect(page.querySelector('.site-header')).toBeTruthy();
+    expect(page.querySelector('footer')).toBeTruthy();
+    await router.navigateByUrl('/compendio/pvp/fundamentos'); await fixture.whenStable(); fixture.detectChanges();
+    expect(page.querySelector('.site-header')).toBeTruthy();
+    expect(page.querySelector('.section-nav a[href="/compendio"]')?.getAttribute('aria-current')).toBe('page');
     await router.navigateByUrl('/'); await fixture.whenStable(); fixture.detectChanges();
-    expect(page.querySelector('header')).toBeTruthy();
+    expect(page.querySelector('.site-header')).toBeTruthy();
     expect(page.querySelector('footer')).toBeTruthy();
   });
 
