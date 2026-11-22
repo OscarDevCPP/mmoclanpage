@@ -31,7 +31,7 @@ describe('Recursos', () => {
     for (let i = 0; i < component.scenes.length; i++) component.step(1);
     harness.detectChanges();
     expect(localStorage.getItem(key)).toBe('seen');
-    for (const text of ['Guías de PvP', 'Guías de PvE', 'Eventos del juego', 'Todavía no hay guías']) expect(harness.routeNativeElement?.textContent).toContain(text);
+    for (const text of ['Guías de PvP', 'Guías de PvE', 'Eventos del juego', 'introducción al competitivo']) expect(harness.routeNativeElement?.textContent).toContain(text);
     expect(harness.routeNativeElement?.querySelectorAll('.resource-list a')).toHaveLength(0);
     (harness.routeNativeElement?.querySelector('.replay') as HTMLButtonElement).click();
     harness.detectChanges(); expect(component.index()).toBe(0); expect(component.guide()).toBe(false);

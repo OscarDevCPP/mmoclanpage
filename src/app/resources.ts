@@ -20,7 +20,7 @@ export class Resources {
   readonly index = signal(0);
   // The browser parses noscript as text with scripting enabled. A single innerHTML
   // binding keeps Angular from hydrating child elements that do not exist there.
-  readonly noScriptContent = '<section><h1>El Compendio</h1><p>Este espacio está en preparación; todavía no hay guías ni recursos publicados.</p><ul><li>Guías de PvP</li><li>Guías de PvE</li><li>Eventos del juego</li></ul><a href="./">Volver al inicio</a></section>';
+  readonly noScriptContent = '<section><h1>El Compendio</h1><p>La introducción al competitivo de PvP está disponible; los demás recursos siguen en preparación.</p><ul><li>Guías de PvP</li><li>Guías de PvE</li><li>Eventos del juego</li></ul><a href="./">Volver al inicio</a></section>';
   readonly scenes = [
     { title: 'Un lugar para compartir', image: 'academy/bienvenida.svg', speaker: 'Socamaru', text: '¡Bienvenidos al Compendio! Aquí reunimos lo que vamos aprendiendo para compartirlo con el clan, jeje.' },
     { title: 'Una duda', image: 'academy/temas.svg', speaker: 'GhostyFly', text: '¿Y qué podemos encontrar aquí? 😁' },
@@ -30,7 +30,7 @@ export class Resources {
     { title: 'Preparar la jugada', image: 'academy/huron.svg', speaker: 'HuronVNLZ', text: 'Yo puedo aportar tanto en PvP como en PvE. Si algo no sale, lo revisamos y probamos otra vez.' },
     { title: 'La revancha', image: 'academy/maykelsito.svg', speaker: 'maykelsito', text: 'Y para PvP, aquí estoy, causa. A ver si la chama se anima a otra partida.' },
     { title: 'Seguimos aprendiendo', image: 'academy/huron.svg', speaker: 'HuronVNLZ', text: 'Me animo. Después vemos quién pide la revancha. 👊' },
-    { title: 'Un espacio abierto', image: 'academy/ensenar.svg', speaker: 'Socamaru', text: 'Hay muchas experiencias que compartir, no solo las nuestras. Por ahora este espacio está preparándose; todavía no hay guías aquí.' },
+    { title: 'Un espacio abierto', image: 'academy/ensenar.svg', speaker: 'Socamaru', text: 'Hay muchas experiencias que compartir, no solo las nuestras. Ya puedes comenzar con la introducción al competitivo; los demás recursos siguen en preparación.' },
   ];
   constructor() {
     this.presentation.active.set(true);

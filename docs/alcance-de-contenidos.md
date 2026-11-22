@@ -41,7 +41,7 @@ Contenidos útiles para los miembros del clan y los jugadores de PokeMMO:
 - Consejos.
 - Otros recursos útiles relacionados con el juego.
 
-Los recursos se incorporarán progresivamente. Sus temas y categorías se concretarán a medida que se prepare el contenido.
+Los recursos se incorporarán progresivamente. El Compendio incluye una introducción al competitivo Singles y un catálogo PvP por niveles y en orden alfabético. Los demás temas y el diccionario inglés están pendientes; PvE y eventos del juego también permanecen en preparación.
 
 ## 4. Recuerdos
 
