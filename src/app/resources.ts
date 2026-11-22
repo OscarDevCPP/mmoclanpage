@@ -1,7 +1,9 @@
 import { afterNextRender, Component, DestroyRef, ElementRef, inject, signal } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
+import { DomSanitizer } from '@angular/platform-browser';
 import { PresentationState } from './presentation-state';
 import { ResourcesBook } from './resources-book';
+import { BOOK_NOSCRIPT } from './book-noscript';
 
 const KEY = 'black-talon.compendio.presentation.v1';
 
@@ -20,7 +22,7 @@ export class Resources {
   readonly index = signal(0);
   // The browser parses noscript as text with scripting enabled. A single innerHTML
   // binding keeps Angular from hydrating child elements that do not exist there.
-  readonly noScriptContent = '<section><h1>El Compendio</h1><p>La introducción al competitivo de PvP está disponible; los demás recursos siguen en preparación.</p><ul><li>Guías de PvP</li><li>Guías de PvE</li><li>Eventos del juego</li></ul><a href="./">Volver al inicio</a></section>';
+  readonly noScriptContent = inject(DomSanitizer).bypassSecurityTrustHtml(BOOK_NOSCRIPT);
   readonly scenes = [
     { title: 'Un lugar para compartir', image: 'academy/bienvenida.svg', speaker: 'Socamaru', text: '¡Bienvenidos al Compendio! Aquí reunimos lo que vamos aprendiendo para compartirlo con el clan, jeje.' },
     { title: 'Una duda', image: 'academy/temas.svg', speaker: 'GhostyFly', text: '¿Y qué podemos encontrar aquí? 😁' },

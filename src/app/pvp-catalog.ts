@@ -9,7 +9,7 @@ export type PvpTopic = {
   readonly sections?: readonly string[];
 } & (PendingTopic | AvailableTopic);
 
-// The order is the learning path; the alphabetical view is derived from these same entries.
+// The order is the learning path shown in the single hierarchical index.
 export const PVP_TOPICS: readonly PvpTopic[] = [
   { learningOrder: 1, level: 'básico', title: 'Introducción al competitivo', status: 'available', href: '#introduccion-competitivo' },
   { learningOrder: 2, level: 'básico', title: 'La ficha de un Pokémon', status: 'pending' },
@@ -45,9 +45,5 @@ export const PVP_TOPICS: readonly PvpTopic[] = [
   { learningOrder: 23, level: 'avanzado', title: 'Análisis de partidas', status: 'pending' },
   { learningOrder: 24, level: 'avanzado', title: 'Lectura del metajuego de PokeMMO', status: 'pending' },
 ];
-
-export const PVP_ALPHABETICAL: readonly PvpTopic[] = [...PVP_TOPICS].sort(
-  (a, b) => a.title.localeCompare(b.title, 'es'),
-);
 
 export const PVP_DICTIONARY = { title: 'Diccionario de términos en inglés', status: 'pending' } as const;

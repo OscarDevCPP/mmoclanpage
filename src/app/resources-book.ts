@@ -1,189 +1,194 @@
-import { afterNextRender, Component, DestroyRef, ElementRef, inject, InjectionToken, Injector, output, signal, viewChild } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { afterNextRender, ChangeDetectorRef, Component, DestroyRef, ElementRef, inject, InjectionToken, output, signal, viewChild } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import type { Book, CreateBookOptions } from '@openpageflip/core';
-import { PVP_TOPICS, PVP_ALPHABETICAL } from './pvp-catalog';
+import { BOOK_GUIDE } from './book-guide';
+import { BOOK_INDEX } from './book-index';
+import { BookMeasure } from './book-measure';
+import { BookRenderer } from './book-renderer';
+import { sectionFragments, type BookLeaf } from './book-fragments';
+import type { BookPosition } from './book-content';
 
 type BookModule = { createBook: (root: HTMLElement, options: CreateBookOptions) => Book };
-export const BOOK_LOADER = new InjectionToken<() => Promise<BookModule>>('resource book loader', {
-  factory: () => () => import('@openpageflip/core'),
-});
+export const BOOK_LOADER = new InjectionToken<() => Promise<BookModule>>('resource book loader', { factory: () => () => import('@openpageflip/core') });
+const DEDICATION = { id: 'dedicatoria', blocks: [{ kind: 'paragraph' as const, id: 'dedicatoria-texto', runs: [{ text: '«Recopilación de conocimientos prácticos con mucho cariño para la comunidad»', marks: [] }] }] };
+const SECTIONS = [DEDICATION, BOOK_INDEX, ...BOOK_GUIDE];
+const STATE_KEY = 'compendioPosition';
 
 @Component({
-  selector: 'app-resources-book',
-  imports: [RouterLink],
-  templateUrl: './resources-book.html',
-  styleUrl: './resources-book.css',
-  host: { '(window:keydown)': 'key($event)', '(window:popstate)': 'restore()', '(window:hashchange)': 'restore()', '(window:resize)': 'updateScrollRegions()' },
+  selector: 'app-resources-book', imports: [RouterLink, BookMeasure, BookRenderer],
+  templateUrl: './resources-book.html', styleUrl: './resources-book.css',
+  host: { '(window:keydown)': 'key($event)', '(window:popstate)': 'restore()', '(window:hashchange)': 'restore()', '(window:resize)': 'schedule()', '(window:orientationchange)': 'schedule()' },
 })
 export class ResourcesBook {
   readonly replay = output<void>();
   readonly ready = signal(false);
   readonly current = signal(0);
-  readonly busy = signal(false);
   readonly pageCount = signal(0);
-  readonly levels = [
-    { id: 'pvp-basico', label: 'Básico', topics: PVP_TOPICS.filter(t => t.level === 'básico') },
-    { id: 'pvp-intermedio', label: 'Intermedio', topics: PVP_TOPICS.filter(t => t.level === 'intermedio') },
-    { id: 'pvp-avanzado', label: 'Avanzado', topics: PVP_TOPICS.filter(t => t.level === 'avanzado') },
-  ];
-  readonly alphabetPages = [
-    { id: 'pvp-alfabetico', label: 'A–F', topics: PVP_ALPHABETICAL.slice(0, 8) },
-    { id: 'pvp-alfabetico-2', label: 'G–M', topics: PVP_ALPHABETICAL.slice(8, 16) },
-    { id: 'pvp-alfabetico-3', label: 'M–W', topics: PVP_ALPHABETICAL.slice(16) },
-  ];
-  private ids: string[] = [];
-  private readonly source = viewChild.required<ElementRef<HTMLElement>>('source');
+  readonly draft = signal<readonly BookLeaf[]>([]);
+  readonly document = SECTIONS.map(section => ({ id: section.id, fragments: sectionFragments(section) }));
   private readonly stage = viewChild.required<ElementRef<HTMLElement>>('stage');
+  private readonly leafSource = viewChild.required<ElementRef<HTMLElement>>('leafSource');
+  private readonly fontProbe = viewChild.required<ElementRef<HTMLElement>>('fontProbe');
+  private readonly measure = viewChild.required(BookMeasure);
+  private readonly detector = inject(ChangeDetectorRef);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly injector = inject(Injector);
   private readonly load = inject(BOOK_LOADER);
-  private readonly router = inject(Router);
-  private readonly route = inject(ActivatedRoute);
-  private book: Book | undefined;
+  private module?: BookModule;
+  private book?: Book;
   private pages: HTMLElement[] = [];
-  private pending: number | undefined;
-  private turningTarget: number | undefined;
-  private scrollObserver: ResizeObserver | undefined;
-  private touch: { x: number; y: number } | undefined;
+  private leaves: readonly BookLeaf[] = [];
+  private observer?: ResizeObserver;
+  private generation = 0;
+  private turnGeneration = 0;
+  private measuring = false;
+  private scheduled = false;
+  private pendingPosition?: BookPosition;
+  private activePosition?: BookPosition;
+  private touch?: { x: number; y: number };
 
   constructor() {
-    // The engine receives clones in an otherwise empty, Angular-unmanaged container.
-    // Angular keeps the original SSR document as a readable failure/no-JS fallback.
     afterNextRender(() => { void this.init(); });
-    this.destroyRef.onDestroy(() => { this.scrollObserver?.disconnect(); this.book?.destroy(); this.book = undefined; });
+    this.destroyRef.onDestroy(() => { this.generation++; this.turnGeneration++; this.observer?.disconnect(); this.book?.destroy(); this.book = undefined; });
   }
   private async init() {
     try {
-      const module = await this.load();
+      this.module = await this.load();
       if (this.destroyRef.destroyed) return;
-      const root = this.stage().nativeElement;
-      const originals = Array.from(this.source().nativeElement.children) as HTMLElement[];
-      this.ids = originals.map(el => el.id);
-      this.pageCount.set(this.ids.length);
-      this.pages = originals.map(el => {
-        const clone = el.cloneNode(true) as HTMLElement;
-        clone.removeAttribute('id');
-        return clone;
-      });
-      root.replaceChildren(...this.pages);
-      const start = this.hashIndex();
-      this.book = module.createBook(root, { width: 440, height: 650, minWidth: 290, maxWidth: 2000, autoSize: false, size: 'stretch', cover: true, startPage: start, flipDuration: 450, click: 'off', hover: false, drag: false, swipe: false });
-      this.current.set(start);
-      this.book.on('changeOrientation', () => {
-        if (this.destroyRef.destroyed || !this.book) return;
-        // The motor normalizes landscape spreads to their first page and reopens
-        // that page on resize. Restore the requested logical page, not book.page.
-        const target = this.turningTarget ?? this.current();
-        const focused = this.stage().nativeElement.ownerDocument.activeElement;
-        const focusedPage = this.pages.findIndex(page => page.contains(focused));
-        this.book.turnTo(target);
-        this.current.set(target);
-        this.refresh();
-        if (focusedPage >= 0 && !this.visible().includes(focusedPage)) {
-          this.pages[target]?.querySelector<HTMLElement>('h2')?.focus({ preventScroll: true });
-        }
-      });
-      this.ready.set(true);
       if (typeof ResizeObserver !== 'undefined') {
-        this.scrollObserver = new ResizeObserver(() => this.updateScrollRegions());
-        this.pages.forEach(page => { const inner = page.querySelector('.page-inner'); if (inner) this.scrollObserver?.observe(inner); });
+        this.observer = new ResizeObserver(() => this.schedule());
+        this.observer.observe(this.stage().nativeElement);
+        this.observer.observe(this.fontProbe().nativeElement);
       }
-      this.refresh();
-      afterNextRender(() => {
-        if (!this.destroyRef.destroyed && this.ready()) this.pages[start]?.querySelector<HTMLElement>('h2')?.focus({ preventScroll: true });
-      }, { injector: this.injector });
+      this.schedule();
+    } catch (error) { if (!this.destroyRef.destroyed) console.error('No se pudo iniciar el libro; el contenido sigue disponible.', error); }
+  }
+  schedule() {
+    if (!this.module || this.destroyRef.destroyed) return;
+    this.generation++;
+    if (this.scheduled || this.measuring) return;
+    this.scheduled = true;
+    requestAnimationFrame(() => { this.scheduled = false; void this.repaginate(); });
+  }
+  private async repaginate() {
+    if (this.measuring || !this.module || this.destroyRef.destroyed) return;
+    this.measuring = true;
+    const generation = this.generation;
+    try {
+      const stage = this.stage().nativeElement;
+      // Match OpenPageFlip's stretch/auto layout and the eight-pixel page inset.
+      const w = stage.clientWidth, h = stage.clientHeight;
+      const pageWidth = Math.min(w < 580 ? w : w / 2, h * 440 / 650);
+      const pageHeight = pageWidth * 650 / 440;
+      const horizontalPadding = w < 580 ? 96 : 16;
+      // Account for subpixel rounding between the measurement box and transformed leaf.
+      const leaves = await this.measure().paginate(SECTIONS, Math.floor(pageWidth - horizontalPadding) - 2, Math.floor(pageHeight - 68) - 2, () => generation !== this.generation || this.destroyRef.destroyed);
+      if (generation !== this.generation || this.destroyRef.destroyed) return;
+      const position = this.pendingPosition ?? this.activePosition ?? this.statePosition() ?? this.positionForHash(location.hash.slice(1));
+      this.draft.set(leaves);
+      this.detector.detectChanges();
+      const elements = Array.from(this.leafSource().nativeElement.children, element => element.cloneNode(true) as HTMLElement);
+      const oldPages = this.pages;
+      const active = stage.ownerDocument.activeElement;
+      const restoreFocus = oldPages.some(page => page.contains(active));
+      const focusInitialAnchor = !this.ready() && !!location.hash && (active === stage.ownerDocument.body || !active);
+      const nextIndex = this.findPosition(position, leaves);
+      this.turnGeneration++;
+      if (!this.book) {
+        stage.replaceChildren(...elements);
+        this.book = this.module.createBook(stage, { width: 440, height: 650, minWidth: 290, maxWidth: 2000, autoSize: false, size: 'stretch', cover: true, startPage: nextIndex, flipDuration: 450, click: 'off', hover: false, drag: false, swipe: false });
+        this.book.on('changeOrientation', () => { if (!this.destroyRef.destroyed) this.schedule(); });
+      } else {
+        this.book.setPages(elements);
+        oldPages.forEach(page => page.remove());
+        this.book.update();
+        this.book.turnTo(nextIndex);
+      }
+      this.pages = elements; this.leaves = leaves; this.pageCount.set(elements.length); this.current.set(nextIndex);
+      this.pendingPosition = undefined; this.activePosition = position; this.ready.set(true); this.refresh();
+      if (restoreFocus || focusInitialAnchor) this.focusPosition(nextIndex, position);
+      this.replacePosition(position);
     } catch (error) {
-      // A partially initialised engine is discarded with its private root; fallback stays visible.
-      if (!this.destroyRef.destroyed) {
-        this.book?.destroy(); this.book = undefined;
-        this.stage().nativeElement.replaceChildren();
-        this.source().nativeElement.querySelector<HTMLElement>('h2')?.focus({ preventScroll: true });
-        console.error('No se pudo iniciar el libro; el contenido sigue disponible.', error);
-      }
+      if (generation === this.generation && !this.destroyRef.destroyed) console.error('No se pudo paginar el libro; se conserva la última edición válida.', error);
+    } finally {
+      this.measuring = false;
+      if (generation !== this.generation && !this.destroyRef.destroyed) this.schedule();
     }
   }
-  private hashIndex(): number { return Math.max(0, this.ids.indexOf(window.location.hash.slice(1))); }
+  private positionAt(index: number): BookPosition {
+    if (index <= 0) return { section: 'cubierta', block: 'cubierta', offset: 0 };
+    return this.leaves[index - 1]?.position ?? { section: 'final', block: 'final', offset: 0 };
+  }
+  private positionForHash(hash: string): BookPosition {
+    if (hash.startsWith('pvp-alfabetico')) hash = 'pvp';
+    if (!hash) hash = 'cubierta';
+    const section = SECTIONS.find(s => s.id === hash || s.blocks.some(block => block.id === hash));
+    return { section: section?.id ?? hash, block: hash, offset: 0 };
+  }
+  private statePosition(): BookPosition | undefined {
+    const value = history.state?.[STATE_KEY];
+    return history.state?.compendioHash === decodeURIComponent(location.hash.slice(1)) && value && typeof value.section === 'string' && typeof value.block === 'string' && Number.isSafeInteger(value.offset) && value.offset >= 0 ? value as BookPosition : undefined;
+  }
+  private findPosition(position: BookPosition, leaves = this.leaves): number {
+    if (position.section === 'cubierta') return 0;
+    if (position.section === 'final') return leaves.length + 1;
+    const found = leaves.findIndex(leaf => leaf.section === position.section && leaf.fragments.some(f => (f.itemId ?? f.block) === position.block && position.offset >= f.start && (position.offset < f.end || f.start === f.end)));
+    if (found >= 0) return found + 1;
+    const section = leaves.findIndex(leaf => leaf.section === position.section);
+    return section < 0 ? 0 : section + 1;
+  }
+  private replacePosition(position: BookPosition) { history.replaceState({ ...history.state, [STATE_KEY]: position, compendioHash: decodeURIComponent(location.hash.slice(1)) }, '', location.href); }
   private visible(): number[] {
     const index = this.current();
-    if (this.book?.orientation !== 'landscape' || index === 0 || index === this.ids.length - 1) return [index];
+    if (this.book?.orientation !== 'landscape' || index === 0 || index === this.pageCount() - 1) return [index];
     const first = index % 2 === 0 ? index - 1 : index;
-    return [first, first + 1];
+    return [first, first + 1].filter(i => i < this.pageCount());
   }
-  updateScrollRegions() {
-    this.pages.forEach(page => {
-      const inner = page.querySelector<HTMLElement>('.page-inner');
-      if (!inner) return;
-      if (inner.clientHeight > 0 && inner.scrollHeight > inner.clientHeight + 1) {
-        inner.tabIndex = 0;
-        inner.setAttribute('role', 'region');
-        inner.setAttribute('aria-label', page.querySelector('h2')?.textContent?.trim() || 'Contenido de la página');
-      } else { inner.removeAttribute('tabindex'); inner.removeAttribute('role'); inner.removeAttribute('aria-label'); }
-    });
+  private refresh() { const shown = this.visible(); this.pages.forEach((page, index) => { page.inert = !shown.includes(index); }); }
+  private focusPosition(index: number, position: BookPosition) {
+    const page = this.pages[index];
+    if (!page) return;
+    const exact = Array.from(page.querySelectorAll<HTMLElement>('[data-logical-block]')).find(node => node.dataset['logicalBlock'] === position.block);
+    (exact ?? page.querySelector<HTMLElement>('h2,h3,p[tabindex],li[tabindex],svg[tabindex]'))?.focus({ preventScroll: true });
   }
-  private refresh() {
-    const shown = this.visible();
-    this.pages.forEach((page, i) => { page.inert = !shown.includes(i); });
-    this.updateScrollRegions();
-  }
-  async go(index: number, history = true) {
+  async go(index: number, addHistory = true, hash?: string, requestedPosition?: BookPosition) {
     if (!this.book) return;
-    index = Math.max(0, Math.min(this.ids.length - 1, index));
-    if (history && this.router.parseUrl(this.router.url).fragment !== this.ids[index]) {
-      void this.router.navigate([], { relativeTo: this.route, fragment: this.ids[index], queryParamsHandling: 'preserve' });
+    index = Math.max(0, Math.min(this.pages.length - 1, index));
+    const position = requestedPosition ?? this.positionAt(index);
+    this.pendingPosition = position;
+    if (addHistory) {
+      const target = hash ?? position.section;
+      // A fragment-only URL resolves against <base href>, which can point to the
+      // site root rather than the current route. Preserve both route and query.
+      history.pushState({ ...history.state, [STATE_KEY]: position, compendioHash: target }, '', `${location.pathname}${location.search}#${encodeURIComponent(target)}`);
     }
-    if (this.busy()) { this.pending = index; return; }
-    this.busy.set(true);
-    this.turningTarget = index;
+    const book = this.book, token = ++this.turnGeneration;
     try {
-      await this.book.flipTo(index);
-      if (this.destroyRef.destroyed || !this.book) return;
-      // A resize can cancel a flip even without changing orientation. Ensure the
-      // requested spread is displayed before updating logical state and inert.
-      this.book.turnTo(index);
-      this.current.set(index); this.refresh();
-      this.pages[index]?.querySelector<HTMLElement>('h2')?.focus({ preventScroll: true });
-    } catch (error) {
-      if (!this.destroyRef.destroyed) {
-        this.book?.destroy(); this.book = undefined;
-        this.stage().nativeElement.replaceChildren();
-        this.ready.set(false); this.pending = undefined;
-        console.error('No se pudo pasar la página; el contenido sigue disponible.', error);
-      }
-    } finally {
-      if (!this.destroyRef.destroyed) {
-        this.turningTarget = undefined;
-        this.busy.set(false);
-        if (this.pending !== undefined) { const next = this.pending; this.pending = undefined; void this.go(next, false); }
-      }
-    }
+      await book.flipTo(index);
+      if (this.destroyRef.destroyed || token !== this.turnGeneration || this.book !== book) return;
+      book.turnTo(index); this.current.set(index); this.pendingPosition = undefined; this.activePosition = position; this.refresh();
+      this.focusPosition(index, position);
+    } catch (error) { if (!this.destroyRef.destroyed) console.error('No se pudo pasar la página.', error); }
   }
-  move(direction: number) {
-    const shown = this.visible();
-    void this.go(direction > 0 ? shown[shown.length - 1] + 1 : shown[0] - 1);
-  }
-  restore() { if (this.ready()) void this.go(this.hashIndex(), false); }
+  goHash(hash: string) { const pos = this.positionForHash(hash); void this.go(this.findPosition(pos), true, hash, pos); }
+  move(direction: number) { const shown = this.visible(); void this.go(direction > 0 ? shown[shown.length - 1] + 1 : shown[0] - 1); }
+  restore() { if (!this.ready()) return; const pos = this.statePosition() ?? this.positionForHash(location.hash.slice(1)); void this.go(this.findPosition(pos), false, undefined, pos); }
   link(event: MouseEvent) {
     const link = (event.target as Element).closest<HTMLAnchorElement>('a[href^="#"]');
     if (!link) return;
-    const index = this.ids.indexOf(link.hash.slice(1));
-    if (index < 0) return;
-    event.preventDefault(); void this.go(index);
+    event.preventDefault(); this.goHash(decodeURIComponent(link.hash.slice(1)));
   }
   key(event: KeyboardEvent) {
     if (!this.ready() || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || event.defaultPrevented) return;
-    const target = event.target as HTMLElement | null;
-    if (target?.closest('a, button, input, textarea, select, [contenteditable]')) return;
+    if ((event.target as HTMLElement | null)?.closest('a,button,input,textarea,select,[contenteditable]')) return;
     if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') { event.preventDefault(); this.move(event.key === 'ArrowRight' ? 1 : -1); }
   }
   touchStart(event: TouchEvent) {
-    const target = event.target as Element;
-    if (event.touches.length !== 1 || target.closest('.page-inner, a, button')) return;
+    if (event.touches.length !== 1 || (event.target as Element).closest('.page-inner,a,button')) return;
     this.touch = { x: event.touches[0].clientX, y: event.touches[0].clientY };
   }
   touchEnd(event: TouchEvent) {
     if (!this.touch || !event.changedTouches.length) return;
-    const dx = event.changedTouches[0].clientX - this.touch.x, dy = event.changedTouches[0].clientY - this.touch.y;
-    this.touch = undefined;
+    const dx = event.changedTouches[0].clientX - this.touch.x, dy = event.changedTouches[0].clientY - this.touch.y; this.touch = undefined;
     if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5 && !window.getSelection()?.toString()) this.move(dx < 0 ? 1 : -1);
   }
   touchCancel() { this.touch = undefined; }

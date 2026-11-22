@@ -31,7 +31,7 @@ describe('Recursos', () => {
     for (let i = 0; i < component.scenes.length; i++) component.step(1);
     harness.detectChanges();
     expect(localStorage.getItem(key)).toBe('seen');
-    for (const text of ['Guías de PvP', 'Guías de PvE', 'Eventos del juego', 'introducción al competitivo']) expect(harness.routeNativeElement?.textContent).toContain(text);
+    for (const text of ['Guías de PvP', 'Guías de PvE', 'Eventos del juego', 'Introducción al competitivo']) expect(harness.routeNativeElement?.textContent).toContain(text);
     expect(harness.routeNativeElement?.querySelectorAll('.resource-list a')).toHaveLength(0);
     (harness.routeNativeElement?.querySelector('.replay') as HTMLButtonElement).click();
     harness.detectChanges(); expect(component.index()).toBe(0); expect(component.guide()).toBe(false);
@@ -54,6 +54,9 @@ describe('Recursos', () => {
     expect(fallback.children).toHaveLength(0);
     const parsed = new DOMParser().parseFromString((fallback.nativeElement as HTMLElement).innerHTML, 'text/html');
     expect(parsed.querySelector('h1')?.textContent).toBe('El Compendio');
+    expect(parsed.body.textContent).toContain('Fuentes conceptuales:');
+    expect(parsed.querySelector('#introduccion-competitivo')).not.toBeNull();
+    expect(parsed.querySelector('a[href="https://www.smogon.com/articles/getting-started"]')).not.toBeNull();
     for (const category of ['Guías de PvP', 'Guías de PvE', 'Eventos del juego']) {
       expect(parsed.body.textContent).toContain(category);
     }
@@ -80,6 +83,12 @@ describe('integración del libro de Recursos', () => {
   afterEach(() => { localStorage.clear(); vi.restoreAllMocks(); });
   it('repite la escena real, destruye y vuelve a crear el motor', async () => {
     const { BOOK_LOADER } = await import('./resources-book');
+    const { BookMeasure } = await import('./book-measure');
+    const { sectionFragments } = await import('./book-fragments');
+    vi.spyOn(BookMeasure.prototype, 'paginate').mockImplementation(async sections => sections.map(section => {
+      const fragments = sectionFragments(section);
+      return { section: section.id, fragments, position: { section: section.id, block: fragments[0].block, offset: 0 } };
+    }));
     const engines: { destroy: ReturnType<typeof vi.fn> }[] = [];
     const createBook = vi.fn(() => {
       const engine = { orientation: 'portrait', on: vi.fn(() => () => {}), flipTo: vi.fn(async () => true), destroy: vi.fn() };
@@ -89,7 +98,7 @@ describe('integración del libro de Recursos', () => {
     TestBed.configureTestingModule({ providers: [provideRouter(routes), { provide: BOOK_LOADER, useValue: async () => ({ createBook }) }] });
     const harness = await RouterTestingHarness.create();
     const component = await harness.navigateByUrl('/compendio', Resources);
-    await harness.fixture.whenStable(); harness.detectChanges();
+    await harness.fixture.whenStable(); await new Promise(resolve => setTimeout(resolve, 80)); harness.detectChanges();
     expect(component.guide()).toBe(true);
     expect(createBook).toHaveBeenCalledTimes(1);
     const button = harness.routeNativeElement?.querySelector<HTMLButtonElement>('.replay');
@@ -97,7 +106,7 @@ describe('integración del libro de Recursos', () => {
     expect(component.guide()).toBe(false);
     expect(harness.routeNativeElement?.textContent).toContain('Escena 1/9');
     expect(engines[0].destroy).toHaveBeenCalledOnce();
-    component.finish(); harness.detectChanges(); await harness.fixture.whenStable(); harness.detectChanges();
+    component.finish(); harness.detectChanges(); await harness.fixture.whenStable(); await new Promise(resolve => setTimeout(resolve, 80)); harness.detectChanges();
     expect(createBook).toHaveBeenCalledTimes(2);
     await harness.navigateByUrl('/');
     expect(engines[1].destroy).toHaveBeenCalledOnce();

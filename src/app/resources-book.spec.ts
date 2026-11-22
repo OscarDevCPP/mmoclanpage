@@ -1,174 +1,205 @@
 import { TestBed } from '@angular/core/testing';
-import { provideRouter, Router } from '@angular/router';
+import { provideRouter } from '@angular/router';
 import type { Book } from '@openpageflip/core';
 import { BOOK_LOADER, ResourcesBook } from './resources-book';
+import { BookMeasure } from './book-measure';
+import { sectionFragments } from './book-fragments';
 
 function mockBook(): Book {
   return {
-    page: 0, pageCount: 6, orientation: 'portrait', state: 'read', rect: { left: 0, top: 0, width: 0, height: 0, pageWidth: 0 },
+    page: 0, pageCount: 7, orientation: 'portrait', state: 'read', rect: { left: 0, top: 0, width: 0, height: 0, pageWidth: 0 },
     on: vi.fn(() => () => {}), off: vi.fn(), flipTo: vi.fn(async () => true),
     flipNext: vi.fn(async () => true), flipPrev: vi.fn(async () => true),
     turnTo: vi.fn(), turnNext: vi.fn(), turnPrev: vi.fn(), setPages: vi.fn(), update: vi.fn(), redraw: vi.fn(), destroy: vi.fn(),
   };
 }
+function fakeLayout() {
+  vi.spyOn(BookMeasure.prototype, 'paginate').mockImplementation(async sections => sections.map(section => {
+    const fragments = sectionFragments(section);
+    return { section: section.id, fragments, position: { section: section.id, block: fragments[0].block, offset: 0 } };
+  }));
+}
+async function settle() { await new Promise(resolve => setTimeout(resolve, 80)); }
+
 describe('Libro de Recursos', () => {
-  afterEach(() => { history.replaceState(null, '', '/'); vi.restoreAllMocks(); vi.unstubAllGlobals(); });
-  it('muestra la portada dedicada sin añadir paradas de teclado a páginas estáticas', async () => {
-    const book = mockBook();
-    TestBed.configureTestingModule({ providers: [provideRouter([]), { provide: BOOK_LOADER, useValue: async () => ({ createBook: () => book }) }] });
-    const fixture = TestBed.createComponent(ResourcesBook); await fixture.whenStable(); fixture.detectChanges();
-    const host = fixture.nativeElement as HTMLElement;
-    for (const root of ['.book-source', '.book-stage']) {
-      const cover = host.querySelector(`${root} > .cover`)!;
-      expect(host.querySelectorAll(`${root} .folio`).length).toBeGreaterThan(4);
-      expect(host.querySelector(`${root} > section:last-child`)?.textContent).toContain('El Compendio en preparación');
-      expect(cover.querySelector('h2')?.textContent).toBe('El Compendio');
-      expect(cover.textContent).toContain('«Recopilación de conocimientos prácticos con mucho cariño para la comunidad»');
-      expect(host.querySelectorAll(`${root} .page-inner[tabindex]`)).toHaveLength(0);
-      expect(host.querySelectorAll(`${root} h2[tabindex="-1"]`)).toHaveLength(16);
-      expect(host.querySelectorAll(`${root} a[href]`).length).toBeGreaterThan(0);
-    }
-    expect(host.querySelector('.replay')?.getAttribute('aria-label')).toBe('Volver a ver la presentación del Compendio');
-    expect(host.querySelector('.replay')?.getAttribute('title')).toBe('Volver a ver la presentación del Compendio');
-    fixture.destroy();
-  });
-  it('conserva el documento original, inicia sobre clones y destruye el motor', async () => {
-    const book = mockBook(); const createBook = vi.fn(() => book);
+  afterEach(() => { document.documentElement.style.fontSize = ''; history.replaceState(null, '', '/'); vi.restoreAllMocks(); vi.unstubAllGlobals(); });
+  it('genera hojas en clones privados a partir del mismo documento y destruye el motor', async () => {
+    fakeLayout(); const book = mockBook(); const createBook = vi.fn(() => book);
     TestBed.configureTestingModule({ providers: [provideRouter([]), { provide: BOOK_LOADER, useValue: async () => ({ createBook }) }] });
-    const fixture = TestBed.createComponent(ResourcesBook); await fixture.whenStable(); fixture.detectChanges();
+    const fixture = TestBed.createComponent(ResourcesBook); fixture.detectChanges(); await settle(); fixture.detectChanges();
     const host = fixture.nativeElement as HTMLElement;
     expect(createBook).toHaveBeenCalledOnce();
-    expect(host.querySelectorAll('.book-source > section')).toHaveLength(16);
-    expect(host.querySelectorAll('.book-stage > section')).toHaveLength(16);
     expect(host.querySelector('.book-source')?.hasAttribute('hidden')).toBe(true);
-    expect(host.textContent).toContain('Guías de PvP');
-    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
-    await fixture.componentInstance.go(2); expect(book.flipTo).toHaveBeenCalledWith(2);
-    expect(navigate).toHaveBeenCalledWith([], expect.objectContaining({ fragment: 'pvp' })); expect(fixture.componentInstance.current()).toBe(2);
-    let replayed = false; fixture.componentInstance.replay.subscribe(() => { replayed = true; });
-    (host.querySelector('.replay') as HTMLButtonElement).click(); expect(replayed).toBe(true);
+    expect(host.querySelectorAll('.book-stage > .page')).toHaveLength(8);
+    expect(host.querySelectorAll('.book-stage [id]')).toHaveLength(0);
+    expect(host.querySelector('.book-stage')?.textContent).toContain('Fuentes conceptuales');
+    expect(host.querySelectorAll('.book-stage li a[href="#introduccion-competitivo"]')).toHaveLength(1);
+    expect(host.querySelector('.book-stage')?.textContent).not.toContain('Catálogo alfabético');
     fixture.destroy(); expect(book.destroy).toHaveBeenCalledOnce();
   });
-  it.each([[2, 'pvp'], [14, 'eventos']] as const)('conserva #%s al cambiar en vivo entre pliego y retrato con el motor real', async (target, hash) => {
+  it('monta clones y repagina con el motor real', async () => {
+    fakeLayout();
     vi.stubGlobal('matchMedia', () => ({ matches: true, addEventListener() {}, removeEventListener() {} }));
     vi.stubGlobal('ResizeObserver', class { observe() {} disconnect() {} });
-    let width = 1000; let height = 700;
-    let book!: Book;
     const real = await import('@openpageflip/core');
+    let book!: Book;
     const createBook = (root: HTMLElement, options: Parameters<typeof real.createBook>[1]) => {
-      Object.defineProperties(root, { clientWidth: { get: () => width }, clientHeight: { get: () => height } });
-      book = real.createBook(root, options);
-      return book;
+      Object.defineProperties(root, { clientWidth: { value: 1000 }, clientHeight: { value: 700 } });
+      return book = real.createBook(root, options);
     };
-    history.replaceState(null, '', `/#${hash}`);
     TestBed.configureTestingModule({ providers: [provideRouter([]), { provide: BOOK_LOADER, useValue: async () => ({ createBook }) }] });
-    const fixture = TestBed.createComponent(ResourcesBook); await fixture.whenStable(); fixture.detectChanges();
-    const pages = Array.from((fixture.nativeElement as HTMLElement).querySelectorAll<HTMLElement>('.book-stage > section'));
-    const assertShown = (visible: number[]) => {
-      pages.forEach((page, index) => {
-        expect(page.style.display === 'block', `display ${index}`).toBe(visible.includes(index));
-        expect(page.inert, `inert ${index}`).toBe(!visible.includes(index));
-      });
-      expect(location.hash).toBe(`#${hash}`);
-      expect(fixture.componentInstance.current()).toBe(target);
-    };
-    expect(book.orientation).toBe('landscape');
-    expect(book.page).toBe(target - 1);
-    assertShown([target - 1, target]);
-    pages[target].querySelector<HTMLElement>('h2')?.focus();
-    width = 390; height = 844; book.update();
-    expect(book.orientation).toBe('portrait'); expect(book.page).toBe(target);
-    assertShown([target]);
-    expect(document.activeElement).toBe(pages[target].querySelector('h2'));
-    width = 1000; height = 700; book.update();
-    expect(book.orientation).toBe('landscape'); expect(book.page).toBe(target - 1);
-    assertShown([target - 1, target]);
-    pages[target - 1].querySelector<HTMLElement>('h2')?.focus();
-    width = 390; height = 844; book.update();
-    expect(book.page).toBe(target); assertShown([target]);
-    expect(document.activeElement).toBe(pages[target].querySelector('h2'));
+    const fixture = TestBed.createComponent(ResourcesBook); fixture.detectChanges(); await settle();
+    expect(fixture.componentInstance.ready()).toBe(true);
+    expect(book.pageCount).toBe(8);
+    fixture.componentInstance.schedule(); await settle();
+    expect(book.pageCount).toBe(8);
+    expect((fixture.nativeElement as HTMLElement).querySelectorAll('.book-stage > .page')).toHaveLength(8);
     fixture.destroy();
   });
-  it('navega a la guía real, conserva los pendientes sin enlaces y limita el final', async () => {
+  it.each(['pvp-basico', 'pvp-avanzado'])('conserva el destino exacto %s cuando cambia la distribución', async target => {
+    let enlarged = false;
+    vi.spyOn(BookMeasure.prototype, 'paginate').mockImplementation(async sections => sections.flatMap(section => {
+      const fragments = sectionFragments(section);
+      const cut = section.id === 'indice' && enlarged ? fragments.findIndex(fragment => fragment.block === target) : -1;
+      const parts = cut > 0 ? [fragments.slice(0, cut), fragments.slice(cut)] : [fragments];
+      return parts.map(part => ({ section: section.id, fragments: part, position: { section: section.id, block: part[0].itemId ?? part[0].block, offset: part[0].start } }));
+    }));
     const book = mockBook();
-    history.replaceState(null, '', '/#introduccion-competitivo');
-    TestBed.configureTestingModule({ providers: [provideRouter([]), { provide: BOOK_LOADER, useValue: async () => ({ createBook: () => book }) }] });
-    const fixture = TestBed.createComponent(ResourcesBook); await fixture.whenStable();
+    const createBook = (root: HTMLElement) => { vi.mocked(book.setPages).mockImplementation(pages => { root.append(...Array.from(pages)); }); return book; };
+    history.replaceState(null, '', '/compendio#indice');
+    TestBed.configureTestingModule({ providers: [provideRouter([]), { provide: BOOK_LOADER, useValue: async () => ({ createBook }) }] });
+    const fixture = TestBed.createComponent(ResourcesBook); fixture.detectChanges(); await settle();
     const host = fixture.nativeElement as HTMLElement;
-    const originals = Array.from(host.querySelectorAll<HTMLElement>('.book-source > section'));
-    const intro = originals.findIndex(page => page.id === 'introduccion-competitivo');
-    expect(fixture.componentInstance.current()).toBe(intro);
-    expect(host.querySelectorAll('.book-stage svg[role="img"]')).toHaveLength(2);
-    expect(host.querySelectorAll('.book-stage [id]')).toHaveLength(0);
-    expect(host.querySelectorAll('.book-source a[href="#introduccion-competitivo"]')).toHaveLength(2);
-    expect(originals.find(page => page.id === 'pvp-basico')?.querySelectorAll('li a')).toHaveLength(1);
-    await fixture.componentInstance.go(999, false);
-    expect(fixture.componentInstance.current()).toBe(originals.length - 1);
-    await fixture.componentInstance.go(-1, false);
-    expect(fixture.componentInstance.current()).toBe(0);
+    host.querySelector<HTMLAnchorElement>(`.book-stage a[href="#${target}"]`)!.click(); await Promise.resolve();
+    expect(history.state.compendioPosition).toEqual({ section: 'indice', block: target, offset: 0 });
+    expect((document.activeElement as HTMLElement).dataset['logicalBlock']).toBe(target);
+    expect(fixture.componentInstance.current()).toBe(2);
+    enlarged = true; document.documentElement.style.fontSize = '200%'; fixture.componentInstance.schedule(); await settle();
+    const pages = host.querySelectorAll<HTMLElement>('.book-stage > .page');
+    expect(fixture.componentInstance.current()).toBe(3);
+    expect(pages[3].inert).toBe(false);
+    expect((document.activeElement as HTMLElement).dataset['logicalBlock']).toBe(target);
+    expect(history.state.compendioPosition).toEqual({ section: 'indice', block: target, offset: 0 });
+    const home = host.querySelector<HTMLElement>('.book-tools .home')!; home.focus();
+    fixture.componentInstance.schedule(); await settle(); expect(document.activeElement).toBe(home);
+    document.documentElement.style.fontSize = ''; fixture.destroy();
+  });
+  it.each(['pvp-basico', 'pvp-avanzado'])('restaura directamente el bloque lógico %s', async target => {
+    fakeLayout(); const book = mockBook(); history.replaceState(null, '', `/compendio#${target}`);
+    TestBed.configureTestingModule({ providers: [provideRouter([]), { provide: BOOK_LOADER, useValue: async () => ({ createBook: () => book }) }] });
+    const fixture = TestBed.createComponent(ResourcesBook); fixture.detectChanges(); await settle();
+    expect(history.state.compendioPosition).toEqual({ section: 'indice', block: target, offset: 0 });
+    expect((document.activeElement as HTMLElement).dataset['logicalBlock']).toBe(target);
+    fixture.componentInstance.restore(); await Promise.resolve();
+    expect((document.activeElement as HTMLElement).dataset['logicalBlock']).toBe(target);
     fixture.destroy();
   });
-  it('habilita una región de teclado solo cuando la hoja desborda', async () => {
+  it('restaura una posición de rama exacta desde una entrada con el mismo hash', async () => {
+    fakeLayout(); const book = mockBook(); history.replaceState(null, '', '/compendio#indice');
+    TestBed.configureTestingModule({ providers: [provideRouter([]), { provide: BOOK_LOADER, useValue: async () => ({ createBook: () => book }) }] });
+    const fixture = TestBed.createComponent(ResourcesBook); fixture.detectChanges(); await settle();
+    const position = { section: 'indice', block: 'pvp-avanzado', offset: 0 };
+    history.replaceState({ compendioPosition: position, compendioHash: 'indice' }, '', '/compendio#indice');
+    fixture.componentInstance.restore(); await Promise.resolve();
+    expect((document.activeElement as HTMLElement).dataset['logicalBlock']).toBe('pvp-avanzado');
+    expect(history.state.compendioPosition).toEqual(position);
+    fixture.destroy();
+  });
+  it('guarda posiciones por giro incluso cuando el hash se repite', async () => {
+    vi.spyOn(BookMeasure.prototype, 'paginate').mockImplementation(async sections => sections.flatMap(section => {
+      const fragments = sectionFragments(section);
+      const parts = section.id === 'indice' ? [fragments.slice(0, 2), fragments.slice(2)] : [fragments];
+      return parts.map(part => ({ section: section.id, fragments: part, position: { section: section.id, block: part[0].itemId ?? part[0].block, offset: part[0].start } }));
+    }));
     const book = mockBook();
     TestBed.configureTestingModule({ providers: [provideRouter([]), { provide: BOOK_LOADER, useValue: async () => ({ createBook: () => book }) }] });
-    const fixture = TestBed.createComponent(ResourcesBook); await fixture.whenStable();
-    const inner = (fixture.nativeElement as HTMLElement).querySelector<HTMLElement>('.book-stage .page-inner')!;
-    Object.defineProperties(inner, { clientHeight: { configurable: true, value: 100 }, scrollHeight: { configurable: true, value: 200 } });
-    fixture.componentInstance.updateScrollRegions();
-    expect(inner.tabIndex).toBe(0); expect(inner.getAttribute('role')).toBe('region');
-    expect(inner.getAttribute('aria-label')).toBe('Índice');
-    Object.defineProperty(inner, 'scrollHeight', { configurable: true, value: 100 });
-    fixture.componentInstance.updateScrollRegions();
-    expect(inner.hasAttribute('tabindex')).toBe(false); expect(inner.hasAttribute('role')).toBe(false);
+    const fixture = TestBed.createComponent(ResourcesBook); fixture.detectChanges(); await settle();
+    await fixture.componentInstance.go(2); const first = history.state.compendioPosition;
+    await fixture.componentInstance.go(3); expect(history.state.compendioPosition).not.toEqual(first);
+    expect(location.hash).toBe('#indice'); expect(book.turnTo).toHaveBeenCalledWith(3);
+    history.replaceState({ compendioPosition: first, compendioHash: 'indice' }, '', '#indice'); fixture.componentInstance.restore(); await Promise.resolve();
+    expect(book.turnTo).toHaveBeenCalledWith(2);
     fixture.destroy();
   });
-  it('no inicia el motor si la importación llega tras destruir la vista', async () => {
-    let resolve!: (module: { createBook: () => Book }) => void;
+  it.each([
+    ['/compendio', '/', '?vista=guia'],
+    ['/mmoclanpage/compendio', '/mmoclanpage/', '?vista=guia'],
+  ])('mantiene la ruta %s y la consulta con base %s al girar', async (path, base, search) => {
+    fakeLayout(); const book = mockBook();
+    const baseElement = document.createElement('base'); baseElement.href = base; document.head.prepend(baseElement);
+    history.replaceState(null, '', `${path}${search}#indice`);
+    try {
+      TestBed.configureTestingModule({ providers: [provideRouter([]), { provide: BOOK_LOADER, useValue: async () => ({ createBook: () => book }) }] });
+      const fixture = TestBed.createComponent(ResourcesBook); fixture.detectChanges(); await settle();
+      await fixture.componentInstance.go(2);
+      expect(location.pathname).toBe(path); expect(location.search).toBe(search); expect(location.hash).toBe('#indice');
+      expect(history.state.compendioPosition.section).toBe('indice');
+      fixture.componentInstance.restore(); await Promise.resolve(); expect(book.turnTo).toHaveBeenCalledWith(2);
+      fixture.destroy();
+    } finally { baseElement.remove(); }
+  });
+  it('descarta una medición antigua y conserva la edición hasta obtener la nueva', async () => {
+    fakeLayout(); const book = mockBook();
+    TestBed.configureTestingModule({ providers: [provideRouter([]), { provide: BOOK_LOADER, useValue: async () => ({ createBook: () => book }) }] });
+    const fixture = TestBed.createComponent(ResourcesBook); fixture.detectChanges(); await settle();
+    let resolve!: (value: Awaited<ReturnType<BookMeasure['paginate']>>) => void;
+    const old = new Promise<Awaited<ReturnType<BookMeasure['paginate']>>>(r => { resolve = r; });
+    const measurement = vi.mocked(BookMeasure.prototype.paginate);
+    const original = measurement.getMockImplementation()!;
+    measurement.mockImplementationOnce(() => old);
+    fixture.componentInstance.schedule(); await settle();
+    fixture.componentInstance.schedule();
+    expect(book.setPages).not.toHaveBeenCalled();
+    resolve(await original([], 1, 1)); await settle();
+    expect(book.setPages).toHaveBeenCalledOnce();
+    expect(fixture.componentInstance.pageCount()).toBe(8);
+    fixture.destroy();
+  });
+  it('redirige un alias alfabético a la rama PvP sin renderizar el catálogo', async () => {
+    fakeLayout(); const book = mockBook(); history.replaceState(null, '', '/#pvp-alfabetico-2');
+    const createBook = vi.fn(() => book);
+    TestBed.configureTestingModule({ providers: [provideRouter([]), { provide: BOOK_LOADER, useValue: async () => ({ createBook }) }] });
+    const fixture = TestBed.createComponent(ResourcesBook); fixture.detectChanges(); await settle();
+    expect(createBook).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ startPage: 2 }));
+    expect((fixture.nativeElement as HTMLElement).querySelector('.book-stage')?.textContent).not.toContain('Catálogo alfabético');
+    fixture.destroy();
+  });
+  it('ignora la resolución de un giro al destruir la vista', async () => {
+    fakeLayout(); const book = mockBook();
+    let finish!: (value: boolean) => void;
+    vi.mocked(book.flipTo).mockReturnValue(new Promise<boolean>(resolve => { finish = resolve; }));
+    TestBed.configureTestingModule({ providers: [provideRouter([]), { provide: BOOK_LOADER, useValue: async () => ({ createBook: () => book }) }] });
+    const fixture = TestBed.createComponent(ResourcesBook); fixture.detectChanges(); await settle();
+    const turn = fixture.componentInstance.go(3, false); fixture.destroy(); finish(true); await turn;
+    expect(book.turnTo).not.toHaveBeenCalled(); expect(book.destroy).toHaveBeenCalledOnce();
+  });
+  it('conserva posición y foco durante una repaginación', async () => {
+    fakeLayout(); const book = mockBook();
+    const createBook = (root: HTMLElement) => { vi.mocked(book.setPages).mockImplementation(pages => { root.append(...Array.from(pages)); }); return book; };
+    TestBed.configureTestingModule({ providers: [provideRouter([]), { provide: BOOK_LOADER, useValue: async () => ({ createBook }) }] });
+    const fixture = TestBed.createComponent(ResourcesBook); fixture.detectChanges(); await settle();
+    await fixture.componentInstance.go(3, false);
+    const old = (fixture.nativeElement as HTMLElement).querySelectorAll<HTMLElement>('.book-stage > .page')[3];
+    old.querySelector<HTMLElement>('h2')?.focus();
+    fixture.componentInstance.schedule(); await settle();
+    const replacement = (fixture.nativeElement as HTMLElement).querySelectorAll<HTMLElement>('.book-stage > .page')[3];
+    expect(fixture.componentInstance.current()).toBe(3);
+    expect(replacement.contains(document.activeElement)).toBe(true);
+    fixture.destroy();
+  });
+  it('no inicia el motor si la importación llega después de destruir la vista', async () => {
+    let resolve!: (value: { createBook: () => Book }) => void;
     const pending = new Promise<{ createBook: () => Book }>(r => { resolve = r; });
     const createBook = vi.fn(mockBook);
     TestBed.configureTestingModule({ providers: [provideRouter([]), { provide: BOOK_LOADER, useValue: () => pending }] });
-    const fixture = TestBed.createComponent(ResourcesBook); fixture.detectChanges();
-    await new Promise(r => setTimeout(r, 0)); fixture.destroy(); resolve({ createBook }); await pending; await Promise.resolve();
-    expect(createBook).not.toHaveBeenCalled();
+    const fixture = TestBed.createComponent(ResourcesBook); fixture.detectChanges(); await settle(); fixture.destroy();
+    resolve({ createBook }); await pending; await Promise.resolve(); expect(createBook).not.toHaveBeenCalled();
   });
-  it('mantiene el destino de un giro interrumpido por cambio de orientación y procesa el siguiente', async () => {
-    const book = mockBook();
-    let orientationChanged!: () => void;
-    vi.mocked(book.on).mockImplementation((name, listener) => {
-      if (name === 'changeOrientation') orientationChanged = () => listener({ orientation: 'portrait' } as never);
-      return () => {};
-    });
-    let finish!: (value: boolean) => void;
-    vi.mocked(book.flipTo).mockReturnValueOnce(new Promise<boolean>(r => { finish = r; }));
-    TestBed.configureTestingModule({ providers: [provideRouter([]), { provide: BOOK_LOADER, useValue: async () => ({ createBook: () => book }) }] });
-    const fixture = TestBed.createComponent(ResourcesBook); await fixture.whenStable();
-    const first = fixture.componentInstance.go(2, false);
-    void fixture.componentInstance.go(4, false);
-    orientationChanged();
-    expect(book.turnTo).toHaveBeenCalledWith(2);
-    expect(fixture.componentInstance.current()).toBe(2);
-    finish(false); await first; await Promise.resolve();
-    expect(book.turnTo).toHaveBeenCalledWith(4);
-    expect(fixture.componentInstance.current()).toBe(4);
-    fixture.destroy(); expect(book.destroy).toHaveBeenCalledOnce();
-  });
-  it('ignora la resolución de un giro después de destruir la vista', async () => {
-    const book = mockBook();
-    let resolve!: (value: boolean) => void;
-    vi.mocked(book.flipTo).mockReturnValue(new Promise<boolean>(r => { resolve = r; }));
-    TestBed.configureTestingModule({ providers: [provideRouter([]), { provide: BOOK_LOADER, useValue: async () => ({ createBook: () => book }) }] });
-    const fixture = TestBed.createComponent(ResourcesBook); await fixture.whenStable();
-    const turning = fixture.componentInstance.go(2, false);
-    fixture.destroy(); resolve(true); await turning;
-    expect(book.destroy).toHaveBeenCalledOnce();
-    expect(fixture.componentInstance.current()).toBe(0);
-  });
-  it('mantiene contenido y salida visibles si falla la importación', async () => {
+  it('conserva el documento y enlaces de salida si falla la importación', async () => {
     vi.spyOn(console, 'error').mockImplementation(() => {});
     TestBed.configureTestingModule({ providers: [provideRouter([]), { provide: BOOK_LOADER, useValue: async () => { throw Error('offline'); } }] });
-    const fixture = TestBed.createComponent(ResourcesBook); await fixture.whenStable(); fixture.detectChanges();
+    const fixture = TestBed.createComponent(ResourcesBook); fixture.detectChanges(); await settle(); fixture.detectChanges();
     const host = fixture.nativeElement as HTMLElement;
-    expect(fixture.componentInstance.ready()).toBe(false);
     expect(host.querySelector('.book-source')?.hasAttribute('hidden')).toBe(false);
     expect(host.textContent).toContain('Eventos del juego');
     expect(host.querySelector('.fallback-home')).not.toBeNull();

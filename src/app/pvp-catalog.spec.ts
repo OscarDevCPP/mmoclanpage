@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { PVP_ALPHABETICAL, PVP_DICTIONARY, PVP_TOPICS } from './pvp-catalog';
+import { PVP_DICTIONARY, PVP_TOPICS } from './pvp-catalog';
 
 describe('catálogo PvP', () => {
   it('contiene los 24 títulos únicos en el orden aprobado de aprendizaje', () => {
@@ -29,15 +29,6 @@ describe('catálogo PvP', () => {
     pending.forEach(topic => expect(topic).not.toHaveProperty('href'));
     expect(PVP_DICTIONARY.status).toBe('pending');
     expect(PVP_DICTIONARY).not.toHaveProperty('href');
-  });
-
-  it('deriva el catálogo alfabético español de las mismas entradas', () => {
-    expect(PVP_ALPHABETICAL).toHaveLength(24);
-    expect(new Set(PVP_ALPHABETICAL)).toEqual(new Set(PVP_TOPICS));
-    for (let i = 1; i < PVP_ALPHABETICAL.length; i++) {
-      expect(PVP_ALPHABETICAL[i - 1].title.localeCompare(PVP_ALPHABETICAL[i].title, 'es')).toBeLessThanOrEqual(0);
-    }
-    expect(PVP_TOPICS[0].title).toBe('Introducción al competitivo');
   });
 
   it('conserva los ocho apartados previstos de crianza sin publicarlos', () => {
