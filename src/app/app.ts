@@ -49,7 +49,7 @@ export class App {
       const path = tree.root.toString();
       const pathChanged = path !== previousPath;
       previousPath = path;
-      if (tree.fragment) {
+      if (tree.fragment && path !== 'recursos') {
         // Run after all synchronous Scroll subscribers, including router restoration.
         const fragment = tree.fragment;
         const sequence = navigationSequence;
@@ -59,7 +59,7 @@ export class App {
           scroller.scrollToAnchor(fragment);
           this.document.getElementById(fragment)?.focus({ preventScroll: true });
         });
-      } else if (pathChanged) {
+      } else if (!tree.fragment && pathChanged) {
         this.document.getElementById('contenido')?.focus({ preventScroll: true });
       }
     });

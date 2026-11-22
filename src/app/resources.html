@@ -10,8 +10,6 @@
     </div>
   </div>
 } @else {
-  <nav aria-label="Navegación"><a routerLink="/">Inicio</a> / Recursos</nav>
-  <header class="intro"><h1 tabindex="-1">Recursos</h1><p>Un espacio para reunir guías y experiencias de PokeMMO.</p></header>
-  <button class="icon-button replay" type="button" aria-label="Volver a ver la presentación" title="Volver a ver la presentación" data-tooltip="Volver a ver la presentación" (click)="replay()"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="8" width="13" height="11" rx="1"/><path d="M16 11l5-3v11l-5-3z"/><circle cx="7" cy="5" r="2"/><circle cx="13" cy="5" r="2"/></svg></button>
-  <section class="resource-list" aria-labelledby="categorias"><h2 id="categorias">Categorías</h2><p>Este espacio está en preparación; todavía no hay guías ni recursos publicados aquí.</p><ul><li>Guías de PvP</li><li>Guías de PvE</li><li>Eventos del juego</li></ul></section>
+  <app-resources-book (replay)="replay()" />
 }
+<noscript [innerHTML]="noScriptContent"></noscript>

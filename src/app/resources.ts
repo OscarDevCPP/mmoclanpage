@@ -1,14 +1,14 @@
 import { afterNextRender, Component, DestroyRef, ElementRef, inject, signal } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import { PresentationState } from './presentation-state';
+import { ResourcesBook } from './resources-book';
 
 const KEY = 'black-talon.resources.presentation.v1';
 
 @Component({
   selector: 'app-resources',
   host: { '(window:keydown)': 'onKey($event)' },
-  imports: [RouterLink, NgOptimizedImage],
+  imports: [NgOptimizedImage, ResourcesBook],
   templateUrl: './resources.html',
   styleUrls: ['./missions.css', './mission-guide.css', './resources.css'],
 })
@@ -18,6 +18,9 @@ export class Resources {
   private readonly destroyRef = inject(DestroyRef);
   readonly guide = signal(false);
   readonly index = signal(0);
+  // The browser parses noscript as text with scripting enabled. A single innerHTML
+  // binding keeps Angular from hydrating child elements that do not exist there.
+  readonly noScriptContent = '<section><h1>Recursos</h1><p>Este espacio está en preparación; todavía no hay guías ni recursos publicados.</p><ul><li>Guías de PvP</li><li>Guías de PvE</li><li>Eventos del juego</li></ul><a href="./">Volver al inicio</a></section>';
   readonly scenes = [
     { title: 'Un lugar para compartir', image: 'academy/bienvenida.svg', speaker: 'Socamaru', text: '¡Bienvenidos a Recursos! Aquí reunimos lo que vamos aprendiendo para compartirlo con el clan, jeje.' },
     { title: 'Una duda', image: 'academy/temas.svg', speaker: 'GhostyFly', text: '¿Y qué podemos encontrar aquí? 😁' },
@@ -32,7 +35,7 @@ export class Resources {
   constructor() {
     this.presentation.active.set(true);
     afterNextRender(() => {
-      try { if (localStorage.getItem(KEY) === 'seen') { this.guide.set(true); this.presentation.active.set(false); } } catch { /* presentation remains available */ }
+      try { if (localStorage.getItem(KEY) === 'seen') { this.guide.set(true); } } catch { /* presentation remains available */ }
     });
     this.destroyRef.onDestroy(() => this.presentation.active.set(false));
   }
@@ -55,7 +58,7 @@ export class Resources {
   }
   finish() {
     try { localStorage.setItem(KEY, 'seen'); } catch { /* retain state in this view */ }
-    this.guide.set(true); this.presentation.active.set(false); this.focus('.intro h1');
+    this.guide.set(true);
   }
   replay() { this.index.set(0); this.guide.set(false); this.presentation.active.set(true); this.focus('.cinematic h2'); }
   onKey(event: KeyboardEvent) {

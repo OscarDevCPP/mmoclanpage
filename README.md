@@ -22,6 +22,12 @@ La compilación estática se genera en `dist/black-talon/browser/`: contiene `in
 
 En las cinco presentaciones, el HTML inicial contiene la primera escena. Tras la hidratación, una visita anterior o un fragmento de guía puede mostrar la guía o el álbum: podría verse brevemente la primera escena antes de ese cambio. La preferencia de tema se aplica antes del arranque cuando el almacenamiento está disponible; si está bloqueado, se sigue la preferencia del sistema. El HTML inicial de las presentaciones no contiene la guía completa.
 
+## Libro de Recursos
+
+El libro usa `@openpageflip/core` 0.7.0 (MIT), fijado en el lock. Su código se carga en el navegador al abrir el libro; el HTML de respaldo conserva las categorías si el motor no inicia. Las guías y sus fuentes están pendientes. Las hojas mantienen proporción 440:650, con desplazamiento interior para contenido largo: el motor no repagina textos automáticamente. Las flechas, los iconos y los gestos iniciados en los márgenes permiten navegar; los fragmentos identifican las categorías. La presentación se muestra en la primera visita y puede repetirse desde el libro.
+
+El motor modifica únicamente copias de las hojas dentro de un contenedor propio y se destruye al abandonar el libro; los originales Angular quedan como respaldo. El CSS del motor es global y su JavaScript se importa bajo demanda. La comparación exploratoria anterior permanece en la historia Git, no en la aplicación.
+
 ## Imágenes del equipo
 
 Los retratos provisionales son un personaje pixel art original y genérico, no oficial de PokeMMO. Para sustituirlos individualmente, reemplaza los PNG transparentes en `public/admins/` conservando los nombres `maykelsito.png`, `HuronVNLZ.png`, `Socamaru.png`, `GhostyFly.png` y `Weonaso.png`. La fuente del marcador original está en `public/admins/source/trainer-placeholder.svg`.

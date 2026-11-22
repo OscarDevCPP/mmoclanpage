@@ -1,3 +1,4 @@
+@import "@openpageflip/core/styles.css";
 @font-face {
   font-family: 'Pixelify Sans';
   src: url('../public/fonts/PixelifySans.ttf') format('truetype');

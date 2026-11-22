@@ -1,0 +1,19 @@
+<div class="book-frame" [class.ready]="ready()">
+  <div class="book-tools" [hidden]="!ready()" aria-label="Navegación del libro">
+    <button class="prev" type="button" aria-label="Página anterior" title="Página anterior" (click)="move(-1)" [disabled]="current() === 0"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 4-8 8 8 8"/></svg></button>
+    <button class="index" type="button" aria-label="Volver al índice" title="Volver al índice" (click)="go(1)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5c4-2 7-1 9 1 2-2 5-3 9-1v14c-4-2-7-1-9 1-2-2-5-3-9-1zM12 6v14"/></svg></button>
+    <button class="replay" type="button" aria-label="Volver a ver la presentación" title="Volver a ver la presentación" (click)="replay.emit()"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10a8 8 0 1 1 1 6M4 4v6h6M10 8l6 4-6 4z"/></svg></button>
+    <a class="home" routerLink="/" aria-label="Ir al inicio" title="Ir al inicio"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 12 3l9 8M5 10v10h14V10M10 20v-6h4v6"/></svg></a>
+    <button class="next" type="button" aria-label="Página siguiente" title="Página siguiente" (click)="move(1)" [disabled]="current() === 5"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 4 8 8-8 8"/></svg></button>
+  </div>
+  <div #stage class="book-stage" [hidden]="!ready()" (click)="link($event)" (touchstart)="touchStart($event)" (touchend)="touchEnd($event)" (touchcancel)="touchCancel()"></div>
+  <div #source class="book-source" [hidden]="ready()">
+    <section class="page cover" id="cubierta" data-density="hard"><div class="cover-inner"><p>Black Talon [URSS]</p><div class="crest" aria-hidden="true">✦<br>❧</div><h2 tabindex="-1">Recursos</h2><p>Un espacio para compartir</p></div></section>
+    <section class="page" id="indice"><div class="page-inner" tabindex="0"><p class="folio">Recursos · Índice</p><h2 tabindex="-1">Índice</h2><p>Este espacio está en preparación. Todavía no hay guías ni recursos publicados aquí.</p><nav aria-label="Categorías"><p><a href="#pvp">Guías de PvP</a></p><p><a href="#pve">Guías de PvE</a></p><p><a href="#eventos">Eventos del juego</a></p></nav></div></section>
+    <section class="page" id="pvp"><div class="page-inner" tabindex="0"><p class="folio">Recursos</p><h2 tabindex="-1">Guías de PvP</h2><p>Esta categoría está en preparación; aún no hay guías publicadas.</p><p><a href="#indice">Volver al índice</a></p></div></section>
+    <section class="page" id="pve"><div class="page-inner" tabindex="0"><p class="folio">Recursos</p><h2 tabindex="-1">Guías de PvE</h2><p>Esta categoría está en preparación; aún no hay guías publicadas.</p><p><a href="#indice">Volver al índice</a></p></div></section>
+    <section class="page" id="eventos"><div class="page-inner" tabindex="0"><p class="folio">Recursos</p><h2 tabindex="-1">Eventos del juego</h2><p>Esta categoría está en preparación; aún no hay recursos publicados.</p><p><a href="#indice">Volver al índice</a></p></div></section>
+    <section class="page cover" id="final" data-density="hard"><div class="cover-inner"><h2 tabindex="-1">Black Talon</h2><p>Recursos en preparación</p><p><a href="#indice">Volver al índice</a></p></div></section>
+  </div>
+  @if (!ready()) { <a class="fallback-home" routerLink="/">Volver al inicio</a> }
+</div>

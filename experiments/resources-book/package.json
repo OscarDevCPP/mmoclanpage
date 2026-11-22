@@ -1,1 +1,0 @@
-{"name":"resources-book-lab","private":true,"type":"module","scripts":{"start":"node server.mjs","test":"node --test test.mjs"},"dependencies":{"@openpageflip/core":"0.7.0"}}
