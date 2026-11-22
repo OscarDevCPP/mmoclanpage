@@ -6,7 +6,7 @@ const ids = pages.map(page => page.id);
 const previous = document.querySelector('#prev');
 const next = document.querySelector('#next');
 const status = document.querySelector('#status');
-const mode = new URLSearchParams(location.search).get('mode') === 'b' ? 'b' : 'a';
+const mode = 'a';
 const media = matchMedia('(min-width: 650px)');
 const reduced = matchMedia('(prefers-reduced-motion: reduce)');
 let current = pageForHash(location.hash, ids);
@@ -20,7 +20,7 @@ for (const link of document.querySelectorAll('[data-mode]')) {
   link.href = url.pathname + url.search + url.hash;
   if (link.dataset.mode === mode) link.setAttribute('aria-current', 'page');
 }
-document.querySelector('#mode-name').textContent = mode === 'a' ? 'A · OpenPageFlip' : 'B · Motor propio';
+
 
 function wide() { return mode === 'a' ? book.orientation === 'landscape' : media.matches; }
 function visible() { return spreadFor(current, pages.length, wide()); }
@@ -86,12 +86,30 @@ async function go(index, { focus = true } = {}) {
 try {
   if (mode === 'a') {
     const { createBook } = await import('./node_modules/@openpageflip/core/dist/index.js');
-    book = createBook(root, { width: 440, height: 650, minWidth: 290, maxWidth: 440, size: 'stretch', cover: true, startPage: current, flipDuration: 450, click: 'off', hover: false, drag: false, swipe: false });
+    book = createBook(root, { width: 440, height: 650, minWidth: 290, maxWidth: 2000, autoSize: false, size: 'stretch', cover: true, startPage: current, flipDuration: 450, click: 'off', hover: false, drag: false, swipe: false });
     book.on('changeOrientation', () => refresh());
   } else {
     root.classList.add('own-book');
     media.addEventListener('change', () => refresh());
   }
+  const preview = document.querySelector('#preview');
+  const replay = document.querySelector('#replay');
+  replay.addEventListener('click', () => { preview.showModal(); document.querySelector('#close-preview').focus(); });
+  document.querySelector('#close-preview').addEventListener('click', () => preview.close());
+  preview.addEventListener('close', () => replay.focus());
+  // Gestos solo en el margen decorativo: nunca sobre texto seleccionable o zonas desplazables.
+  let touchStart = null;
+  root.addEventListener('touchstart', event => {
+    if (event.touches.length !== 1 || event.target.closest('.page-inner, a, button')) return;
+    const t = event.touches[0]; touchStart = { x: t.clientX, y: t.clientY };
+  }, { passive: true });
+  root.addEventListener('touchend', event => {
+    if (!touchStart || !event.changedTouches.length) return;
+    const t = event.changedTouches[0], dx = t.clientX - touchStart.x, dy = t.clientY - touchStart.y;
+    touchStart = null;
+    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5 && !getSelection()?.toString()) (dx < 0 ? next : previous).click();
+  }, { passive: true });
+  root.addEventListener('touchcancel', () => { touchStart = null; });
   for (const inner of document.querySelectorAll('.page-inner')) inner.tabIndex = 0;
   document.documentElement.classList.add('ready');
   refresh();
@@ -112,7 +130,7 @@ try {
     go(index);
   });
   document.addEventListener('keydown', event => {
-    if (event.altKey || event.ctrlKey || event.metaKey || event.target.closest('a, button, input, textarea, select, [contenteditable]')) return;
+    if (preview.open || event.altKey || event.ctrlKey || event.metaKey || event.target.closest('a, button, input, textarea, select, [contenteditable]')) return;
     if (event.key === 'ArrowLeft') { event.preventDefault(); previous.click(); }
     if (event.key === 'ArrowRight') { event.preventDefault(); next.click(); }
   });

@@ -30,3 +30,17 @@ test('la misma navegación sirve ambos motores en página única y pliego', asyn
   assert.equal(adjacentPage(4, 8, true, 1), 5);
   assert.equal(adjacentPage(4, 8, true, -1), 2);
 });
+
+test('A conserva controles accesibles, índice y muestra explícitamente aislada; B histórico permanece', async () => {
+  const html = await readFile(new URL('./index.html', import.meta.url), 'utf8');
+  const historical = await readFile(new URL('./b.html', import.meta.url), 'utf8');
+  const app = await readFile(new URL('./app.js', import.meta.url), 'utf8');
+  for (const label of ['Página anterior', 'Página siguiente', 'Volver al índice', 'Ver muestra de la presentación', 'Cerrar muestra']) assert.ok(html.includes(`aria-label="${label}"`));
+  assert.match(html, /<dialog id="preview"/);
+  assert.match(html, /no una reproducción conectada al sitio/);
+  assert.match(html, /Sin contenido real/);
+  assert.match(historical, /Motor propio/);
+  assert.match(app, /preview\.showModal\(\)/);
+  assert.match(app, /preview\.addEventListener\('close', \(\) => replay\.focus\(\)\)/);
+  assert.match(app, /event\.target\.closest\('\.page-inner, a, button'\)/);
+});

@@ -1,6 +1,6 @@
 # Laboratorio local: archivo de las alas
 
-**Dos propuestas experimentales:** A usa OpenPageFlip y B un motor propio HTML/CSS/Web Animations. Comparten exactamente el HTML, el contenido y la dirección artística. No se ha escogido un ganador. El contenido es ficticio: no son guías ni eventos del clan. Este directorio no está en `public`, no se enlaza desde la aplicación y no forma parte del prerender.
+**Actualización:** el usuario eligió OpenPageFlip por fluidez percibida para esta exploración, sin autorizar integración productiva. A es ahora inmersivo; B se conserva como comparativa histórica en `?mode=b`, con su HTML y estilos anteriores. Ya no comparten diseño idéntico y no son comparables como una prueba visual o de transferencia controlada. El contenido es ficticio: no son guías ni eventos del clan. Este directorio no está en `public`, no se enlaza desde la aplicación y no forma parte del prerender.
 
 ## Ejecutar
 
@@ -16,7 +16,7 @@ Abrir A en <http://127.0.0.1:4179/?mode=a> o B en <http://127.0.0.1:4179/?mode=b
 
 ## Uso y diseño
 
-Abrir la cubierta con Siguiente; el índice enlaza las muestras. Anterior/Siguiente avanzan por hoja o pliego; Índice regresa. Las flechas funcionan fuera de controles interactivos. El hash identifica la hoja solicitada y permite recargarla; en escritorio puede mostrarse con su hoja vecina. El navegador mantiene historial para los enlaces. Las zonas interiores son enfocables y desplazables para leer contenido largo. Sin JavaScript el HTML muestra todas las hojas en secuencia. Ambos respetan `prefers-reduced-motion`: A mediante el motor y B omitiendo la animación. Los destinos reciben foco tras el movimiento; volver/avanzar en el historial también navega al hash.
+Abrir la cubierta con el icono de siguiente; el índice interior enlaza las muestras. Los iconos sobre el libro permiten volver al índice y abrir una vista previa conceptual de la cinematográfica; esta no está conectada a la aplicación ni modifica la primera visita. El cierre del diálogo devuelve el foco. En A un gesto horizontal iniciado fuera del texto, en el margen de la cubierta, también pasa de página; el texto y el desplazamiento vertical se dejan al navegador. Anterior/Siguiente avanzan por hoja o pliego; Índice regresa. Las flechas funcionan fuera de controles interactivos. El hash identifica la hoja solicitada y permite recargarla; en escritorio puede mostrarse con su hoja vecina. El navegador mantiene historial para los enlaces. Las zonas interiores son enfocables y desplazables para leer contenido largo. Sin JavaScript el HTML muestra todas las hojas en secuencia. Ambos respetan `prefers-reduced-motion`: A mediante el motor y B omitiendo la animación. Los destinos reciben foco tras el movimiento; volver/avanzar en el historial también navega al hash.
 
 Paleta: tinta `#30241c`, papel `#ead8ae`, oro `#c8a45f`, vino `#591f2b` y noche `#17252c`. Georgia aporta el carácter editorial; Verdana mantiene legibles controles y contexto. La cubierta y las hojas son un objeto central, con adornos contenidos, no un rediseño del sitio. Todo el arte (ornamentos CSS y SVG) es original para este experimento; no se descargaron fuentes ni imágenes externas.
 
@@ -26,7 +26,11 @@ Paleta: tinta `#30241c`, papel `#ead8ae`, oro `#c8a45f`, vino `#591f2b` y noche 
 
 El motor usa `createBook`, `flipTo` y el evento de orientación; su declaración documenta el salto animado y la restauración mediante `destroy`. El diseño usa `size: stretch`, `cover: true` y `minWidth: 290` para explorar pliego/escritorio frente a una página estrecha; el motor dibuja pliegues geométricos. B usa una copia inerte de la hoja visible, rotada con perspectiva y oscurecida en Web Animations; no reproduce la geometría flexible de A y evita clonar contenido interactivo activo. Ambos mantienen las hojas existentes para lectura.
 
-## Comparación y evidencia
+## Comparación y evidencia histórica
+
+La tabla y mediciones siguientes describen el corte A/B anterior, no el A inmersivo actual. En aquel corte el revisor observó A con 321 px de ancho desplazable a 320 px y fuente raíz 200 %; la corrección actual requiere verificación visual. B todavía carga CSS inerte del motor por el enlace compartido histórico.
+
+### Corte anterior
 
 | | A · OpenPageFlip | B · Motor propio |
 | --- | --- | --- |
@@ -46,8 +50,8 @@ El padre informó mediciones locales de transferencia de scripts: A `app.js` 618
 
 Comprobaciones locales de este corte: `npm test` del laboratorio 2/2; `npm test -- --watch=false` productivo 31/31; `npm run build` y `npm run build -- --base-href /black-talon/` produjeron 8 rutas cada uno, sin `resources-book` en `dist`. `git diff --check` no señaló errores en archivos rastreados; el laboratorio todavía no estaba rastreado.
 
-Recomendación para la siguiente evaluación: comparar en navegador real el efecto de salto, la selección, el coste de mantenimiento y el comportamiento de accesibilidad; no elegir un motor hasta resolver la estrategia de contenido variable y ensayar la futura integración Angular. No hay medición de rendimiento que permita declarar vencedor.
+La elección humana de A no resuelve la estrategia de contenido variable ni autoriza integración Angular. Se necesita verificar en navegador real el nuevo diseño, la selección, el coste de mantenimiento y la accesibilidad. No hay medición de rendimiento que permita declarar vencedor.
 
 ## Límites y comprobación pendiente
 
-Las hojas tienen altura fija con desplazamiento interno; **no existe repaginación automática** de textos variables. Las comprobaciones anteriores son acotadas y emuladas: falta verificar el ajuste de 320 px al 200 %, el desplazamiento táctil, más casos de zoom y dispositivos móviles reales. No hay evaluación con tecnologías de asistencia ni benchmark de rendimiento. Este HTML autónomo no demuestra hidratación Angular, prerender, rutas de Pages ni integración con la aplicación. La revisión independiente y toda decisión de integración quedan pendientes.
+Las hojas tienen altura fija con desplazamiento interno; **no existe repaginación automática** de textos variables. Las comprobaciones anteriores son acotadas y emuladas: falta verificar en navegador el nuevo diseño, incluido 320 px al 200 %, el desplazamiento táctil, más casos de zoom y dispositivos móviles reales. La evidencia A/B anterior no valida este corte. No hay evaluación con tecnologías de asistencia ni benchmark de rendimiento. Este HTML autónomo no demuestra hidratación Angular, prerender, rutas de Pages ni integración con la aplicación. La revisión independiente y toda decisión de integración quedan pendientes.
