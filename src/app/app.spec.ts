@@ -140,22 +140,24 @@ describe('Foco y restauración de fragmentos', () => {
 describe('Presentación y guía', () => {
   beforeEach(() => { localStorage.clear(); TestBed.configureTestingModule({ providers: [provideRouter([])] }); });
   afterEach(() => { localStorage.clear(); vi.restoreAllMocks(); });
-  it('avanza seis escenas, guarda solo al terminar y permite repetir', async () => {
+  it('avanza ocho escenas, guarda solo al terminar y permite repetir', async () => {
     const fixture = TestBed.createComponent(Missions); await fixture.whenStable();
     const page = fixture.nativeElement as HTMLElement;
-    expect(page.textContent).toContain('Escena 1/6'); expect(localStorage.getItem('black-talon.missions.presentation.v1')).toBeNull();
+    expect(fixture.componentInstance.scenes.map(s => s.speaker)).toEqual(['maykelsito', 'maykelsito', 'Weonaso', 'GhostyFly', 'maykelsito', 'maykelsito', 'GhostyFly', 'maykelsito']);
+    expect(fixture.componentInstance.scenes[4].text).toContain('Mi usuario es maykelsito');
+    expect(page.textContent).toContain('Escena 1/8'); expect(localStorage.getItem('black-talon.missions.presentation.v1')).toBeNull();
     expect(page.querySelector('.scene-stage .dialogue')).toBeNull();
     expect(page.querySelector('.scene-stage')?.nextElementSibling?.classList.contains('dialogue')).toBe(true);
     expect(page.querySelector('.bubble')?.textContent).not.toContain('ejemplos');
-    for (let i = 0; i < 5; i++) { fixture.componentInstance.step(1); fixture.detectChanges(); }
-    expect(page.textContent).toContain('Escena 6/6'); fixture.componentInstance.step(1); fixture.detectChanges();
+    for (let i = 0; i < 7; i++) { fixture.componentInstance.step(1); fixture.detectChanges(); }
+    expect(page.textContent).toContain('Escena 8/8'); fixture.componentInstance.step(1); fixture.detectChanges();
     expect(localStorage.getItem('black-talon.missions.presentation.v1')).toBe('seen');
     expect(page.querySelectorAll('.scene')).toHaveLength(6); expect(page.querySelectorAll('.index a')).toHaveLength(6);
     expect(page.querySelector('.index')?.nextElementSibling?.classList.contains('replay')).toBe(true);
     expect(page.querySelector('#bienvenida')?.textContent).toContain('Meowth, Geodude');
     expect(page.querySelector('.scene img[src*="maykelsito"]')).toBeNull(); expect(page.querySelector('.bubble')).toBeNull();
     expect(page.textContent).toContain('MISION SEMANAL'); expect(page.textContent).toContain('no envía correos');
-    fixture.componentInstance.replay(); fixture.detectChanges(); expect(page.textContent).toContain('Escena 1/6');
+    fixture.componentInstance.replay(); fixture.detectChanges(); expect(page.textContent).toContain('Escena 1/8');
     const restored = TestBed.createComponent(Missions);
     expect(restored.componentInstance.guide()).toBe(false);
     restored.detectChanges();
@@ -187,13 +189,13 @@ describe('Regresión de navegación y presentación', () => {
     (harness.routeNativeElement!.querySelector('.activity-list a') as HTMLAnchorElement).click();
     await harness.fixture.whenStable();
     expect(TestBed.inject(Router).url).toBe('/actividades/misiones');
-    expect(harness.routeNativeElement?.textContent).toContain('Escena 1/6');
+    expect(harness.routeNativeElement?.textContent).toContain('Escena 1/8');
     await harness.navigateByUrl('/actividades/misiones#tablon', Missions);
     expect(harness.routeNativeElement?.querySelector('#tablon')).not.toBeNull();
     expect(localStorage.getItem('black-talon.missions.presentation.v1')).toBeNull();
     (harness.routeNativeElement!.querySelector('.replay') as HTMLButtonElement).click();
     await harness.fixture.whenStable(); harness.detectChanges();
-    expect(harness.routeNativeElement?.textContent).toContain('Escena 1/6');
+    expect(harness.routeNativeElement?.textContent).toContain('Escena 1/8');
     expect(TestBed.inject(Router).url).toBe('/actividades/misiones');
     await harness.navigateByUrl('/actividades/misiones#revision', Missions);
     expect(harness.routeNativeElement?.querySelector('#revision')).not.toBeNull();
@@ -205,7 +207,7 @@ describe('Regresión de navegación y presentación', () => {
     const fixture = TestBed.createComponent(Missions); await fixture.whenStable();
     const page = fixture.nativeElement as HTMLElement;
     expect(localStorage.getItem('black-talon.missions.presentation.v1')).toBeNull();
-    for (let i = 0; i < 6; i++) { (page.querySelector('.cinema-controls button:last-child') as HTMLButtonElement).click(); fixture.detectChanges(); }
+    for (let i = 0; i < 8; i++) { (page.querySelector('.cinema-controls button:last-child') as HTMLButtonElement).click(); fixture.detectChanges(); }
     expect(localStorage.getItem('black-talon.missions.presentation.v1')).toBe('seen');
     expect(page.querySelectorAll('.scene')).toHaveLength(6);
     expect(page.querySelector('.dialogue, .bubble, img[src*="maykelsito"]')).toBeNull();
@@ -213,7 +215,7 @@ describe('Regresión de navegación y presentación', () => {
     const restored = TestBed.createComponent(Missions); await restored.whenStable();
     expect(restored.nativeElement.querySelectorAll('.scene')).toHaveLength(6);
     (page.querySelector('.replay') as HTMLButtonElement).click(); fixture.detectChanges();
-    expect(page.textContent).toContain('Escena 1/6');
+    expect(page.textContent).toContain('Escena 1/8');
     (page.querySelector('.cinema-top button') as HTMLButtonElement).click(); fixture.detectChanges();
     expect(page.querySelectorAll('.scene')).toHaveLength(6);
     expect(fetch).not.toHaveBeenCalled();
@@ -228,9 +230,9 @@ describe('Regresión de navegación y presentación', () => {
     window.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', repeat: true }));
     window.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', ctrlKey: true }));
     window.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft' })); fixture.detectChanges();
-    expect(page.textContent).toContain('Escena 1/6');
+    expect(page.textContent).toContain('Escena 1/8');
     window.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight' })); fixture.detectChanges();
-    expect(page.textContent).toContain('Escena 2/6');
+    expect(page.textContent).toContain('Escena 2/8');
     input.remove(); fixture.destroy();
   });
 });
@@ -249,7 +251,7 @@ describe('Aislamiento cinematográfico', () => {
     expect(page.querySelector('.site-header, footer, .skip-link, nav')).toBeNull();
     expect(page.querySelector('.cinema-top button')?.getAttribute('aria-label')).toBe('Saltar a la guía');
     expect(page.querySelector('.cinema-controls button:last-child')?.getAttribute('aria-label')).toBe('Siguiente');
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 8; i++) {
       expect(page.querySelector('.scene-stage')?.getAttribute('data-scene')).toBe(String(i));
       (page.querySelector('.cinema-controls button:last-child') as HTMLButtonElement).click(); fixture.detectChanges();
     }
@@ -282,7 +284,7 @@ describe('Sorteos', () => {
       (harness.routeNativeElement!.querySelector('a[href="/actividades/sorteos"]') as HTMLAnchorElement).click();
       await harness.fixture.whenStable();
       expect(TestBed.inject(Router).url).toBe('/actividades/sorteos');
-      expect(harness.routeNativeElement?.textContent).toContain('Escena 1/6');
+      expect(harness.routeNativeElement?.textContent).toContain('Escena 1/8');
     }
     await harness.navigateByUrl('/actividades/sorteos#resultado', Sorteos);
     expect(harness.routeNativeElement?.querySelector('#resultado')).not.toBeNull();
@@ -290,7 +292,7 @@ describe('Sorteos', () => {
     expect(harness.routeNativeElement?.querySelectorAll('.index a')).toHaveLength(6);
     (harness.routeNativeElement!.querySelector('.replay') as HTMLButtonElement).click();
     await harness.fixture.whenStable(); harness.detectChanges();
-    expect(harness.routeNativeElement?.textContent).toContain('Escena 1/6');
+    expect(harness.routeNativeElement?.textContent).toContain('Escena 1/8');
   });
   it('avanza, persiste independientemente al terminar, muestra las reglas y permite repetir', async () => {
     const { Sorteos } = await import('./sorteos');
@@ -298,8 +300,10 @@ describe('Sorteos', () => {
     const fixture = TestBed.createComponent(Sorteos); await fixture.whenStable();
     const page = fixture.nativeElement as HTMLElement;
     expect(localStorage.getItem('black-talon.sorteos.presentation.v1')).toBeNull();
+    expect(fixture.componentInstance.scenes.map(s => s.speaker)).toEqual(['Socamaru', 'Socamaru', 'Weonaso', 'Socamaru', 'GhostyFly', 'Socamaru', 'Socamaru', 'Socamaru']);
+    expect(fixture.componentInstance.scenes[3].text).toContain('dos más');
     expect(page.querySelector('.scene-stage')?.nextElementSibling?.classList.contains('dialogue')).toBe(true);
-    for (let i = 0; i < 6; i++) { fixture.componentInstance.step(1); fixture.detectChanges(); }
+    for (let i = 0; i < 8; i++) { fixture.componentInstance.step(1); fixture.detectChanges(); }
     expect(localStorage.getItem('black-talon.sorteos.presentation.v1')).toBe('seen');
     expect(localStorage.getItem('black-talon.missions.presentation.v1')).toBeNull();
     for (const term of ['cosmético', 'Pokémon', '15 números', '20k', '1 gratis', 'comprar 2', 'WhatsApp', 'Discord', 'susurro', 'domingo', 'Perú', 'enlace externo', 'no fue comprado', 'eventos, premios y wars']) expect(page.textContent).toContain(term);
@@ -309,15 +313,15 @@ describe('Sorteos', () => {
     expect(page.querySelector('#resultado')?.textContent).toContain('enlace externo donde se puede seguir la cuenta regresiva durante la semana');
     expect(page.querySelector('#resultado')?.textContent).toContain('domingo a las 12 del mediodía, hora de Perú');
     expect(page.querySelector('#resultado')?.textContent).toContain('elige y revela al ganador al llegar la hora');
-    expect(fixture.componentInstance.scenes[3].text).toContain('No uses correo');
-    expect(fixture.componentInstance.scenes[3].text).toContain('números que deseas');
-    expect(fixture.componentInstance.scenes[4].text).toContain('durante la semana');
+    expect(fixture.componentInstance.scenes[5].text).toContain('No uses correo');
+    expect(fixture.componentInstance.scenes[5].text).toContain('números');
+    expect(fixture.componentInstance.scenes[6].text).toContain('cuenta regresiva');
     const restored = TestBed.createComponent(Sorteos);
     expect(restored.componentInstance.guide()).toBe(false);
     restored.detectChanges();
     expect(restored.componentInstance.guide()).toBe(true);
     fixture.componentInstance.replay(); fixture.detectChanges();
-    expect(page.textContent).toContain('Escena 1/6');
+    expect(page.textContent).toContain('Escena 1/8');
     fixture.componentInstance.finish(); expect(fixture.componentInstance.guide()).toBe(true);
   });
   it('tolera almacenamiento bloqueado y controla flechas', async () => {

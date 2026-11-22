@@ -16,13 +16,23 @@ export class Sorteos {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
-  readonly scenes = [
+  readonly guideScenes = [
     { id: 'anuncio', image: 'sorteos/anuncio.svg', alt: 'Socamaru junto al tablón de anuncio y un regalo', title: 'El sorteo semanal', text: '¡Bienvenido! Cada semana anuncio un sorteo con un cosmético o un Pokémon. Me alegra compartirlo con ustedes, jeje. Revisa el anuncio para conocer los detalles.' },
     { id: 'numeros', image: 'sorteos/numeros.svg', alt: 'Tablero de números y monedas que representan disponibilidad y precio', title: 'Números y límites', text: 'En el anuncio les cuento cuántos números hay, cuánto cuestan y el máximo por persona. Pueden cambiar según el premio y la participación, así que mejor revisarlos cada semana 😅.' },
     { id: 'ticket', image: 'sorteos/ticket.svg', alt: 'Lista de misiones y tickets de recompensa', title: 'Un ticket de misiones', text: 'Si te toca un ticket gratuito por misiones, recuerda que cuenta dentro del límite. Por ejemplo, si el máximo es tres y tienes uno gratis, puedes comprar dos más.' },
     { id: 'participar', image: 'sorteos/participar.svg', alt: 'Mensaje para coordinar la participación con Socamaru', title: 'Cómo participar', text: 'Dime los números que deseas y confirmamos si están disponibles por WhatsApp o Discord, o por susurro si estoy conectado en el juego. No uses correo: no podemos confirmar la disponibilidad, jeje.' },
     { id: 'resultado', image: 'sorteos/resultado.svg', alt: 'Reloj y sobre que representan la espera y la revelación del resultado', title: 'El momento del sorteo', text: 'En el anuncio siempre dejo un enlace externo para seguir la cuenta regresiva durante la semana. El domingo a las 12 del mediodía, hora de Perú, la página elige y revela al ganador. ¡Suerte a todos, jeje!' },
     { id: 'fondos', image: 'sorteos/fondos.svg', alt: 'Monedas destinadas a un cofre y a eventos del clan', title: 'Para seguir compartiendo', text: 'Si sale un número que nadie compró, hacemos otro sorteo entre participantes. La recaudación consigue el premio y lo que sobra ayuda a los eventos, premios y wars del clan. Poquito a poquito, seguimos compartiendo.' }
+  ];
+  readonly scenes = [
+    { ...this.guideScenes[0], speaker: 'Socamaru', text: '¡Bienvenidos al sorteo semanal! Anuncio un cosmético o un Pokémon; revisen el anuncio para conocer los detalles.' },
+    { ...this.guideScenes[1], speaker: 'Socamaru', text: 'El anuncio indica cuántos números hay, su precio y el máximo por persona. Pueden cambiar según el premio y la participación.' },
+    { ...this.guideScenes[2], speaker: 'Weonaso', text: '¿El ticket gratuito cuenta dentro del máximo?' },
+    { ...this.guideScenes[2], speaker: 'Socamaru', text: 'Sí. Si el máximo es tres y tienes uno gratis, puedes comprar dos más. La cuenta no perdona. 😅' },
+    { ...this.guideScenes[3], speaker: 'GhostyFly', text: '¿Cómo sé si el número que quiero sigue disponible? 😁' },
+    { ...this.guideScenes[3], speaker: 'Socamaru', text: 'Dime los números y te confirmo por WhatsApp, Discord o susurro si estoy conectado. No uses correo: no permite confirmar disponibilidad.' },
+    { ...this.guideScenes[4], speaker: 'Socamaru', text: 'El anuncio incluye un enlace externo para seguir la cuenta regresiva. El domingo a las 12 del mediodía, hora de Perú, la página elige y revela al ganador.' },
+    { ...this.guideScenes[5], speaker: 'Socamaru', text: 'Si sale un número no comprado, hacemos otro sorteo entre participantes. La recaudación consigue el premio y el excedente ayuda a eventos, premios y wars del clan.' },
   ];
   readonly guideText: Record<string, string> = {
     anuncio: 'Socamaru anuncia un sorteo semanal cuyo premio es un cosmético o un Pokémon. Cada participante debe consultar el anuncio correspondiente.',
@@ -35,7 +45,7 @@ export class Sorteos {
   readonly index = signal(0);
   readonly guide = signal(false);
   private initialGuide(): boolean {
-    if (this.scenes.some(scene => scene.id === this.route.snapshot.fragment)) return true;
+    if (this.guideScenes.some(scene => scene.id === this.route.snapshot.fragment)) return true;
     try { return localStorage.getItem(KEY) === 'seen'; } catch { return false; }
   }
   constructor() {
@@ -55,7 +65,7 @@ export class Sorteos {
     });
     this.destroyRef.onDestroy(() => this.presentation.active.set(false));
     this.route.fragment.pipe(skip(1), takeUntilDestroyed()).subscribe(fragment => {
-      if (this.scenes.some(scene => scene.id === fragment)) { this.guide.set(true); this.presentation.active.set(false); }
+      if (this.guideScenes.some(scene => scene.id === fragment)) { this.guide.set(true); this.presentation.active.set(false); }
     });
   }
   private focus(selector: string) {

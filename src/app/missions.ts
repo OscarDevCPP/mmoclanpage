@@ -16,13 +16,23 @@ export class Missions {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
-  readonly scenes = [
+  readonly guideScenes = [
     { id: 'bienvenida', title: 'Cómo funcionan las misiones', text: '¡Bienvenido, causa! En las misiones semanales toca capturar Pokémon y reunir objetos. Mira bien las características y cantidades del anuncio, ¡que empezamos!' },
     { id: 'tablon', title: 'El tablón semanal', text: 'Cada semana publico la misión en WhatsApp y Discord. Ahí encontrarás las capturas, los objetos y la recompensa. Tienes de lunes a sábado para participar.' },
     { id: 'revision', title: 'La mesa de comprobación', text: 'Antes de entregar, revisa las características y cuenta los objetos. Como en una buena receta: ¡que no falte ningún ingrediente del anuncio!' },
     { id: 'correo', title: 'Correo dentro del juego', text: 'En PokeMMO, envíame lo solicitado a maykelsito con el asunto MISION SEMANAL. Si no entra todo en un correo, repártelo en varios.' },
     { id: 'premio', title: 'El premio semanal', text: '¡Y ahora el premio! Cada semana cambia: es un Pokémon 2x31 con el nivel, entrenamiento, habilidad y movimientos del anuncio. Suele servir para eventos, incursiones o uso semicompetitivo. Lo envío desde la medianoche del sábado al domingo hasta, como máximo, el lunes siguiente.' },
     { id: 'despedida', title: 'Un extra en el camino', text: 'A veces también puede haber un ticket gratis para un sorteo u otra mecánica adicional. No está garantizado, así que revisa el anuncio y los canales del clan. ¡Nos vemos en la misión, bro!' }
+  ];
+  readonly scenes = [
+    { ...this.guideScenes[0], speaker: 'maykelsito', text: '¡Bienvenidos a las misiones semanales! Capturamos Pokémon y reunimos objetos según el anuncio. A ver quién termina primero. 😎' },
+    { ...this.guideScenes[1], speaker: 'maykelsito', text: 'Cada semana publico la misión en WhatsApp y Discord con capturas, objetos y recompensa. Pueden participar de lunes a sábado.' },
+    { ...this.guideScenes[2], speaker: 'Weonaso', text: 'Antes de entregar, conviene revisar las características y las cantidades.' },
+    { ...this.guideScenes[3], speaker: 'GhostyFly', text: '¿Y si no cabe todo en un solo correo? 😁' },
+    { ...this.guideScenes[3], speaker: 'maykelsito', text: 'Mándamelo en varios correos dentro de PokeMMO. Mi usuario es maykelsito y el asunto es MISION SEMANAL.' },
+    { ...this.guideScenes[4], speaker: 'maykelsito', text: 'La recompensa cambia cada semana: un Pokémon 2x31 con el nivel, entrenamiento, habilidad y movimientos anunciados. Suele servir para eventos, incursiones o uso semicompetitivo. Lo envío desde la medianoche del sábado al domingo hasta el lunes como máximo.' },
+    { ...this.guideScenes[5], speaker: 'GhostyFly', text: '¿También hay un ticket para el sorteo?' },
+    { ...this.guideScenes[5], speaker: 'maykelsito', text: 'A veces hay un ticket gratis u otra mecánica adicional, pero no está garantizado. Revisen el anuncio y los canales del clan. ¡Nos vemos en la misión!' },
   ];
   readonly guideText: Record<string, string> = {
     bienvenida: 'Las misiones semanales consisten en capturar Pokémon y reunir objetos con las características y cantidades indicadas en el anuncio. Meowth, Geodude, Piedra Eterna, Carbón y Moneda Amuleto son ejemplos ilustrativos, no la misión vigente.',
@@ -35,7 +45,7 @@ export class Missions {
   readonly index = signal(0);
   readonly guide = signal(false);
   private initialGuide(): boolean {
-    if (this.scenes.some(scene => scene.id === this.route.snapshot.fragment)) return true;
+    if (this.guideScenes.some(scene => scene.id === this.route.snapshot.fragment)) return true;
     try { return localStorage.getItem(KEY) === 'seen'; } catch { return false; }
   }
   constructor() {
@@ -55,7 +65,7 @@ export class Missions {
     });
     this.destroyRef.onDestroy(() => this.presentation.active.set(false));
     this.route.fragment.pipe(skip(1), takeUntilDestroyed()).subscribe(fragment => {
-      if (this.scenes.some(scene => scene.id === fragment)) { this.guide.set(true); this.presentation.active.set(false); }
+      if (this.guideScenes.some(scene => scene.id === fragment)) { this.guide.set(true); this.presentation.active.set(false); }
     });
   }
   private focus(selector: string) {

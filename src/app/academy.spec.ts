@@ -18,22 +18,22 @@ describe('Red Wings Academy', () => {
       (harness.routeNativeElement!.querySelector('a[href="/actividades/red-wings-academy"]') as HTMLAnchorElement).click();
       await harness.fixture.whenStable();
       expect(TestBed.inject(Router).url).toBe('/actividades/red-wings-academy');
-      expect(harness.routeNativeElement?.textContent).toContain('Escena 1/8');
+      expect(harness.routeNativeElement?.textContent).toContain('Escena 1/13');
     }
     await harness.navigateByUrl('/actividades/red-wings-academy#grupos', Academy);
     expect(harness.routeNativeElement?.querySelector('#grupos')).not.toBeNull();
     expect(localStorage.getItem(key)).toBeNull();
     (harness.routeNativeElement!.querySelector('.replay') as HTMLButtonElement).click();
     await harness.fixture.whenStable(); harness.detectChanges();
-    expect(harness.routeNativeElement?.textContent).toContain('Escena 1/8');
+    expect(harness.routeNativeElement?.textContent).toContain('Escena 1/13');
   });
-  it('presenta ocho escenas distintas, referentes, guía y reglas', async () => {
+  it('presenta trece escenas, referentes, guía y reglas', async () => {
     TestBed.configureTestingModule({ providers: [provideRouter([])] });
     const fixture = TestBed.createComponent(Academy); await fixture.whenStable();
     const component = fixture.componentInstance; const page = fixture.nativeElement as HTMLElement;
-    expect(component.scenes).toHaveLength(8);
+    expect(component.scenes).toHaveLength(13);
     expect(new Set(component.scenes.map(s => s.image)).size).toBe(8);
-    expect(component.scenes.map(s => s.speaker)).toEqual(['Socamaru', 'Socamaru', 'Socamaru', 'Socamaru', 'maykelsito', 'HuronVNLZ', 'Socamaru', 'Socamaru']);
+    expect(component.scenes.map(s => s.speaker)).toEqual(['Socamaru', 'Socamaru', 'Socamaru', 'Socamaru', 'maykelsito', 'HuronVNLZ', 'maykelsito', 'Socamaru', 'HuronVNLZ', 'HuronVNLZ', 'Socamaru', 'maykelsito', 'Socamaru']);
     for (const [index, scene] of component.scenes.entries()) {
       component.index.set(index); fixture.detectChanges();
       expect(page.querySelector('.cinema-art img')?.getAttribute('src')).toBe(scene.image);
@@ -53,9 +53,9 @@ describe('Red Wings Academy', () => {
       expect(item.querySelector('strong')?.textContent).toBe(name);
       expect(item.querySelector('.referente-info')?.textContent).toContain(specialty);
       expect(item.querySelector('.referente-info img')?.getAttribute('src')).toBe(`admins/${name}.png`);
-      expect(item.querySelector('.academy-art img')?.getAttribute('src')).toBe(component.scenes[index + 4].image);
+      expect(item.querySelector('.academy-art img')?.getAttribute('src')).toBe(component.guideScenes[index + 4].image);
     }
-    expect(component.scenes[2].text).toContain('chat de equipo ni otros canales');
+    expect(component.scenes[2].text).toContain('chat normal');
     expect(page.querySelector('#grupos')?.textContent).toContain('chat de equipo y otros canales');
     expect(page.querySelector('.index')?.getAttribute('aria-label')).toBe('Índice de Red Wings Academy');
     component.replay(); fixture.detectChanges(); expect(component.index()).toBe(0);

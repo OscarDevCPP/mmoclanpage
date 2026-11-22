@@ -15,7 +15,10 @@ describe('Recuerdos', () => {
     expect(page.album()).toBe(false);
     const nextButton = () => harness.routeNativeElement!.querySelector('.cinema-controls button:last-child')!;
     expect(nextButton().getAttribute('data-tooltip')).toBe('Siguiente');
-    expect(new Set(page.scenes.map(scene => scene.image)).size).toBe(page.scenes.length);
+    expect(new Set(page.scenes.map(scene => scene.image)).size).toBe(4);
+    expect(page.scenes.map(scene => scene.speaker)).toEqual(['maykelsito', 'HuronVNLZ', 'Socamaru', 'maykelsito', 'GhostyFly', 'Weonaso', 'Socamaru']);
+    expect(page.scenes[0].text).toContain('fundamos Black Talon');
+    expect(page.scenes[3].text).toContain('Yo los nombré subcomandantes');
     page.onKey(new KeyboardEvent('keydown', { key: 'ArrowRight' }));
     expect(page.index()).toBe(1);
     expect(localStorage.getItem(key)).toBeNull();

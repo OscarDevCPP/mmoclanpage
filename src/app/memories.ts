@@ -11,10 +11,13 @@ export class Memories {
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
   private readonly destroyRef = inject(DestroyRef);
   readonly scenes = [
-    { title: 'Dos primeras voces', speaker: 'maykelsito', image: 1, text: 'Huron y yo fundamos Black Talon, causa. Fuimos los dos primeros miembros de esta historia.' },
-    { title: 'Una comunidad que crece', speaker: 'HuronVNLZ', image: 2, text: 'Después llegó Socamaru y la comunidad fue creciendo. Cada persona ha traído algo al clan.' },
-    { title: 'Entre amigos y rivales', speaker: 'maykelsito', image: 3, text: 'A la chama y a mí nos gusta competir. ¡Pero también sabemos disfrutar juntos cada encuentro, bro!' },
-    { title: 'Momentos compartidos', speaker: 'HuronVNLZ', image: 4, text: 'La peruana no pierde las ganas de competir. Guardemos también los momentos que compartimos. Aquí están algunos de nuestros recuerdos.' },
+    { title: 'Dos primeras voces', speaker: 'maykelsito', image: 1, text: 'Huron y yo fundamos Black Talon. Fuimos los dos primeros. Y todavía tenemos cosas que discutir.' },
+    { title: 'Entre rivales', speaker: 'HuronVNLZ', image: 1, text: 'Si te refieres a quién gana la próxima, eso se resuelve jugando.' },
+    { title: 'Una comunidad que crece', speaker: 'Socamaru', image: 2, text: 'Después llegué yo y el clan siguió creciendo. La discusión también, por lo que veo. 😅' },
+    { title: 'Nuevos compañeros', speaker: 'maykelsito', image: 2, text: 'Más adelante se sumaron GhostyFly y Weonaso. Yo los nombré subcomandantes. Ghosty, ¿te animas a presentarte o necesitas que te reten?' },
+    { title: 'Un reto aceptado', speaker: 'GhostyFly', image: 3, text: 'Me animo a las dos cosas. Pero dime quién reta, que ya me dio curiosidad. 😁' },
+    { title: 'Lo importante', speaker: 'Weonaso', image: 3, text: 'Antes de otro reto, miren lo que hemos compartido. No todo lo importante fue ganar.' },
+    { title: 'Momentos compartidos', speaker: 'Socamaru', image: 4, text: 'También están quienes vinieron a acompañar, aprender o pasar el rato. Aquí guardamos un poco de todo eso.' },
   ];
   readonly memories = signal<Memory[]>([
     { date: '2026-09-17', label: '17 de septiembre de 2026', title: 'Nuestro primer evento', file: '1_recuerdo_primer_evento.jpeg', type: 'image', story: 'Nos reunimos en Ciudad Verde, Kanto, canal 1 para nuestro primer evento de PvP aleatorios, organizado por maykelsito. Cintiacamila ganó 500k.' },

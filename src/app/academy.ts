@@ -16,7 +16,7 @@ export class Academy {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
-  readonly scenes = [
+  readonly guideScenes = [
     { id: 'bienvenida', image: 'academy/bienvenida.svg', alt: 'Puerta abierta a un espacio de aprendizaje', title: 'Aprender y compartir', speaker: 'Socamaru', text: '¡Bienvenidos a Red Wings Academy! Aquí compartimos lo que sabemos entre miembros del clan y aprendemos poquito a poquito, jeje.' },
     { id: 'temas', image: 'academy/temas.svg', alt: 'Herramientas, crianza, combate, monedas y libros', title: 'Temas para explorar', speaker: 'Socamaru', text: 'Podemos aprender sobre farmeos, crianza, PvP, economía y mecánicas del juego. Me alegra que podamos compartir lo que sabemos 😅.' },
     { id: 'formato', image: 'academy/formato.svg', alt: 'Cuatro participantes conectados y un lugar de encuentro', title: 'Cómo nos reunimos', speaker: 'Socamaru', text: 'Necesitamos al menos 3 alumnos. Con 3, formamos un Link de 4 con el instructor; si hay más, acordamos un lugar y usamos el chat normal. Así no interferimos con el chat de equipo ni otros canales.' },
@@ -26,14 +26,29 @@ export class Academy {
     { id: 'socamaru', image: 'academy/socamaru.svg', alt: 'Ruta de exploración PvE y herramientas de aventura', title: 'PvE con Socamaru', speaker: 'Socamaru', text: 'Yo puedo compartirles lo que sé de PvE y algunos consejos para avanzar. Vamos con calma, que aprendemos juntos, jeje.' },
     { id: 'ensenar', image: 'academy/ensenar.svg', alt: 'Personas compartiendo conocimiento alrededor de una mesa', title: 'Una invitación abierta', speaker: 'Socamaru', text: 'Si tienes ganas de ayudar y compartir, tú también puedes enseñar. Coordina conmigo y anuncia tu clase en el grupo de WhatsApp de la Academia. ¡Será bonito aprender juntos!' }
   ];
+  readonly scenes = [
+    { ...this.guideScenes[0], speaker: 'Socamaru', text: '¡Bienvenidos a Red Wings Academy! Aquí aprendemos y compartimos entre miembros del clan.' },
+    { ...this.guideScenes[1], speaker: 'Socamaru', text: 'Podemos aprender sobre farmeos, crianza, PvP, economía y mecánicas del juego.' },
+    { ...this.guideScenes[2], speaker: 'Socamaru', text: 'Necesitamos al menos 3 alumnos. Con 3, formamos un Link de 4 con el instructor; si hay más, acordamos un lugar y usamos el chat normal.' },
+    { ...this.guideScenes[3], speaker: 'Socamaru', text: 'Las clases son gratuitas para miembros del clan. Instructor y alumnos acuerdan tema, día y hora; en WhatsApp anunciamos, coordinamos y proponemos clases.' },
+    { ...this.guideScenes[4], speaker: 'maykelsito', text: 'Si quieren aprender PvP, podemos practicar y revisar las jugadas. A ver si la chama se anima también.' },
+    { ...this.guideScenes[5], speaker: 'HuronVNLZ', text: 'Me animo. Y si me ganas, repetimos. 👊' },
+    { ...this.guideScenes[4], speaker: 'maykelsito', text: 'Entonces vamos a estar un buen rato. 😎' },
+    { ...this.guideScenes[6], speaker: 'Socamaru', text: 'Bien, ya tenemos quién cierre la Academia.' },
+    { ...this.guideScenes[5], speaker: 'HuronVNLZ', text: 'Que hable ahora. Después vemos.' },
+    { ...this.guideScenes[5], speaker: 'HuronVNLZ', text: 'También puedo compartir lo que sé de PvP y PvE. Si algo no sale, lo intentamos otra vez.' },
+    { ...this.guideScenes[6], speaker: 'Socamaru', text: 'Yo les puedo ayudar con PvE: farmeos, mecánicas y esas cosas que uno aprende después de perder tiempo por no preguntar.' },
+    { ...this.guideScenes[4], speaker: 'maykelsito', text: '¿Por experiencia?' },
+    { ...this.guideScenes[7], speaker: 'Socamaru', text: 'Por eso doy la clase. Si quieres ayudar y compartir, tú también puedes enseñar: coordina conmigo y anuncia tu clase en el grupo de WhatsApp de la Academia.' },
+  ];
   readonly guide = signal(false);
   readonly sections = [
-    { id: 'proposito', title: 'Propósito y temas', image: this.scenes[1], text: 'Red Wings Academy es un espacio para aprender y compartir entre miembros del clan. Sus temas incluyen farmeos, crianza, PvP, economía y mecánicas. Más adelante podrían organizarse clases intermedias o avanzadas.' },
-    { id: 'requisitos', title: 'Requisitos y gratuidad', image: this.scenes[0], text: 'Las clases son gratuitas y exclusivas para miembros del clan. Se requiere un mínimo de 3 alumnos.' },
-    { id: 'grupos', title: 'Formato de los grupos', image: this.scenes[2], text: 'Con 3 alumnos, el instructor y los alumnos forman un Link de 4. Si hay más de 3 alumnos, se acuerda un lugar y se utiliza el chat normal del juego. Así se evita interferir con el chat de equipo y otros canales.' },
-    { id: 'coordinacion', title: 'Coordinación', image: this.scenes[3], text: 'Instructor y alumnos acuerdan el tema, el día y la hora. El grupo de WhatsApp dedicado a Red Wings Academy sirve para anunciar y coordinar clases y proponer temas.' },
-    { id: 'referentes', title: 'Referentes', image: this.scenes[4], text: 'Estos miembros comparten sus conocimientos como referentes; no forman una plantilla fija ni exclusiva.' },
-    { id: 'ensenar', title: 'Compartir lo aprendido', image: this.scenes[7], text: 'Cualquier miembro con ganas de ayudar y compartir puede enseñar: debe coordinar con Socamaru y anunciar su clase en el grupo de WhatsApp de la Academia.' }
+    { id: 'proposito', title: 'Propósito y temas', image: this.guideScenes[1], text: 'Red Wings Academy es un espacio para aprender y compartir entre miembros del clan. Sus temas incluyen farmeos, crianza, PvP, economía y mecánicas. Más adelante podrían organizarse clases intermedias o avanzadas.' },
+    { id: 'requisitos', title: 'Requisitos y gratuidad', image: this.guideScenes[0], text: 'Las clases son gratuitas y exclusivas para miembros del clan. Se requiere un mínimo de 3 alumnos.' },
+    { id: 'grupos', title: 'Formato de los grupos', image: this.guideScenes[2], text: 'Con 3 alumnos, el instructor y los alumnos forman un Link de 4. Si hay más de 3 alumnos, se acuerda un lugar y se utiliza el chat normal del juego. Así se evita interferir con el chat de equipo y otros canales.' },
+    { id: 'coordinacion', title: 'Coordinación', image: this.guideScenes[3], text: 'Instructor y alumnos acuerdan el tema, el día y la hora. El grupo de WhatsApp dedicado a Red Wings Academy sirve para anunciar y coordinar clases y proponer temas.' },
+    { id: 'referentes', title: 'Referentes', image: this.guideScenes[4], text: 'Estos miembros comparten sus conocimientos como referentes; no forman una plantilla fija ni exclusiva.' },
+    { id: 'ensenar', title: 'Compartir lo aprendido', image: this.guideScenes[7], text: 'Cualquier miembro con ganas de ayudar y compartir puede enseñar: debe coordinar con Socamaru y anunciar su clase en el grupo de WhatsApp de la Academia.' }
   ];
   readonly index = signal(0);
   private initialGuide(): boolean {

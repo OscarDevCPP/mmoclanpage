@@ -18,7 +18,7 @@
     <section [id]="section.id" tabindex="-1" class="scene"><h2>{{ section.title }}</h2>
       @if (section.id === 'referentes') {
         <p>{{ section.text }}</p>
-        @for (scene of scenes.slice(4, 7); track scene.id) {
+        @for (scene of guideScenes.slice(4, 7); track scene.id) {
           <div class="referente">
             <ng-container *ngTemplateOutlet="art; context: { $implicit: scene, priority: false }" />
             <div class="referente-info"><img [ngSrc]="'admins/' + scene.speaker + '.png'" width="320" height="480" alt=""><p><strong>{{ scene.speaker }}</strong> · {{ scene.speaker === 'maykelsito' ? 'PvP' : scene.speaker === 'HuronVNLZ' ? 'PvP y PvE' : 'PvE' }}</p></div>

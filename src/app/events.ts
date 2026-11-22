@@ -12,13 +12,13 @@ export class Events {
   private readonly destroyRef = inject(DestroyRef);
   readonly memories = sortedEventMemories;
   readonly scenes = [
-    { title: 'Un encuentro cada semana', speaker: 'Socamaru', text: 'Cada semana nos reunimos para compartir un evento del clan. Me hace ilusión verlos por ahí, jeje.', image: 'encuentro' },
-    { title: 'Revisa el anuncio', speaker: 'HuronVNLZ', text: 'Normalmente jugamos el domingo por la tarde, hora de Perú. Revisen el anuncio para saber la hora exacta y el lugar; así nadie tendrá que adivinar.', image: 'calendario' },
-    { title: 'Participar es gratuito', speaker: 'maykelsito', text: '¡Participar siempre es gratis, causa! Nos vemos en el lugar indicado en el anuncio. ¡Vengan con ganas!', image: 'entrada' },
-    { title: 'Cada evento es diferente', speaker: 'Socamaru', text: 'Los administradores organizamos cada encuentro y explicamos sus reglas. Cada evento es diferente, así que escúchenlas con calma 😅.', image: 'reglas' },
-    { title: 'Premios y resultados', speaker: 'HuronVNLZ', text: 'Las recompensas y los puestos premiados pueden variar según el evento. La peruana puede competir con ganas; primero, que revise el anuncio.', image: 'premios' },
-    { title: 'Nuestros recuerdos', speaker: 'maykelsito', text: '¡La chama ya me conoce! Me gusta competir, pero también guardar los buenos momentos. Aquí tienen algunos que compartimos juntos, bro.', image: 'recuerdos' },
-    { title: 'Juntos en cada encuentro', speaker: 'Socamaru', text: 'Lo bonito es encontrarnos, conocernos y divertirnos juntos. Gracias por compartir estos momentos con el clan. ¡Nos vemos en el próximo encuentro, jeje!', image: 'union' },
+    { title: 'Un encuentro cada semana', speaker: 'Socamaru', text: 'Cada semana nos reunimos para compartir un evento. Algunos dicen que vienen a divertirse, pero tampoco quieren perder. 😅', image: 'encuentro' },
+    { title: 'Revisa el anuncio', speaker: 'HuronVNLZ', text: 'También venimos a competir, claro. Normalmente jugamos el domingo por la tarde, hora de Perú; revisen el anuncio para confirmar la hora y el lugar.', image: 'calendario' },
+    { title: 'Participar es gratuito', speaker: 'maykelsito', text: 'Participar es gratis. Nos vemos en el lugar indicado en el anuncio. ¡Vengan con ganas!', image: 'entrada' },
+    { title: 'Cada evento es diferente', speaker: 'Socamaru', text: 'Los administradores organizamos cada encuentro y explicamos las reglas antes de empezar. Cada evento es distinto, así que escúchenlas antes de retarse.', image: 'reglas' },
+    { title: 'Premios y resultados', speaker: 'HuronVNLZ', text: 'Las recompensas y los puestos premiados varían según el evento; revisen el anuncio. La peruana seguro ya está preparando su próxima jugada.', image: 'premios' },
+    { title: 'Nuestros recuerdos', speaker: 'maykelsito', text: 'La chama me conoce bien. 😎 Me gusta competir, pero también guardar los buenos momentos que compartimos.', image: 'recuerdos' },
+    { title: 'Juntos en cada encuentro', speaker: 'Socamaru', text: 'Al final, lo mejor es encontrarnos y compartir. Nos vemos en la próxima reunión.', image: 'union' },
   ];
   readonly closingMembers = ['Socamaru', 'HuronVNLZ', 'maykelsito'];
   readonly index = signal(0);
