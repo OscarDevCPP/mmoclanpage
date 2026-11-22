@@ -13,6 +13,21 @@ function mockBook(): Book {
 }
 describe('Libro de Recursos', () => {
   afterEach(() => { history.replaceState(null, '', '/'); vi.restoreAllMocks(); vi.unstubAllGlobals(); });
+  it('muestra la portada dedicada sin añadir paradas de teclado a páginas estáticas', async () => {
+    const book = mockBook();
+    TestBed.configureTestingModule({ providers: [provideRouter([]), { provide: BOOK_LOADER, useValue: async () => ({ createBook: () => book }) }] });
+    const fixture = TestBed.createComponent(ResourcesBook); await fixture.whenStable(); fixture.detectChanges();
+    const host = fixture.nativeElement as HTMLElement;
+    for (const root of ['.book-source', '.book-stage']) {
+      const cover = host.querySelector(`${root} > .cover`)!;
+      expect(cover.querySelector('h2')?.textContent).toBe('El Compendio');
+      expect(cover.textContent).toContain('«Recopilación de conocimientos prácticos con mucho cariño para la comunidad»');
+      expect(host.querySelectorAll(`${root} .page-inner[tabindex]`)).toHaveLength(0);
+      expect(host.querySelectorAll(`${root} h2[tabindex="-1"]`)).toHaveLength(6);
+      expect(host.querySelectorAll(`${root} a[href]`).length).toBeGreaterThan(0);
+    }
+    fixture.destroy();
+  });
   it('conserva el documento original, inicia sobre clones y destruye el motor', async () => {
     const book = mockBook(); const createBook = vi.fn(() => book);
     TestBed.configureTestingModule({ providers: [provideRouter([]), { provide: BOOK_LOADER, useValue: async () => ({ createBook }) }] });
