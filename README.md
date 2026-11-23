@@ -24,11 +24,11 @@ En las cinco presentaciones, el HTML inicial contiene la primera escena. Tras la
 
 ## El Compendio
 
-El índice central está disponible en `/compendio`. Agrupa los temas PvP en cinco grandes páginas previstas: Fundamentos del competitivo, Preparación de Pokémon, Construcción de equipos, Decisiones en combate y Análisis y mejora. Los niveles son orientativos. PvE, eventos y el diccionario inglés siguen pendientes, al igual que los apartados no publicados; no tienen enlaces ficticios.
+El índice central en `/compendio` muestra únicamente la guía publicada: Introducción al competitivo Singles, con cuatro apartados. Los recursos se incorporan progresivamente, sin anunciar un catálogo de páginas aún no publicadas.
 
 La única página temática publicada es `/compendio/pvp/fundamentos`, con la introducción a Singles, sus dos diagramas originales y fuentes conceptuales. Las páginas usan lectura y desplazamiento convencionales. La presentación se muestra en la primera visita al índice, guarda su estado en `black-talon.compendio.presentation.v1` y puede repetirse desde el índice. La ruta directa de la guía no la intercepta.
 
-El contenido existente está en `src/app/pvp-guide.ts` y el catálogo y agrupaciones en `src/app/pvp-catalog.ts`. Antes de publicar un apartado, verificar contenido y fuentes y crear un destino real; solo entonces enlazarlo desde el índice. No hay gestor de contenidos ni publicación automática de guías.
+El contenido de la guía está en `src/app/pvp-guide.ts` y los apartados del índice en `src/app/resources.ts`. Antes de publicar un apartado, verificar contenido y fuentes y crear un destino real; solo entonces enlazarlo desde el índice. No hay gestor de contenidos ni publicación automática de guías.
 
 ## Imágenes del equipo
 

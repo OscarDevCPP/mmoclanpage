@@ -1,389 +1,57 @@
-import type { GuideSection } from './guide-content';
+import type { GuideBlock, GuideSection } from './guide-content';
 
-/** Existing Singles guide, shared as semantic content. */
+const text = (text: string) => [{ text, marks: [] }];
+const heading = (id: string, title: string, level: 2 | 3 = 2): GuideBlock => ({ kind: 'heading', id, level, runs: text(title) });
+const paragraph = (id: string, content: string): GuideBlock => ({ kind: 'paragraph', id, runs: text(content) });
+const diagram = (id: string, description: string): GuideBlock => ({ kind: 'diagram', id, description });
+const list = (id: string, items: string[]): GuideBlock => ({ kind: 'list', id, ordered: false, items: items.map((item, i) => ({ id: `${id}-${i}`, runs: text(item) })) });
+
+/** Conceptos introductorios; las reglas concretas dependen del formato vigente. */
 export const PVP_GUIDE: readonly GuideSection[] = [
-  {
-    "id": "introduccion-competitivo",
-    "blocks": [
-      {
-        "kind": "heading",
-        "id": "introduccion-competitivo-1",
-        "level": 2,
-        "runs": [
-          {
-            "text": "Introducción al competitivo",
-            "marks": []
-          }
-        ]
-      },
-      {
-        "kind": "paragraph",
-        "id": "introduccion-competitivo-2",
-        "runs": [
-          {
-            "text": "Si conoces PokeMMO por la historia y quieres probar combates contra otras personas, aquí aprenderás a leer un turno y reconocer un plan sencillo.",
-            "marks": []
-          }
-        ]
-      },
-      {
-        "kind": "heading",
-        "id": "introduccion-competitivo-3",
-        "level": 3,
-        "runs": [
-          {
-            "text": "¿Qué es competir?",
-            "marks": []
-          }
-        ]
-      },
-      {
-        "kind": "paragraph",
-        "id": "introduccion-competitivo-4",
-        "runs": [
-          {
-            "text": "En PvP (",
-            "marks": []
-          },
-          {
-            "text": "player versus player",
-            "marks": [
-              {
-                "kind": "emphasis"
-              }
-            ]
-          },
-          {
-            "text": ", jugador contra jugador), tu rival también toma decisiones: cambia de Pokémon, protege piezas importantes y trata de anticipar tus jugadas. En ",
-            "marks": []
-          },
-          {
-            "text": "Singles",
-            "marks": [
-              {
-                "kind": "strong"
-              }
-            ]
-          },
-          {
-            "text": ", cada entrenador tiene un Pokémon activo frente a uno del rival. Existen otros formatos, como Doubles y Randoms, pero esta ruta empieza por Singles.",
-            "marks": []
-          }
-        ]
-      },
-      {
-        "kind": "paragraph",
-        "id": "introduccion-competitivo-5",
-        "runs": [
-          {
-            "text": "La meta es ganar bajo las reglas del combate, habitualmente dejando sin Pokémon disponibles al rival. No se trata solo de golpear fuerte: también importa cuándo atacar, cuándo cambiar y qué guardar para después.",
-            "marks": []
-          }
-        ]
-      },
-      {
-        "kind": "paragraph",
-        "id": "introduccion-competitivo-6",
-        "runs": [
-          {
-            "text": "En la historia puedes resolver encuentros avanzando y aprovechando niveles. En competitivo te enfrentas a alguien que prepara respuestas y adapta su plan. Perder no significa empezar de cero: revisar una decisión puede enseñar más que cambiar todo el equipo.",
-            "marks": []
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "introduccion-turno",
-    "blocks": [
-      {
-        "kind": "heading",
-        "id": "introduccion-turno-1",
-        "level": 2,
-        "runs": [
-          {
-            "text": "Un turno, varias preguntas",
-            "marks": []
-          }
-        ]
-      },
-      {
-        "kind": "paragraph",
-        "id": "introduccion-turno-2",
-        "runs": [
-          {
-            "text": "Cada turno eliges una acción disponible, como usar un movimiento o cambiar de Pokémon. El rival hace lo mismo. Las acciones se resuelven según prioridad, velocidad y efectos; no supongas que actuarás primero. Un cambio puede proteger una pieza, pero quien entra también recibe las consecuencias de la acción rival.",
-            "marks": []
-          }
-        ]
-      },
-      {
-        "kind": "diagram",
-        "id": "introduccion-turno-diagrama",
-        "description": "Comprobar la amenaza y seguridad, comparar ataque o cambio, resolver y ajustar"
-      },
-      {
-        "kind": "paragraph",
-        "id": "introduccion-turno-4",
-        "runs": [
-          {
-            "text": "Considera la amenaza, si puedes actuar con seguridad y el riesgo antes de elegir. Si tu atacante es importante para el final, quizá convenga conservarlo; cambiar a ciegas también puede poner en peligro a su compañero.",
-            "marks": []
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "introduccion-plan",
-    "blocks": [
-      {
-        "kind": "heading",
-        "id": "introduccion-plan-1",
-        "level": 2,
-        "runs": [
-          {
-            "text": "Un equipo con un plan",
-            "marks": []
-          }
-        ]
-      },
-      {
-        "kind": "paragraph",
-        "id": "introduccion-plan-2",
-        "runs": [
-          {
-            "text": "Una pieza puede presionar; otra, resistir o recuperar salud; otra, facilitar la entrada de sus compañeros. Una pieza puede cumplir varias funciones y una función puede repartirse entre varias.",
-            "marks": []
-          }
-        ]
-      },
-      {
-        "kind": "diagram",
-        "id": "introduccion-plan-diagrama",
-        "description": "Apoyo facilita la entrada del atacante y defensa cubre amenazas para conservarlo"
-      },
-      {
-        "kind": "paragraph",
-        "id": "introduccion-plan-4",
-        "runs": [
-          {
-            "text": "El apoyo facilita la entrada del atacante y la defensa cubre amenazas. Es un plan posible, no una receta obligatoria. Una ",
-            "marks": []
-          },
-          {
-            "text": "condición de victoria",
-            "marks": [
-              {
-                "kind": "strong"
-              }
-            ]
-          },
-          {
-            "text": " (",
-            "marks": []
-          },
-          {
-            "text": "win condition",
-            "marks": [
-              {
-                "kind": "emphasis"
-              }
-            ]
-          },
-          {
-            "text": ") es la situación que intentas crear para ganar: por ejemplo, conservar al atacante hasta debilitar sus obstáculos. Si el rival lo impide, adapta el plan.",
-            "marks": []
-          }
-        ]
-      },
-      {
-        "kind": "heading",
-        "id": "introduccion-plan-5",
-        "level": 3,
-        "runs": [
-          {
-            "text": "Formatos y tiers",
-            "marks": []
-          }
-        ]
-      },
-      {
-        "kind": "paragraph",
-        "id": "introduccion-plan-6",
-        "runs": [
-          {
-            "text": "Un formato define la modalidad y reglas del combate. Una tier organiza la competencia según criterios definidos; OU, UU y NU son ejemplos de categorías. Sus reglas y restricciones pueden cambiar: consulta el formato concreto. Más uso no significa más poder en cualquier situación.",
-            "marks": []
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "introduccion-practica",
-    "blocks": [
-      {
-        "kind": "heading",
-        "id": "introduccion-practica-1",
-        "level": 2,
-        "runs": [
-          {
-            "text": "Antes de combatir",
-            "marks": []
-          }
-        ]
-      },
-      {
-        "kind": "paragraph",
-        "id": "introduccion-practica-2",
-        "runs": [
-          {
-            "text": "Comprueba la elegibilidad, que movimientos, habilidades y objetos apoyen las funciones y que entiendas las debilidades. Los IV son valores individuales y los EV representan entrenamiento: no necesitas seis IV perfectos en cada miembro como requisito universal. Empieza con objetivos alcanzables.",
-            "marks": []
-          }
-        ]
-      },
-      {
-        "kind": "list",
-        "id": "introduccion-practica-3",
-        "ordered": false,
-        "items": [
-          {
-            "id": "introduccion-practica-3-1",
-            "runs": [
-              {
-                "text": "Elegí formato y revisé reglas y elegibilidad.",
-                "marks": []
-              }
-            ]
-          },
-          {
-            "id": "introduccion-practica-3-2",
-            "runs": [
-              {
-                "text": "Sé qué hace cada miembro y cuál conservar.",
-                "marks": []
-              }
-            ]
-          },
-          {
-            "id": "introduccion-practica-3-3",
-            "runs": [
-              {
-                "text": "Identifico una amenaza y un cambio posible.",
-                "marks": []
-              }
-            ]
-          },
-          {
-            "id": "introduccion-practica-3-4",
-            "runs": [
-              {
-                "text": "Mis movimientos, habilidades y objetos apoyan el plan.",
-                "marks": []
-              }
-            ]
-          },
-          {
-            "id": "introduccion-practica-3-5",
-            "runs": [
-              {
-                "text": "Revisaré una decisión después del combate.",
-                "marks": []
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "kind": "heading",
-        "id": "introduccion-practica-4",
-        "level": 3,
-        "runs": [
-          {
-            "text": "Mini ejercicio",
-            "marks": []
-          }
-        ]
-      },
-      {
-        "kind": "paragraph",
-        "id": "introduccion-practica-5",
-        "runs": [
-          {
-            "text": "Tu atacante debe cerrar el combate, pero el rival amenaza con debilitarlo. Un compañero resistente podría entrar. ¿Qué preguntas antes de actuar?",
-            "marks": []
-          }
-        ]
-      },
-      {
-        "kind": "paragraph",
-        "id": "introduccion-practica-6",
-        "runs": [
-          {
-            "text": "Respuesta:",
-            "marks": [
-              {
-                "kind": "strong"
-              }
-            ]
-          },
-          {
-            "text": " ¿qué puede hacer el rival y qué riesgo corre el compañero al entrar? Si el cambio conserva al atacante sin sacrificar una pieza esencial, puede ayudar; si no, evalúa otra acción. Sin conocer movimientos y salud no hay una única respuesta garantizada.",
-            "marks": []
-          }
-        ]
-      },
-      {
-        "kind": "paragraph",
-        "id": "introduccion-practica-7",
-        "runs": [
-          {
-            "text": "Fuentes conceptuales: ",
-            "marks": []
-          },
-          {
-            "text": "Getting Started",
-            "marks": [
-              {
-                "kind": "link",
-                "href": "https://www.smogon.com/articles/getting-started"
-              }
-            ]
-          },
-          {
-            "text": ", ",
-            "marks": []
-          },
-          {
-            "text": "Synergies and Cores",
-            "marks": [
-              {
-                "kind": "link",
-                "href": "https://www.smogon.com/xy/articles/synergy"
-              }
-            ]
-          },
-          {
-            "text": " y ",
-            "marks": []
-          },
-          {
-            "text": "Teambuilding",
-            "marks": [
-              {
-                "kind": "link",
-                "href": "https://www.smogon.com/smog/issue28/teambuilding"
-              }
-            ]
-          },
-          {
-            "text": " de Smogon. No acreditan legalidad actual en PokeMMO. Versión del cliente no comprobada.",
-            "marks": []
-          }
-        ]
-      }
-    ]
-  }
+  { id: 'introduccion-competitivo', blocks: [
+    heading('inicio-h', '¿Qué es competir en Singles?'),
+    paragraph('inicio-1', 'Si vienes de la historia y quieres probar combates contra otras personas, esta guía te acompaña a observar un turno, pensar un plan y aprender de cada partida. No necesitas memorizar todos los términos antes de empezar.'),
+    paragraph('inicio-2', 'PvP significa jugador contra jugador (player versus player). Tu rival también toma decisiones: puede atacar, cambiar de Pokémon o intentar conservar una pieza importante. En Singles hay un Pokémon activo por cada lado; sus compañeros esperan su oportunidad. Esta introducción se concentra en esa modalidad.'),
+    paragraph('inicio-3', 'La meta es ganar respetando las reglas del combate, habitualmente dejando al rival sin Pokémon disponibles. La fuerza de un movimiento importa, pero también el momento de usarlo y la colaboración del equipo. Un miembro que no consiga debilitar a nadie todavía puede abrir espacio para otro.'),
+    paragraph('inicio-4', 'Un formato establece las condiciones de una competencia; puede limitar qué participantes o recursos se admiten. Las categorías o tiers agrupan la competencia según sus propios criterios. Las reglas y clasificaciones pueden cambiar: consulta el formato vigente antes de preparar tu equipo. No hace falta conocer de memoria todas las categorías para dar tus primeros pasos.'),
+    paragraph('inicio-5', 'A diferencia de muchos encuentros de la aventura, aquí otra persona intenta responder a tu plan. Una derrota no invalida todo tu equipo: puede revelar una amenaza que no habías considerado o una pieza que necesitabas conservar. Empieza por entender una decisión cada vez.'),
+  ] },
+  { id: 'introduccion-turno', blocks: [
+    heading('turno-h', 'Un turno, varias preguntas'),
+    paragraph('turno-1', 'Antes de elegir, observa la salud de ambos Pokémon, sus estados y la información que ya has visto: movimientos revelados, compañeros conocidos y posibles respuestas. También importa lo que no sabes. Una suposición razonable no equivale a conocer la elección del rival.'),
+    paragraph('turno-2', 'Los tipos pueden orientar qué ataques son eficaces o resistidos, pero no cuentan toda la historia. Considera también la salud restante y los efectos que conozcas. Pregúntate qué amenaza inmediata existe y qué ocurriría si tu acción no sale como esperabas.'),
+    paragraph('turno-3', 'La velocidad ayuda a determinar quién actúa primero cuando las acciones corresponden al mismo nivel de prioridad. Algunos movimientos tienen una prioridad distinta y pueden adelantarse a otros aunque su usuario sea más lento. Otros efectos también pueden alterar el orden: no reduzcas la decisión a mirar una sola estadística.'),
+    diagram('introduccion-turno-diagrama', 'Identifica la amenaza; compara atacar o cambiar y su riesgo; después observa y ajusta.'),
+    paragraph('turno-4', 'Imagina que tu atacante, importante para el final, está amenazado. Puedes atacar para presionar ahora, pero podrías perderlo antes de volver a usarlo. Puedes cambiar a un compañero que resista el ataque esperado y conservar al atacante; aun así, el compañero recibe las consecuencias de la acción rival y quizá no soporte otra opción.'),
+    paragraph('turno-5', 'Una tercera posibilidad es usar un movimiento de apoyo disponible para mejorar la situación, si el riesgo lo permite. Ninguna opción es automáticamente correcta: compara lo que ganas con lo que podrías perder. Si el rival anticipa tu cambio, puede elegir otra acción. Predecir es valorar posibilidades con la información disponible, no adivinar siempre ni perseguir la jugada más espectacular.'),
+    paragraph('turno-6', 'Después del turno, incorpora lo aprendido. Un movimiento revelado puede cambiar la evaluación del siguiente cambio; una pieza dañada quizá ya no pueda cumplir la misma función. Ajustar el plan es parte del combate, no una señal de que el plan inicial haya sido inútil.'),
+  ] },
+  { id: 'introduccion-plan', blocks: [
+    heading('plan-h', 'Un equipo con un plan'),
+    paragraph('plan-1', 'Un equipo funciona mejor cuando sus miembros se ayudan. Una pieza puede presionar al rival, otra resistir amenazas y otra aportar apoyo o facilitar la entrada de sus compañeros. Son funciones, no casillas obligatorias: un mismo Pokémon puede cumplir varias, y varias piezas pueden compartir una tarea.'),
+    diagram('introduccion-plan-diagrama', 'El apoyo y la defensa colaboran con el atacante: pueden facilitar su entrada o cubrir amenazas para conservarlo.'),
+    paragraph('plan-2', 'La condición de victoria (win condition) es una situación plausible que intentas crear para cerrar la partida, no una promesa. Por ejemplo, tu atacante rápido podría resultar decisivo al final, pero un defensor rival lo frena. Tu plan puede ser debilitar primero a ese defensor y guardar al atacante para cuando tenga una oportunidad.'),
+    paragraph('plan-3', 'Conservar no significa negarse a usar una pieza. Significa valorar cuánto daño puede recibir y si aún necesitas su función. Si pierdes al atacante demasiado pronto, busca otra ruta: quizá un compañero pueda presionar o el rival haya dejado una nueva oportunidad. Los planes cambian con la información y los recursos de ambos lados.'),
+    paragraph('plan-4', 'Si el formato ofrece una vista previa del equipo rival, úsala para plantear preguntas: ¿qué amenaza puede frenar mi idea?, ¿quién podría responder?, ¿qué compañero necesito cuidar? La vista previa no muestra necesariamente todas las decisiones ni garantiza que el rival siga el plan que imaginas.'),
+    paragraph('plan-5', 'Al observar una amenaza, una respuesta útil no tiene que resolverla en cualquier circunstancia. Puede servir solo si conserva suficiente salud o si entra ante una acción concreta. Piensa en la cooperación entre compañeros y evita dar por seguro un enfrentamiento sin conocer sus condiciones.'),
+  ] },
+  { id: 'introduccion-practica', blocks: [
+    heading('practica-h', 'Antes de combatir'),
+    paragraph('practica-1', 'Elige primero un formato y revisa sus reglas y la elegibilidad del equipo. Prepara algo funcional dentro de tus posibilidades: saber para qué sirve cada miembro y cómo se ayudan es un buen punto de partida. No necesitas resolver toda la construcción competitiva antes de jugar una primera partida.'),
+    paragraph('practica-2', 'Revisa que movimientos, habilidades y objetos acompañen el papel que imaginas para cada Pokémon. Una opción que parece fuerte por separado puede aportar poco si no ayuda al equipo. Comprueba también qué amenazas se repiten y si tienes alguna manera razonable de responder sin depender siempre del mismo compañero.'),
+    paragraph('practica-3', 'Los IV son valores individuales asociados a las estadísticas; los EV representan inversión mediante entrenamiento, y la naturaleza también influye en estadísticas. Son aspectos útiles de preparación, pero seis IV de 31 en cada integrante no son un requisito universal para comenzar. Prioriza lo que necesita cada función y tu presupuesto; esta guía no pretende ser una receta de crianza.'),
+    heading('lista-h', 'Lista antes de empezar', 3),
+    list('lista', ['Elegí formato y consulté sus reglas y elegibilidad.', 'Entiendo qué hace cada miembro y cuál podría necesitar conservar.', 'Identifico una amenaza y una posible respuesta, con su riesgo.', 'Mis movimientos, habilidades y objetos apoyan el plan.', 'Después de jugar revisaré una decisión concreta.']),
+    heading('ejercicio-h', 'Un pequeño ejercicio', 3),
+    paragraph('ejercicio-1', 'Tu atacante podría cerrar la partida más adelante, pero ahora está amenazado. Un compañero resistente puede entrar ante el ataque que esperas. ¿Lo cambiarías inmediatamente? ¿Qué información necesitas y qué alternativa compararías?'),
+    paragraph('ejercicio-2', 'Una respuesta posible es revisar la salud del compañero, las acciones conocidas del rival y si el atacante tiene una opción útil ahora. El cambio puede conservarlo, pero el rival podría elegir otra acción y dañar al compañero. Sin conocer movimientos, salud y contexto no hay una respuesta garantizada: explica qué riesgo aceptas y por qué.'),
+    paragraph('practica-4', 'Tras combatir, anota un momento en que dudaste. ¿Qué intentabas conservar? ¿Qué esperabas del rival? ¿Qué otra acción tenías? Si dispones de un video o repetición, revísalo; unas notas también sirven. Elige una mejora para la próxima partida en vez de cambiar todo por una sola derrota.'),
+    { kind: 'paragraph', id: 'fuentes', runs: [
+      ...text('Para ampliar conceptos: '),
+      { text: 'Getting Started', marks: [{ kind: 'link', href: 'https://www.smogon.com/articles/getting-started' }] }, ...text(', '),
+      { text: 'Move Priority', marks: [{ kind: 'link', href: 'https://www.smogon.com/dp/articles/move_priority' }] }, ...text(' y '),
+      { text: 'PKMN 101', marks: [{ kind: 'link', href: 'https://www.smogon.com/xy/articles/pkmn-101' }] },
+      ...text(' de Smogon. Son referencias conceptuales de otros juegos y generaciones, no una autoridad sobre las reglas actuales de PokeMMO.')
+    ] },
+  ] },
 ];

@@ -14,37 +14,16 @@
   <header>
     <h1 tabindex="-1">El Compendio</h1>
     <p>Recopilación de conocimientos prácticos con mucho cariño para la comunidad</p>
-    <p>Un espacio para compartir lo que aprendemos en PvP, PvE y los eventos del juego.</p>
+    <p>Reunimos conocimientos y guías para aprender, consultar y repasar juntos.</p>
     <button class="icon-button replay" type="button" aria-label="Volver a ver la presentación del Compendio" title="Volver a ver la presentación del Compendio" data-tooltip="Volver a ver la presentación del Compendio" (click)="replay()"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="8" width="13" height="11" rx="1"/><path d="M16 11l5-3v11l-5-3z"/><circle cx="7" cy="5" r="2"/><circle cx="13" cy="5" r="2"/></svg></button>
   </header>
   <nav aria-label="Contenido del Compendio">
-    <h2 id="indice">Contenido</h2>
     <details class="category" id="pvp">
-      <summary><h3>Guías de PvP</h3><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
-      <p>Los niveles indican una orientación de aprendizaje, no un orden obligatorio.</p>
-      @for (chapter of chapters; track chapter.title) {
-        <details class="chapter">
-          <summary><h4>{{ chapter.title }}</h4><span class="state">{{ chapter.status === 'partial' ? 'Parcial' : 'Pendiente' }}</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
-          <ul>
-            @for (topic of chapter.topics; track topic.learningOrder) {
-              <li>
-                @if (topic.status === 'available') {
-                  <a routerLink="/compendio/pvp/fundamentos" fragment="introduccion-competitivo">{{ topic.title }}</a>
-                  <span class="level"> · {{ topic.level }}</span>
-                  <ul>@for (item of introduction; track item.id) { <li><a routerLink="/compendio/pvp/fundamentos" [fragment]="item.id">{{ item.title }}</a></li> }</ul>
-                } @else {
-                  {{ topic.title }} <span class="level"> · {{ topic.level }} · pendiente</span>
-                  @if (topic.sections) { <ul>@for (section of topic.sections; track section) { <li>{{ section }}</li> }</ul> }
-                }
-              </li>
-            }
-          </ul>
-          @if (chapter.title === 'Análisis y mejora') { <p>Ajustes · pendiente</p> }
-        </details>
-      }
-      <p>{{ dictionary.title }} · pendiente</p>
+      <summary><h2>Guías de PvP</h2><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
+      <details class="chapter">
+        <summary><h3>Introducción al competitivo</h3><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
+        <ul>@for (item of introduction; track item.id) { <li><a routerLink="/compendio/pvp/fundamentos" [fragment]="item.id">{{ item.title }}</a></li> }</ul>
+      </details>
     </details>
-    <details class="category" id="pve"><summary><h3>Guías de PvE</h3><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary><p>Esta categoría está en preparación; aún no hay guías publicadas.</p></details>
-    <details class="category" id="eventos"><summary><h3>Eventos del juego</h3><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary><p>Esta categoría está en preparación; aún no hay recursos publicados.</p></details>
   </nav>
 </div>

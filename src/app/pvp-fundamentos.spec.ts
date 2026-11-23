@@ -7,13 +7,29 @@ import { PVP_GUIDE } from './pvp-guide';
 import { PresentationState } from './presentation-state';
 
 describe('Fundamentos del competitivo', () => {
+  it('restaura el fragmento inicial tras renderizar sin enfocar la sección', async () => {
+    const scroll = vi.fn();
+    const original = HTMLElement.prototype.scrollIntoView;
+    HTMLElement.prototype.scrollIntoView = scroll;
+    try {
+      TestBed.configureTestingModule({ providers: [provideRouter(routes)] });
+      const harness = await RouterTestingHarness.create();
+      await harness.navigateByUrl('/compendio/pvp/fundamentos#introduccion-turno', PvpFundamentos);
+      harness.detectChanges();
+      await harness.fixture.whenStable();
+      expect(scroll).toHaveBeenCalledWith({ block: 'start', behavior: 'instant' });
+      expect(document.activeElement?.id).not.toBe('introduccion-turno');
+    } finally {
+      HTMLElement.prototype.scrollIntoView = original;
+    }
+  });
   it('abre la ruta directamente con el texto íntegro, diagramas, fuentes e índice local', async () => {
     TestBed.configureTestingModule({ providers: [provideRouter(routes)] });
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/compendio/pvp/fundamentos', PvpFundamentos);
     const page = harness.routeNativeElement as HTMLElement;
     expect(TestBed.inject(PresentationState).active()).toBe(false);
-    expect(document.title).toBe('Fundamentos del competitivo · El Compendio · Black Talon');
+    expect(document.title).toBe('Introducción al competitivo · El Compendio · Black Talon');
     expect(document.querySelector('meta[name="description"]')?.getAttribute('content')).toContain('Singles');
     const sections = [...page.querySelectorAll('article > section')];
     expect(sections.map(section => section.id)).toEqual(PVP_GUIDE.map(section => section.id));
@@ -27,6 +43,14 @@ describe('Fundamentos del competitivo', () => {
       expect(actual).toEqual(expected);
     });
     expect(page.querySelectorAll('svg[role="img"][aria-label]')).toHaveLength(2);
+    expect([...page.querySelectorAll('svg[role="img"]')].every(svg => !!svg.getAttribute('aria-label')?.trim())).toBe(true);
+    expect(page.querySelector('h1')?.textContent).toBe('Introducción al competitivo');
+    expect(page.textContent).toMatch(/prioridad/i);
+    expect(page.textContent).toMatch(/velocidad/i);
+    expect(page.textContent).toMatch(/condición de victoria/i);
+    expect(page.textContent).toMatch(/ejercicio/i);
+    expect(page.textContent).toMatch(/respuesta posible/i);
+    expect(page.textContent).not.toMatch(/pendiente|parcial/i);
     expect(page.querySelectorAll('a[href^="https://www.smogon.com/"]')).toHaveLength(3);
     const contents = [...page.querySelectorAll<HTMLAnchorElement>('.contents a')];
     expect(contents.map(a => a.hash.slice(1))).toEqual(PVP_GUIDE.map(section => section.id));

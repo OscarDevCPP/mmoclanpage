@@ -5,19 +5,11 @@ import { routes } from './app.routes';
 import { Resources } from './resources';
 import { PvpFundamentos } from './pvp-fundamentos';
 import { PresentationState } from './presentation-state';
-import { PVP_CHAPTERS, PVP_TOPICS } from './pvp-catalog';
 
 const key = 'black-talon.compendio.presentation.v1';
 describe('El Compendio', () => {
   beforeEach(() => { localStorage.clear(); vi.spyOn(window, 'scrollTo').mockImplementation(() => {}); });
   afterEach(() => { localStorage.clear(); vi.restoreAllMocks(); });
-  it('agrupa los 24 temas exactamente una vez sin publicar enlaces pendientes', () => {
-    const orders = PVP_CHAPTERS.flatMap(chapter => [...chapter.orders]);
-    expect(orders).toHaveLength(24);
-    expect(new Set(orders)).toEqual(new Set(PVP_TOPICS.map(topic => topic.learningOrder)));
-    expect(PVP_CHAPTERS).toHaveLength(5);
-    expect(PVP_TOPICS.find(topic => topic.learningOrder === 11)?.sections).toHaveLength(8);
-  });
   it('primera visita, salto, índice, guía, regreso y repetición', async () => {
     TestBed.configureTestingModule({ providers: [provideRouter(routes)] });
     const harness = await RouterTestingHarness.create();
@@ -34,26 +26,18 @@ describe('El Compendio', () => {
     const page = harness.routeNativeElement as HTMLElement;
     expect(page.querySelector('.compendium')?.classList.contains('cinema-active')).toBe(false);
     expect(page.textContent).toContain('Recopilación de conocimientos prácticos con mucho cariño para la comunidad');
-    expect(page.querySelectorAll('.chapter')).toHaveLength(5);
     expect(page.querySelector('nav')?.getAttribute('aria-label')).toBe('Contenido del Compendio');
-    expect(page.querySelector('#indice')?.textContent).toBe('Contenido');
-    const categories = [...page.querySelectorAll<HTMLDetailsElement>('.category')];
-    const chapters = [...page.querySelectorAll<HTMLDetailsElement>('.chapter')];
-    expect(categories).toHaveLength(3);
-    expect([...categories, ...chapters].every(detail => !detail.open)).toBe(true);
-    expect(chapters.every(detail => detail.parentElement?.id === 'pvp')).toBe(true);
-    categories[0].open = true; categories[1].open = true;
-    chapters[0].open = true; chapters[1].open = true;
-    expect(categories[0].open && categories[1].open && chapters[0].open && chapters[1].open).toBe(true);
+    const details = [...page.querySelectorAll<HTMLDetailsElement>('.compendium details')];
+    expect(details).toHaveLength(2);
+    expect(details.every(detail => !detail.open)).toBe(true);
+    expect(details[1].parentElement).toBe(details[0]);
     expect(page.querySelectorAll('summary button, summary a')).toHaveLength(0);
-    expect(page.querySelectorAll('.chapter summary .state')).toHaveLength(5);
-
-    expect(page.textContent).toContain('Guías de PvE');
-    expect(page.textContent).toContain('Eventos del juego');
-    const links = [...page.querySelectorAll<HTMLAnchorElement>('.compendium a')];
-    expect(links).toHaveLength(5);
+    const index = page.querySelector('.compendium nav')!;
+    expect(index.textContent).not.toMatch(/Pendiente|Parcial|Guías de PvE|Eventos del juego/i);
+    const links = [...index.querySelectorAll<HTMLAnchorElement>('a')];
+    expect(links).toHaveLength(4);
     expect(links.every(a => a.pathname === '/compendio/pvp/fundamentos' && a.hash.startsWith('#introduccion-'))).toBe(true);
-    links[1].click(); await harness.fixture.whenStable();
+    links[0].click(); await harness.fixture.whenStable();
     expect(TestBed.inject(Router).url).toBe('/compendio/pvp/fundamentos#introduccion-competitivo');
     expect(state.active()).toBe(false);
     await harness.navigateByUrl('/compendio/pvp/fundamentos', PvpFundamentos);
