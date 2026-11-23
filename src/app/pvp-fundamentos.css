@@ -32,3 +32,4 @@
 .guide .advice-label { display: block; margin-bottom: .5rem; color: var(--muted); font-size: .85em; font-weight: bold; }
 .guide .guide-advice h3 { font-family: inherit; font-size: 1.1em; font-weight: bold; line-height: 1.45; margin: 0 0 1rem; }
 .guide .guide-advice p:last-child { margin-bottom: 0; }
+.guide .guide-return { text-align: right; }

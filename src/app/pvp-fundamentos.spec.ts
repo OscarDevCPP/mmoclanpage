@@ -46,6 +46,10 @@ describe('Fundamentos del competitivo', () => {
     expect(advice?.querySelector('.advice-label')?.textContent).toBe('Recuerda');
     expect(advice?.querySelectorAll('p')).toHaveLength(3);
     for (const id of ['introduccion-competitivo', 'introduccion-turno', 'introduccion-plan', 'introduccion-practica']) expect(page.querySelector(`[id="${id}"]`)).toBeTruthy();
+    const back = page.querySelector<HTMLAnchorElement>('.guide-return a');
+    expect(back?.textContent?.trim()).toBe('Volver');
+    expect(back?.getAttribute('href')).toBe('/compendio');
+    expect(back?.getAttribute('aria-label')).toBe('Volver al Compendio');
     const contents = [...page.querySelectorAll<HTMLAnchorElement>('.contents a')];
     expect(contents.map(a => a.hash.slice(1))).toEqual(PVP_CONTENTS.map(section => section.id));
     contents[1].click(); await harness.fixture.whenStable();
