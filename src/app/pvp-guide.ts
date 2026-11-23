@@ -104,10 +104,10 @@ export const PVP_GUIDE: readonly GuideSection[] = [
     { kind: 'paragraph', id: "introduccion-combate-4", runs: text("No tienes que adivinar todas las jugadas. Compara tus opciones, acepta que cada una puede tener riesgos y adapta tu plan cuando aparezca nueva información.", 'introduccion-combate') },
   ] },
   { id: "introduccion-practica", blocks: [
-    { kind: 'heading', id: "introduccion-practica-h", level: 3, runs: text("Práctica", 'introduccion-practica') },
-    { kind: 'paragraph', id: "introduccion-practica-1", runs: text("Elige una modalidad que te llame la atención y conoce sus reglas. Con un equipo propio, intenta entender la función de cada integrante; en Randoms, empieza por revisar qué puede hacer el equipo que recibiste.", 'introduccion-practica') },
-    { kind: 'paragraph', id: "introduccion-practica-2", runs: text("Después de jugar, repasa una decisión: qué querías lograr, qué sabías en ese momento y qué otra opción tenías. Si el plan no funcionó, piensa si podrías adaptarlo o si el equipo necesita otra respuesta.", 'introduccion-practica') },
-    { kind: 'paragraph', id: "introduccion-practica-3", runs: text("Al empezar no necesitas ganar siempre ni tener un equipo perfecto. La práctica te ayuda a entender lo que pasa y a elegir con más información.", 'introduccion-practica') },
+    { kind: 'heading', id: "introduccion-practica-h", level: 3, runs: text("Lo importante al final es practicar, fallar, mejorar y superar tus límites", 'introduccion-practica') },
+    { kind: 'paragraph', id: "introduccion-practica-1", runs: text("Elige una modalidad que te guste y empieza a jugar, sin esperar a tener un equipo perfecto ni entenderlo todo. Con un equipo propio, aprende qué aporta cada integrante; en Randoms, explora las herramientas del equipo que recibiste. Habrá errores y derrotas: son parte del aprendizaje, no una razón para dejar de intentarlo.", 'introduccion-practica') },
+    { kind: 'paragraph', id: "introduccion-practica-2", runs: text("Después de una partida, vuelve a una decisión que te haya generado dudas: ¿qué querías conseguir, qué sabías en ese momento y qué podrías probar de otra manera? No hace falta corregirlo todo a la vez. Elige algo concreto, ponlo a prueba en los siguientes combates y observa qué cambia.", 'introduccion-practica') },
+    { kind: 'paragraph', id: "introduccion-practica-3", runs: text("Superar tus límites no significa ganar siempre. A veces es reconocer una amenaza que antes pasabas por alto, cuidar mejor a un compañero o entender por qué una jugada no funcionó. Compara lo que sabes hacer hoy con lo que te costaba al empezar: practicar, equivocarte y aprender de ello es lo que te permite seguir mejorando.", 'introduccion-practica') },
   ] },
 ];
 

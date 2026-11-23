@@ -27,3 +27,8 @@
 @media (min-width: 48rem) {
   .guide figure.figure-aside { float: right; width: min(40%, var(--image-width)); margin: .25rem 0 1rem 1.5rem; clear: right; }
 }
+
+.guide .guide-advice { background: var(--surface); padding: clamp(1rem, 3vw, 1.5rem); }
+.guide .advice-label { display: block; margin-bottom: .5rem; color: var(--muted); font-size: .85em; font-weight: bold; }
+.guide .guide-advice h3 { font-family: inherit; font-size: 1.1em; font-weight: bold; line-height: 1.45; margin: 0 0 1rem; }
+.guide .guide-advice p:last-child { margin-bottom: 0; }

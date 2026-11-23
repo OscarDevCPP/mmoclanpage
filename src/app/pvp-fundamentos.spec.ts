@@ -34,13 +34,17 @@ describe('Fundamentos del competitivo', () => {
     const sections = [...page.querySelectorAll('article > section')];
     expect(sections.map(section => section.id)).toEqual(PVP_GUIDE.map(section => section.id));
     expect([...page.querySelectorAll('article > section h2')].map(h => h.textContent?.trim())).toEqual(['Formas de jugar al PvP', 'Lo esencial antes de crear un equipo', 'Construcción de equipos', 'La idea detrás de cada combate']);
-    expect([...page.querySelectorAll('article > section h3')].map(h => h.textContent?.trim())).toEqual(['Modalidades', 'Tiers', 'Tipos', 'Genética', 'Entrenamiento', 'Crianza', 'Preparación', 'Sinergia y cores', 'Arquetipos', 'Decisiones', 'Práctica']);
+    expect([...page.querySelectorAll('article > section h3')].map(h => h.textContent?.trim())).toEqual(['Modalidades', 'Tiers', 'Tipos', 'Genética', 'Entrenamiento', 'Crianza', 'Preparación', 'Sinergia y cores', 'Arquetipos', 'Decisiones', 'Lo importante al final es practicar, fallar, mejorar y superar tus límites']);
     sections.forEach((section, i) => {
       const actual = [...section.querySelectorAll('h2,h3,p')].map(node => node.textContent?.replace(/\s+/g, ' ').trim());
       const expected = PVP_GUIDE[i].blocks.flatMap(block => block.kind === 'heading' || block.kind === 'paragraph' ? [block.runs.map(run => run.text).join('').replace(/\s+/g, ' ').trim()] : []);
       expect(actual).toEqual(expected);
     });
     expect(sections.every(section => !section.hasAttribute('tabindex'))).toBe(true);
+    const advice = page.querySelector('#introduccion-practica.guide-advice');
+    expect(page.querySelectorAll('.guide-advice')).toHaveLength(1);
+    expect(advice?.querySelector('.advice-label')?.textContent).toBe('Recuerda');
+    expect(advice?.querySelectorAll('p')).toHaveLength(3);
     for (const id of ['introduccion-competitivo', 'introduccion-turno', 'introduccion-plan', 'introduccion-practica']) expect(page.querySelector(`[id="${id}"]`)).toBeTruthy();
     const contents = [...page.querySelectorAll<HTMLAnchorElement>('.contents a')];
     expect(contents.map(a => a.hash.slice(1))).toEqual(PVP_CONTENTS.map(section => section.id));

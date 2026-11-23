@@ -9,7 +9,8 @@
     <ol>@for (item of contents; track item.id) { <li><a [routerLink]="['/compendio/pvp/fundamentos']" [fragment]="item.id">{{ item.title }}</a></li> }</ol>
   </nav>
   @for (section of sections; track section.id) {
-    <section [id]="section.id">
+    <section [id]="section.id" [class.guide-advice]="section.id === 'introduccion-practica'">
+      @if (section.id === 'introduccion-practica') { <span class="advice-label">Recuerda</span> }
       @if (section.id === 'introduccion-combate') { <span id="introduccion-turno" class="anchor-alias" aria-hidden="true"></span> }
       @if (section.id === 'introduccion-sinergia') { <span id="introduccion-plan" class="anchor-alias" aria-hidden="true"></span> }
       @for (block of section.blocks; track block.id) {
