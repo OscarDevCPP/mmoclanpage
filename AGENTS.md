@@ -14,6 +14,7 @@ Keep environment changes project-local. Do not install or trial OpenPencil. Gene
 | angular-new-app | Creating the Angular application once requested | [.agents/skills/angular-new-app/SKILL.md](.agents/skills/angular-new-app/SKILL.md) |
 | angular-developer | Implementing Angular features, architecture, styling, or tests | [.agents/skills/angular-developer/SKILL.md](.agents/skills/angular-developer/SKILL.md) |
 | frontend-design | Establishing visual direction or building and reshaping UI | [.agents/skills/frontend-design/SKILL.md](.agents/skills/frontend-design/SKILL.md) |
+| compendio-editorial | Writing, editing, or proofreading the Compendio’s educational content in Spanish | [.agents/skills/compendio-editorial/SKILL.md](.agents/skills/compendio-editorial/SKILL.md) |
 | web-design-guidelines | Reviewing existing UI for usability and accessibility issues | [.agents/skills/web-design-guidelines/SKILL.md](.agents/skills/web-design-guidelines/SKILL.md) |
 | write-docs-github (global, if available) | Creating, updating, or reviewing project documentation | — |
 
