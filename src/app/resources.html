@@ -20,10 +20,13 @@
   <nav aria-label="Contenido del Compendio">
     <details class="category" id="pvp">
       <summary><h2>Guías de PvP</h2><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
-      <details class="chapter">
-        <summary><h3>Introducción al competitivo</h3><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
-        <ul>@for (item of introduction; track item.id) { <li><a routerLink="/compendio/pvp/fundamentos" [fragment]="item.id">{{ item.title }}</a></li> }</ul>
-      </details>
+      <div class="chapter">
+        <div class="chapter-header">
+          <h3><button type="button" class="chapter-toggle" [attr.aria-expanded]="introductionOpen()" aria-controls="pvp-introduction-topics" (click)="toggleIntroduction()">Introducción al competitivo<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg></button></h3>
+          <a class="icon-button chapter-view" routerLink="/compendio/pvp/fundamentos" aria-label="Ver Introducción al competitivo" title="Ver Introducción al competitivo" data-tooltip="Ver Introducción al competitivo"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></a>
+        </div>
+        <ul id="pvp-introduction-topics" [hidden]="!introductionOpen()">@for (item of introduction; track item.id) { <li><a routerLink="/compendio/pvp/fundamentos" [fragment]="item.id">{{ item.title }}</a></li> }</ul>
+      </div>
     </details>
   </nav>
 </div>

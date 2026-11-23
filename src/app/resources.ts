@@ -20,6 +20,8 @@ export class Resources {
   readonly guide = signal(false);
   readonly index = signal(0);
   readonly introduction = PVP_CONTENTS;
+  readonly introductionOpen = signal(false);
+  toggleIntroduction() { this.introductionOpen.update(open => !open); }
   readonly scenes = [
     { title: 'Un lugar para compartir', image: 'academy/bienvenida.svg', speaker: 'Socamaru', text: '¡Bienvenidos al Compendio! Aquí reunimos lo que vamos aprendiendo para compartirlo con el clan, jeje.' },
     { title: 'Una duda', image: 'academy/temas.svg', speaker: 'GhostyFly', text: '¿Y qué podemos encontrar aquí? 😁' },

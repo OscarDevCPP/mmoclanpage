@@ -3,7 +3,6 @@ import { provideRouter, Router } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { routes } from './app.routes';
 import { Resources } from './resources';
-import { PvpFundamentos } from './pvp-fundamentos';
 import { PresentationState } from './presentation-state';
 
 const key = 'black-talon.compendio.presentation.v1';
@@ -28,13 +27,34 @@ describe('El Compendio', () => {
     expect(page.textContent).toContain('Recopilación de conocimientos prácticos con mucho cariño para la comunidad');
     expect(page.querySelector('nav')?.getAttribute('aria-label')).toBe('Contenido del Compendio');
     const details = [...page.querySelectorAll<HTMLDetailsElement>('.compendium details')];
-    expect(details).toHaveLength(2);
-    expect(details.every(detail => !detail.open)).toBe(true);
-    expect(details[1].parentElement).toBe(details[0]);
+    expect(details).toHaveLength(1);
+    expect(details[0].open).toBe(false);
+    expect(details[0].classList.contains('category')).toBe(true);
+    details[0].open = true;
+    const toggle = page.querySelector<HTMLButtonElement>('.chapter-toggle')!;
+    const topics = page.querySelector<HTMLUListElement>('#pvp-introduction-topics')!;
+    const eye = page.querySelector<HTMLAnchorElement>('.chapter-view')!;
+    expect(toggle.getAttribute('aria-controls')).toBe(topics.id);
+    expect(toggle.getAttribute('aria-expanded')).toBe('false');
+    expect(topics.hidden).toBe(true);
+    expect(eye.getAttribute('aria-label')).toBe('Ver Introducción al competitivo');
+    expect(eye.title).toBe('Ver Introducción al competitivo');
+    expect(eye.pathname).toBe('/compendio/pvp/fundamentos');
+    expect(eye.hash).toBe('');
+    expect(eye.querySelector('svg')?.getAttribute('aria-hidden')).toBe('true');
+    expect(eye.querySelector('svg')?.getAttribute('focusable')).toBe('false');
+    expect(eye.textContent?.trim()).toBe('');
+    toggle.click(); await harness.fixture.whenStable();
+    expect(toggle.getAttribute('aria-expanded')).toBe('true');
+    expect(topics.hidden).toBe(false);
+    toggle.click(); await harness.fixture.whenStable();
+    expect(toggle.getAttribute('aria-expanded')).toBe('false');
+    expect(topics.hidden).toBe(true);
+    toggle.click(); await harness.fixture.whenStable();
     expect(page.querySelectorAll('summary button, summary a')).toHaveLength(0);
     const index = page.querySelector('.compendium nav')!;
     expect(index.textContent).not.toMatch(/Pendiente|Parcial|Guías de PvE|Eventos del juego/i);
-    const links = [...index.querySelectorAll<HTMLAnchorElement>('a')];
+    const links = [...topics.querySelectorAll<HTMLAnchorElement>('a')];
     expect(links.map(link => [link.textContent?.trim(), link.hash])).toEqual([
       ['Formas de jugar al PvP', '#introduccion-modalidades'], ['Lo esencial antes de crear un equipo', '#introduccion-tipos'],
       ['Construcción de equipos', '#introduccion-sinergia'], ['La idea detrás de cada combate', '#introduccion-combate'],
@@ -43,7 +63,11 @@ describe('El Compendio', () => {
     links[0].click(); await harness.fixture.whenStable();
     expect(TestBed.inject(Router).url).toBe('/compendio/pvp/fundamentos#introduccion-modalidades');
     expect(state.active()).toBe(false);
-    await harness.navigateByUrl('/compendio/pvp/fundamentos', PvpFundamentos);
+    component = await harness.navigateByUrl('/compendio', Resources);
+    await harness.fixture.whenStable();
+    const rootLink = harness.routeNativeElement!.querySelector<HTMLAnchorElement>('.chapter-view')!;
+    rootLink.click(); await harness.fixture.whenStable();
+    expect(TestBed.inject(Router).url).toBe('/compendio/pvp/fundamentos');
     component = await harness.navigateByUrl('/compendio', Resources);
     await harness.fixture.whenStable(); harness.detectChanges();
     expect(component.guide()).toBe(true);
