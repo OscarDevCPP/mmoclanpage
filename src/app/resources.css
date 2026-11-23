@@ -39,9 +39,9 @@
 }
 @media (prefers-reduced-motion: reduce) { .compendium summary svg { transition: none; } }
 
-.compendium .category > summary h2 { font-size: 1.7rem; margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.compendium .category > summary h2 { font-size: 1.5em; margin: 0; min-width: 0; overflow-wrap: anywhere; }
 .compendium .chapter { margin: .6rem 0 .8rem 1rem; border: 0; background: var(--surface); }
-.compendium .chapter summary h3 { font-size: 1.2rem; }
+.compendium .chapter summary h3 { font-size: 1.2em; }
 .compendium .chapter summary svg { margin-left: auto; }
 .compendium summary:focus-visible { outline: 2px solid var(--text); outline-offset: -3px; }
 .compendium summary:focus:not(:focus-visible) { outline: none; }
