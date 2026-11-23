@@ -4,8 +4,8 @@
 .guide h1 { font-family: var(--font-title); font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.1; }
 .guide header p { color: var(--muted); margin-top: .5rem; }
 .guide h2, .guide h3 { font-family: var(--font-title); line-height: 1.2; margin: 1.5em 0 .5em; }
-.guide section h2 { font-size: 1.8em; text-transform: none; border: 0; padding: 0; }
-.guide h3 { font-size: 1.3em; }
+.guide section h2 { font-size: 1em; text-transform: none; border: 0; padding: 0; }
+.guide h3 { font-size: 1em; }
 .guide p, .guide ul { margin: 0 0 1em; }
 .guide li { margin-bottom: .4em; }
 .guide section { scroll-margin-top: 6rem; }
