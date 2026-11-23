@@ -29,17 +29,17 @@ export class PvpFundamentos {
   readonly openTerm = signal<string | null>(null);
   private readonly hostElement = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
   readonly definitions: Record<string, string> = {
-    Singles: 'Combate con un Pokémon activo por jugador.',
-    Doubles: 'Combate con dos Pokémon activos por jugador.',
-    Randoms: 'Modalidad con equipos generados y preparación predefinida.',
-    tiers: 'Categorías que delimitan qué Pokémon pueden participar.',
-    OU: 'OverUsed: una categoría competitiva relacionada con el uso.',
-    UU: 'UnderUsed: una categoría competitiva relacionada con el uso.',
-    NU: 'NeverUsed: una categoría competitiva relacionada con el uso.',
-    STAB: 'Bonificación de daño cuando el movimiento comparte tipo con quien lo usa.',
-    IV: 'Valores individuales que influyen en las estadísticas de un Pokémon.',
-    EV: 'Valores de esfuerzo obtenidos mediante entrenamiento que influyen en las estadísticas.',
-    core: 'Pequeño grupo de Pokémon que colaboran alrededor de una idea.',
+    Singles: 'Cada jugador tiene un Pokémon en el campo y puede atacar o cambiarlo por otro de su equipo.',
+    Doubles: 'Cada jugador tiene dos Pokémon en el campo, que pueden colaborar durante el combate.',
+    Randoms: 'Juegas con un equipo generado y preparado de antemano, en vez de construirlo tú.',
+    tiers: 'Categorías con reglas que delimitan qué Pokémon pueden participar.',
+    OU: 'Una tier cuyos Pokémon se clasifican, entre otros criterios, según cuánto se usan.',
+    UU: 'Una tier con sus propias reglas y clasificación de Pokémon según su uso.',
+    NU: 'Una tier con sus propias reglas y clasificación de Pokémon según su uso.',
+    STAB: 'Un movimiento hace más daño cuando comparte tipo con el Pokémon que lo usa.',
+    IV: 'Valores individuales que ayudan a explicar por qué dos Pokémon de la misma especie pueden tener estadísticas distintas.',
+    EV: 'Valores obtenidos mediante entrenamiento que permiten reforzar las estadísticas de un Pokémon.',
+    core: 'Un grupo pequeño de Pokémon que se ayudan para llevar adelante una idea.',
   };
   term(run: InlineRun): string | undefined {
     return run.marks.find(mark => mark.kind === 'glossary')?.term;

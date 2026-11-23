@@ -22,11 +22,9 @@
 }
 .icon-button:disabled { opacity: .45; cursor: default; }
 .cinematic .icon-button { color: #fff8ed; background: #292422; border-color: #e2c5a1; }
-.cinematic :focus-visible, .replay:focus-visible { outline: 3px solid #fff; outline-offset: 3px; box-shadow: 0 0 0 5px #712b26; }
 .cinematic h2:focus, .intro h1:focus, .scene:focus { outline: none; box-shadow: none; }
 .index ol { display: block; padding-left: 1.6rem; } .index li { margin: .45rem 0; } .index a { display: inline; padding: 0; border: 0; background: none; color: var(--accent-text); font-weight: normal; text-decoration: none; }
 .index a:hover, .index a:focus-visible { color: var(--text); text-shadow: 0 0 1px currentColor; font-weight: bold; }
-.index a:focus-visible { outline: none; }
 .finds > span { display: grid; justify-items: center; gap: .3rem; }
 .papers span { position: relative; background: repeating-linear-gradient(#ead1a4 0 23px,#c9ae85 24px 25px); box-shadow: 5px 6px #34251c88; transform: rotate(-2deg); }
 .papers span:nth-child(2) { transform: rotate(2deg); }

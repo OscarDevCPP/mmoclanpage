@@ -3,7 +3,7 @@ import { provideRouter, Router } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { routes } from './app.routes';
 import { PvpFundamentos, popupPosition } from './pvp-fundamentos';
-import { PVP_GUIDE } from './pvp-guide';
+import { PVP_CONTENTS, PVP_GUIDE } from './pvp-guide';
 import { PresentationState } from './presentation-state';
 
 describe('Fundamentos del competitivo', () => {
@@ -33,20 +33,19 @@ describe('Fundamentos del competitivo', () => {
     expect(document.querySelector('meta[name="description"]')?.getAttribute('content')).toContain('PokeMMO');
     const sections = [...page.querySelectorAll('article > section')];
     expect(sections.map(section => section.id)).toEqual(PVP_GUIDE.map(section => section.id));
-    expect([...page.querySelectorAll('article > section h2')].map(h => h.textContent?.trim())).toEqual([
-      'Modalidades', 'Tiers', 'Tipos', 'Genética', 'Entrenamiento', 'Crianza', 'Preparación', 'Sinergia y cores', 'Arquetipos', 'El combate', 'Práctica',
-    ]);
+    expect([...page.querySelectorAll('article > section h2')].map(h => h.textContent?.trim())).toEqual(['Modalidades', 'Tu Pokémon', 'Tu equipo', 'El combate']);
+    expect([...page.querySelectorAll('article > section h3')].map(h => h.textContent?.trim())).toEqual(['Formas de jugar', 'Tiers', 'Tipos', 'Genética', 'Entrenamiento', 'Crianza', 'Preparación', 'Sinergia y cores', 'Arquetipos', 'Decisiones', 'Práctica']);
     sections.forEach((section, i) => {
-      const actual = [...section.querySelectorAll('h2,p')].map(node => node.textContent?.replace(/\s+/g, ' ').trim());
+      const actual = [...section.querySelectorAll('h2,h3,p')].map(node => node.textContent?.replace(/\s+/g, ' ').trim());
       const expected = PVP_GUIDE[i].blocks.flatMap(block => block.kind === 'heading' || block.kind === 'paragraph' ? [block.runs.map(run => run.text).join('').replace(/\s+/g, ' ').trim()] : []);
       expect(actual).toEqual(expected);
     });
     expect(sections.every(section => !section.hasAttribute('tabindex'))).toBe(true);
     for (const id of ['introduccion-competitivo', 'introduccion-turno', 'introduccion-plan', 'introduccion-practica']) expect(page.querySelector(`[id="${id}"]`)).toBeTruthy();
     const contents = [...page.querySelectorAll<HTMLAnchorElement>('.contents a')];
-    expect(contents.map(a => a.hash.slice(1))).toEqual(PVP_GUIDE.slice(1).map(section => section.id));
+    expect(contents.map(a => a.hash.slice(1))).toEqual(PVP_CONTENTS.map(section => section.id));
     contents[1].click(); await harness.fixture.whenStable();
-    expect(TestBed.inject(Router).url).toBe('/compendio/pvp/fundamentos#introduccion-tiers');
+    expect(TestBed.inject(Router).url).toBe('/compendio/pvp/fundamentos#introduccion-tipos');
   });
   it('abre ayudas una vez por término y cierra con Escape o clic exterior sin robar foco', async () => {
     TestBed.configureTestingModule({ providers: [provideRouter(routes)] });
@@ -54,7 +53,7 @@ describe('Fundamentos del competitivo', () => {
     await harness.navigateByUrl('/compendio/pvp/fundamentos', PvpFundamentos);
     const page = harness.routeNativeElement as HTMLElement;
     const buttons = [...page.querySelectorAll<HTMLButtonElement>('.glossary-trigger')];
-    expect(buttons.map(b => b.textContent?.trim())).toEqual(['Singles', 'Doubles', 'Randoms', 'OU', 'UU', 'NU', 'tiers', 'STAB', 'IV', 'EV', 'core']);
+    expect(buttons.map(b => b.textContent?.trim())).toEqual(['Singles', 'Doubles', 'Randoms', 'tiers', 'OU', 'UU', 'NU', 'STAB', 'IV', 'EV', 'core']);
     const button = buttons[0];
     expect(button.hasAttribute('aria-controls')).toBe(false);
     expect(button.hasAttribute('aria-describedby')).toBe(false);
@@ -63,7 +62,7 @@ describe('Fundamentos del competitivo', () => {
     expect(button.getAttribute('aria-describedby')).toBe('definition-Singles');
     expect(page.querySelector('#definition-Singles')).toBeTruthy();
     expect(button.getAttribute('aria-expanded')).toBe('true');
-    expect(page.querySelector('[role="note"]')?.textContent).toContain('un Pokémon activo');
+    expect(page.querySelector('[role="note"]')?.textContent).toContain('un Pokémon en el campo');
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); harness.detectChanges();
     expect(button.getAttribute('aria-expanded')).toBe('false'); expect(document.activeElement).toBe(button);
     expect(button.hasAttribute('aria-controls')).toBe(false);

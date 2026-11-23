@@ -35,7 +35,10 @@ describe('El Compendio', () => {
     const index = page.querySelector('.compendium nav')!;
     expect(index.textContent).not.toMatch(/Pendiente|Parcial|Guías de PvE|Eventos del juego/i);
     const links = [...index.querySelectorAll<HTMLAnchorElement>('a')];
-    expect(links).toHaveLength(11);
+    expect(links.map(link => [link.textContent?.trim(), link.hash])).toEqual([
+      ['Modalidades', '#introduccion-modalidades'], ['Tu Pokémon', '#introduccion-tipos'],
+      ['Tu equipo', '#introduccion-sinergia'], ['El combate', '#introduccion-combate'],
+    ]);
     expect(links.every(a => a.pathname === '/compendio/pvp/fundamentos' && a.hash.startsWith('#introduccion-'))).toBe(true);
     links[0].click(); await harness.fixture.whenStable();
     expect(TestBed.inject(Router).url).toBe('/compendio/pvp/fundamentos#introduccion-modalidades');

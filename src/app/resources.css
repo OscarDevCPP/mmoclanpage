@@ -21,7 +21,6 @@
 .compendium .category:first-of-type { border-top: 1px solid var(--muted); }
 .compendium summary { display: flex; align-items: center; gap: .75rem; min-height: 48px; padding: .6rem .3rem; cursor: pointer; list-style: none; }
 .compendium summary::-webkit-details-marker { display: none; }
-.compendium summary:focus-visible { outline: 3px solid var(--accent-text); outline-offset: 2px; }
 .compendium .category, .compendium .chapter, .compendium summary h3, .compendium summary h4 { min-width: 0; }
 .compendium summary h3, .compendium summary h4 { margin: 0; overflow-wrap: anywhere; }
 .compendium nav li, .compendium nav p { overflow-wrap: anywhere; }
@@ -44,5 +43,3 @@
 .compendium .chapter summary h3 { font-size: 1.2em; }
 .compendium .chapter > ul { font-size: .95em; }
 .compendium .chapter summary svg { margin-left: auto; }
-.compendium summary:focus-visible { outline: 2px solid var(--text); outline-offset: -3px; }
-.compendium summary:focus:not(:focus-visible) { outline: none; }

@@ -41,7 +41,7 @@ Contenidos útiles para los miembros del clan y los jugadores de PokeMMO:
 - Consejos.
 - Otros recursos útiles relacionados con el juego.
 
-Los recursos se incorporarán progresivamente. El Compendio muestra únicamente la introducción publicada al competitivo de PokeMMO, con once apartados sobre modalidades, preparación, equipos y práctica y acceso desde el índice PvP. Las propuestas históricas de contenido no constituyen un catálogo visible ni un compromiso de publicación.
+Los recursos se incorporarán progresivamente. El Compendio muestra únicamente la introducción publicada al competitivo de PokeMMO, con cuatro grupos indexados: modalidades, tu Pokémon, tu equipo y el combate; sus temas conservan enlaces directos y acceso desde el índice PvP. Las propuestas históricas de contenido no constituyen un catálogo visible ni un compromiso de publicación.
 
 ## 4. Recuerdos
 

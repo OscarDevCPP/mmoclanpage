@@ -15,7 +15,7 @@
   --accent-text: #8b1a18;
   --on-accent: #fff8f2;
   --border: #a98c82;
-  --focus: #781410;
+  --focus: #292929; --focus-halo: #fff;
   --shadow: #d1b6aa;
   --font-title: 'Pixelify Sans', sans-serif;
   --space-small: 0.5rem;
@@ -32,14 +32,14 @@
     color-scheme: dark;
     --bg: #171515; --surface: #262120; --text: #eaded4; --muted: #c8b6a8;
     --accent: #961e1b; --accent-hover: #5c1614; --accent-text: #eea6a0;
-    --on-accent: #fff8f2; --border: #79534d; --focus: #ffd18f; --shadow: #5c1614;
+    --on-accent: #fff8f2; --border: #79534d; --focus: #f5f5f5; --focus-halo: #292929; --shadow: #5c1614;
   }
 }
 :root[data-theme='dark'] {
   color-scheme: dark;
   --bg: #171515; --surface: #262120; --text: #eaded4; --muted: #c8b6a8;
   --accent: #961e1b; --accent-hover: #5c1614; --accent-text: #eea6a0;
-  --on-accent: #fff8f2; --border: #79534d; --focus: #ffd18f; --shadow: #5c1614;
+  --on-accent: #fff8f2; --border: #79534d; --focus: #f5f5f5; --focus-halo: #292929; --shadow: #5c1614;
 }
 :root[data-theme='light'] { color-scheme: light; }
 /* Minimal reset adapted from https://www.joshwcomeau.com/css/custom-css-reset/ */
@@ -52,7 +52,7 @@ button, input, select, textarea { font: inherit; }
 p, h1, h2, h3 { overflow-wrap: break-word; }
 a { color: inherit; }
 button { cursor: pointer; }
-:focus-visible { outline: 3px solid var(--focus); outline-offset: 5px; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; box-shadow: 0 0 0 5px var(--focus-halo); }
 main:focus { outline: none; }
 .skip-link { position: absolute; z-index: 5; top: -5rem; left: 1rem; background: var(--text); color: var(--bg); padding: .8rem; }
 .skip-link:focus { top: 1rem; }
@@ -132,3 +132,5 @@ app-missions .papers button[aria-pressed="true"] { outline: 4px solid #fff8ef; o
 :root[data-compendio-seen] app-resources .cinematic { visibility: hidden; }
 :root:not([data-js]) app-resources .cinematic { display: none; }
 :root[data-js] app-resources .compendium.cinema-active { display: none; }
+
+app-missions .papers button[aria-pressed="true"]:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; box-shadow: 0 0 0 5px var(--focus-halo); }
