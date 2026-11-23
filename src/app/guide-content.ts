@@ -1,4 +1,5 @@
 export type InlineMark =
+  | { readonly kind: 'glossary'; readonly term: string }
   | { readonly kind: 'emphasis' }
   | { readonly kind: 'strong' }
   | { readonly kind: 'link'; readonly href: string };

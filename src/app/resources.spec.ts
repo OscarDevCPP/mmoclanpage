@@ -35,10 +35,10 @@ describe('El Compendio', () => {
     const index = page.querySelector('.compendium nav')!;
     expect(index.textContent).not.toMatch(/Pendiente|Parcial|Guías de PvE|Eventos del juego/i);
     const links = [...index.querySelectorAll<HTMLAnchorElement>('a')];
-    expect(links).toHaveLength(4);
+    expect(links).toHaveLength(11);
     expect(links.every(a => a.pathname === '/compendio/pvp/fundamentos' && a.hash.startsWith('#introduccion-'))).toBe(true);
     links[0].click(); await harness.fixture.whenStable();
-    expect(TestBed.inject(Router).url).toBe('/compendio/pvp/fundamentos#introduccion-competitivo');
+    expect(TestBed.inject(Router).url).toBe('/compendio/pvp/fundamentos#introduccion-modalidades');
     expect(state.active()).toBe(false);
     await harness.navigateByUrl('/compendio/pvp/fundamentos', PvpFundamentos);
     component = await harness.navigateByUrl('/compendio', Resources);

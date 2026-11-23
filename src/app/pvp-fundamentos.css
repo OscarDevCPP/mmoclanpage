@@ -14,3 +14,8 @@
 .diagram { width: min(100%, 25rem); height: auto; margin: 1.5rem auto; fill: none; stroke: var(--accent-text); stroke-width: 2; }
 .diagram rect { fill: var(--surface); }
 .diagram text { fill: var(--text); stroke: none; font: 14px Verdana, sans-serif; text-anchor: middle; }
+
+/* Positioned after rendering against the viewport, without changing the sentence flow. */
+.glossary-trigger { appearance: none; border: 0; padding: 0; background: none; color: inherit; font: inherit; cursor: pointer; text-decoration: underline dotted; text-underline-offset: .2em; }
+.glossary-definition { position: fixed; z-index: 1000; visibility: hidden; box-sizing: border-box; width: max-content; max-width: min(20rem, calc(100vw - 16px)); overflow: auto; padding: .65em .85em; background: var(--surface); color: var(--text); border: 1px solid var(--accent-text); border-radius: .3em; box-shadow: 0 .25rem .8rem #0005; line-height: 1.45; }
+.anchor-alias { display: block; scroll-margin-top: 6rem; }

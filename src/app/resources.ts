@@ -2,6 +2,7 @@ import { afterNextRender, Component, DestroyRef, ElementRef, inject, signal } fr
 import { NgOptimizedImage } from '@angular/common';
 import { PresentationState } from './presentation-state';
 import { RouterLink } from '@angular/router';
+import { PVP_CONTENTS } from './pvp-guide';
 
 const KEY = 'black-talon.compendio.presentation.v1';
 
@@ -18,12 +19,7 @@ export class Resources {
   private readonly destroyRef = inject(DestroyRef);
   readonly guide = signal(false);
   readonly index = signal(0);
-  readonly introduction = [
-    { id: 'introduccion-competitivo', title: '¿Qué es competir en Singles?' },
-    { id: 'introduccion-turno', title: 'Un turno, varias preguntas' },
-    { id: 'introduccion-plan', title: 'Un equipo con un plan' },
-    { id: 'introduccion-practica', title: 'Antes de combatir' },
-  ];
+  readonly introduction = PVP_CONTENTS;
   readonly scenes = [
     { title: 'Un lugar para compartir', image: 'academy/bienvenida.svg', speaker: 'Socamaru', text: '¡Bienvenidos al Compendio! Aquí reunimos lo que vamos aprendiendo para compartirlo con el clan, jeje.' },
     { title: 'Una duda', image: 'academy/temas.svg', speaker: 'GhostyFly', text: '¿Y qué podemos encontrar aquí? 😁' },

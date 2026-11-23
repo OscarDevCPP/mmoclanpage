@@ -2,14 +2,16 @@
   <nav aria-label="Ruta de navegación"><a routerLink="/compendio">El Compendio</a> / PvP</nav>
   <header>
     <h1>Introducción al competitivo</h1>
-    <p>Introducción a Singles</p>
+    <p>Una primera mirada al PvP de PokeMMO</p>
   </header>
   <nav class="contents" aria-label="Contenido de esta guía">
     <h2>En esta guía</h2>
     <ol>@for (item of contents; track item.id) { <li><a [routerLink]="['/compendio/pvp/fundamentos']" [fragment]="item.id">{{ item.title }}</a></li> }</ol>
   </nav>
   @for (section of sections; track section.id) {
-    <section [id]="section.id" tabindex="-1">
+    <section [id]="section.id">
+      @if (section.id === 'introduccion-combate') { <span id="introduccion-turno" class="anchor-alias" aria-hidden="true"></span> }
+      @if (section.id === 'introduccion-sinergia') { <span id="introduccion-plan" class="anchor-alias" aria-hidden="true"></span> }
       @for (block of section.blocks; track block.id) {
         @switch (block.kind) {
           @case ('heading') {
@@ -33,7 +35,10 @@
 </article>
 <ng-template #runs let-items>
   @for (run of items; track $index) {
-    @if (href(run); as url) { <a [href]="url"><ng-container *ngTemplateOutlet="marked; context: { $implicit: run }" /></a> }
+    @if (term(run); as name) {
+      <span class="glossary"><button type="button" class="glossary-trigger" [attr.data-term]="name" [attr.aria-expanded]="openTerm() === name" [attr.aria-controls]="openTerm() === name ? 'definition-' + name : null" [attr.aria-describedby]="openTerm() === name ? 'definition-' + name : null" #trigger (click)="toggle(name, trigger)">{{ run.text }}</button>@if (openTerm() === name) { <span class="glossary-definition" [id]="'definition-' + name" role="note">{{ definitions[name] }}</span> }</span>
+    }
+    @else if (href(run); as url) { <a [href]="url"><ng-container *ngTemplateOutlet="marked; context: { $implicit: run }" /></a> }
     @else { <ng-container *ngTemplateOutlet="marked; context: { $implicit: run }" /> }
   }
 </ng-template>

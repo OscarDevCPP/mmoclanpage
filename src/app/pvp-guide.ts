@@ -1,57 +1,105 @@
-import type { GuideBlock, GuideSection } from './guide-content';
+import type { GuideSection } from './guide-content';
 
-const text = (text: string) => [{ text, marks: [] }];
-const heading = (id: string, title: string, level: 2 | 3 = 2): GuideBlock => ({ kind: 'heading', id, level, runs: text(title) });
-const paragraph = (id: string, content: string): GuideBlock => ({ kind: 'paragraph', id, runs: text(content) });
-const diagram = (id: string, description: string): GuideBlock => ({ kind: 'diagram', id, description });
-const list = (id: string, items: string[]): GuideBlock => ({ kind: 'list', id, ordered: false, items: items.map((item, i) => ({ id: `${id}-${i}`, runs: text(item) })) });
+const seen = new Set<string>();
+const glossaryTerms: Record<string, string[]> = {
+  'introduccion-modalidades': ['Singles', 'Doubles', 'Randoms'],
+  'introduccion-tiers': ['OU', 'UU', 'NU', 'tiers'],
+  'introduccion-tipos': ['STAB'],
+  'introduccion-genetica': ['IV'],
+  'introduccion-entrenamiento': ['EV'],
+  'introduccion-sinergia': ['core'],
+};
+const text = (value: string, section: string) => {
+  const terms = glossaryTerms[section] ?? [];
+  const pattern = new RegExp(`\\b(${terms.join('|')})\\b`, 'g');
+  if (!terms.length) return [{ text: value, marks: [] }];
+  return value.split(pattern).filter(Boolean).map(part => {
+    if (terms.includes(part) && !seen.has(part)) {
+      seen.add(part);
+      return { text: part, marks: [{ kind: 'glossary' as const, term: part }] };
+    }
+    return { text: part, marks: [] };
+  });
+};
 
-/** Conceptos introductorios; las reglas concretas dependen del formato vigente. */
 export const PVP_GUIDE: readonly GuideSection[] = [
-  { id: 'introduccion-competitivo', blocks: [
-    heading('inicio-h', '¿Qué es competir en Singles?'),
-    paragraph('inicio-1', 'Si vienes de la historia y quieres probar combates contra otras personas, esta guía te acompaña a observar un turno, pensar un plan y aprender de cada partida. No necesitas memorizar todos los términos antes de empezar.'),
-    paragraph('inicio-2', 'PvP significa jugador contra jugador (player versus player). Tu rival también toma decisiones: puede atacar, cambiar de Pokémon o intentar conservar una pieza importante. En Singles hay un Pokémon activo por cada lado; sus compañeros esperan su oportunidad. Esta introducción se concentra en esa modalidad.'),
-    paragraph('inicio-3', 'La meta es ganar respetando las reglas del combate, habitualmente dejando al rival sin Pokémon disponibles. La fuerza de un movimiento importa, pero también el momento de usarlo y la colaboración del equipo. Un miembro que no consiga debilitar a nadie todavía puede abrir espacio para otro.'),
-    paragraph('inicio-4', 'Un formato establece las condiciones de una competencia; puede limitar qué participantes o recursos se admiten. Las categorías o tiers agrupan la competencia según sus propios criterios. Las reglas y clasificaciones pueden cambiar: consulta el formato vigente antes de preparar tu equipo. No hace falta conocer de memoria todas las categorías para dar tus primeros pasos.'),
-    paragraph('inicio-5', 'A diferencia de muchos encuentros de la aventura, aquí otra persona intenta responder a tu plan. Una derrota no invalida todo tu equipo: puede revelar una amenaza que no habías considerado o una pieza que necesitabas conservar. Empieza por entender una decisión cada vez.'),
+  { id: "introduccion-competitivo", blocks: [
+    { kind: 'paragraph', id: "introduccion-competitivo-1", runs: text("En el competitivo de PokeMMO, conocer buenos movimientos es solo una parte del juego. También importa cómo preparas tus Pokémon, cómo se complementan y qué decisiones tomas frente a otra persona.", 'introduccion-competitivo') },
+    { kind: 'paragraph', id: "introduccion-competitivo-2", runs: text("Al comenzar encontrarás términos como IV, EV, tiers o cores. No necesitas dominarlos todos antes de jugar. Esta introducción te ayudará a reconocer esas piezas, entender para qué sirven y saber qué tendrás que aprender para preparar tus primeros equipos.", 'introduccion-competitivo') },
   ] },
-  { id: 'introduccion-turno', blocks: [
-    heading('turno-h', 'Un turno, varias preguntas'),
-    paragraph('turno-1', 'Antes de elegir, observa la salud de ambos Pokémon, sus estados y la información que ya has visto: movimientos revelados, compañeros conocidos y posibles respuestas. También importa lo que no sabes. Una suposición razonable no equivale a conocer la elección del rival.'),
-    paragraph('turno-2', 'Los tipos pueden orientar qué ataques son eficaces o resistidos, pero no cuentan toda la historia. Considera también la salud restante y los efectos que conozcas. Pregúntate qué amenaza inmediata existe y qué ocurriría si tu acción no sale como esperabas.'),
-    paragraph('turno-3', 'La velocidad ayuda a determinar quién actúa primero cuando las acciones corresponden al mismo nivel de prioridad. Algunos movimientos tienen una prioridad distinta y pueden adelantarse a otros aunque su usuario sea más lento. Otros efectos también pueden alterar el orden: no reduzcas la decisión a mirar una sola estadística.'),
-    diagram('introduccion-turno-diagrama', 'Identifica la amenaza; compara atacar o cambiar y su riesgo; después observa y ajusta.'),
-    paragraph('turno-4', 'Imagina que tu atacante, importante para el final, está amenazado. Puedes atacar para presionar ahora, pero podrías perderlo antes de volver a usarlo. Puedes cambiar a un compañero que resista el ataque esperado y conservar al atacante; aun así, el compañero recibe las consecuencias de la acción rival y quizá no soporte otra opción.'),
-    paragraph('turno-5', 'Una tercera posibilidad es usar un movimiento de apoyo disponible para mejorar la situación, si el riesgo lo permite. Ninguna opción es automáticamente correcta: compara lo que ganas con lo que podrías perder. Si el rival anticipa tu cambio, puede elegir otra acción. Predecir es valorar posibilidades con la información disponible, no adivinar siempre ni perseguir la jugada más espectacular.'),
-    paragraph('turno-6', 'Después del turno, incorpora lo aprendido. Un movimiento revelado puede cambiar la evaluación del siguiente cambio; una pieza dañada quizá ya no pueda cumplir la misma función. Ajustar el plan es parte del combate, no una señal de que el plan inicial haya sido inútil.'),
+  { id: "introduccion-modalidades", blocks: [
+    { kind: 'heading', id: "introduccion-modalidades-h", level: 2, runs: text("Modalidades", 'introduccion-modalidades') },
+    { kind: 'paragraph', id: "introduccion-modalidades-1", runs: text("Antes de preparar un equipo, conviene conocer las distintas formas de jugar.", 'introduccion-modalidades') },
+    { kind: 'paragraph', id: "introduccion-modalidades-2", runs: text("En Singles, cada jugador tiene un Pokémon activo a la vez. Atacar o cambiar determina qué enfrentamiento habrá en el campo y qué oportunidades tendrá cada equipo.", 'introduccion-modalidades') },
+    { kind: 'paragraph', id: "introduccion-modalidades-3", runs: text("En Doubles, cada jugador tiene dos Pokémon activos. Además de enfrentarte al rival, debes considerar cómo colaboran tus dos compañeros. Sus movimientos, habilidades y posibles objetivos hacen que las decisiones sean diferentes de las de Singles.", 'introduccion-modalidades') },
+    { kind: 'paragraph', id: "introduccion-modalidades-4", runs: text("En Randoms, recibes un equipo generado con una preparación predefinida. No construyes ese equipo antes de combatir: debes reconocer las herramientas que te han tocado y encontrar cómo aprovecharlas.", 'introduccion-modalidades') },
+    { kind: 'paragraph', id: "introduccion-modalidades-5", runs: text("Estas opciones ofrecen experiencias distintas. Puedes familiarizarte con ellas antes de decidir dónde quieres concentrar tu aprendizaje.", 'introduccion-modalidades') },
   ] },
-  { id: 'introduccion-plan', blocks: [
-    heading('plan-h', 'Un equipo con un plan'),
-    paragraph('plan-1', 'Un equipo funciona mejor cuando sus miembros se ayudan. Una pieza puede presionar al rival, otra resistir amenazas y otra aportar apoyo o facilitar la entrada de sus compañeros. Son funciones, no casillas obligatorias: un mismo Pokémon puede cumplir varias, y varias piezas pueden compartir una tarea.'),
-    diagram('introduccion-plan-diagrama', 'El apoyo y la defensa colaboran con el atacante: pueden facilitar su entrada o cubrir amenazas para conservarlo.'),
-    paragraph('plan-2', 'La condición de victoria (win condition) es una situación plausible que intentas crear para cerrar la partida, no una promesa. Por ejemplo, tu atacante rápido podría resultar decisivo al final, pero un defensor rival lo frena. Tu plan puede ser debilitar primero a ese defensor y guardar al atacante para cuando tenga una oportunidad.'),
-    paragraph('plan-3', 'Conservar no significa negarse a usar una pieza. Significa valorar cuánto daño puede recibir y si aún necesitas su función. Si pierdes al atacante demasiado pronto, busca otra ruta: quizá un compañero pueda presionar o el rival haya dejado una nueva oportunidad. Los planes cambian con la información y los recursos de ambos lados.'),
-    paragraph('plan-4', 'Si el formato ofrece una vista previa del equipo rival, úsala para plantear preguntas: ¿qué amenaza puede frenar mi idea?, ¿quién podría responder?, ¿qué compañero necesito cuidar? La vista previa no muestra necesariamente todas las decisiones ni garantiza que el rival siga el plan que imaginas.'),
-    paragraph('plan-5', 'Al observar una amenaza, una respuesta útil no tiene que resolverla en cualquier circunstancia. Puede servir solo si conserva suficiente salud o si entra ante una acción concreta. Piensa en la cooperación entre compañeros y evita dar por seguro un enfrentamiento sin conocer sus condiciones.'),
+  { id: "introduccion-tiers", blocks: [
+    { kind: 'heading', id: "introduccion-tiers-h", level: 2, runs: text("Tiers", 'introduccion-tiers') },
+    { kind: 'paragraph', id: "introduccion-tiers-1", runs: text("Dentro de Singles encontrarás categorías como OU, UU y NU, conocidas como tiers. Cada una delimita qué Pokémon pueden participar.", 'introduccion-tiers') },
+    { kind: 'paragraph', id: "introduccion-tiers-2", runs: text("Sus nombres provienen del inglés: OverUsed, UnderUsed y NeverUsed. La clasificación está relacionada con el uso de los Pokémon, pero también intervienen restricciones de equilibrio. No conviene interpretar los nombres como una escala de calidad: un Pokémon de una tier inferior no es necesariamente inútil en otra.", 'introduccion-tiers') },
+    { kind: 'paragraph', id: "introduccion-tiers-3", runs: text("Elegir una tier te da un entorno concreto para aprender: conocerás sus amenazas habituales y prepararás un equipo que cumpla sus reglas. Las listas pueden cambiar, por lo que debes consultar la clasificación vigente antes de invertir en un Pokémon.", 'introduccion-tiers') },
   ] },
-  { id: 'introduccion-practica', blocks: [
-    heading('practica-h', 'Antes de combatir'),
-    paragraph('practica-1', 'Elige primero un formato y revisa sus reglas y la elegibilidad del equipo. Prepara algo funcional dentro de tus posibilidades: saber para qué sirve cada miembro y cómo se ayudan es un buen punto de partida. No necesitas resolver toda la construcción competitiva antes de jugar una primera partida.'),
-    paragraph('practica-2', 'Revisa que movimientos, habilidades y objetos acompañen el papel que imaginas para cada Pokémon. Una opción que parece fuerte por separado puede aportar poco si no ayuda al equipo. Comprueba también qué amenazas se repiten y si tienes alguna manera razonable de responder sin depender siempre del mismo compañero.'),
-    paragraph('practica-3', 'Los IV son valores individuales asociados a las estadísticas; los EV representan inversión mediante entrenamiento, y la naturaleza también influye en estadísticas. Son aspectos útiles de preparación, pero seis IV de 31 en cada integrante no son un requisito universal para comenzar. Prioriza lo que necesita cada función y tu presupuesto; esta guía no pretende ser una receta de crianza.'),
-    heading('lista-h', 'Lista antes de empezar', 3),
-    list('lista', ['Elegí formato y consulté sus reglas y elegibilidad.', 'Entiendo qué hace cada miembro y cuál podría necesitar conservar.', 'Identifico una amenaza y una posible respuesta, con su riesgo.', 'Mis movimientos, habilidades y objetos apoyan el plan.', 'Después de jugar revisaré una decisión concreta.']),
-    heading('ejercicio-h', 'Un pequeño ejercicio', 3),
-    paragraph('ejercicio-1', 'Tu atacante podría cerrar la partida más adelante, pero ahora está amenazado. Un compañero resistente puede entrar ante el ataque que esperas. ¿Lo cambiarías inmediatamente? ¿Qué información necesitas y qué alternativa compararías?'),
-    paragraph('ejercicio-2', 'Una respuesta posible es revisar la salud del compañero, las acciones conocidas del rival y si el atacante tiene una opción útil ahora. El cambio puede conservarlo, pero el rival podría elegir otra acción y dañar al compañero. Sin conocer movimientos, salud y contexto no hay una respuesta garantizada: explica qué riesgo aceptas y por qué.'),
-    paragraph('practica-4', 'Tras combatir, anota un momento en que dudaste. ¿Qué intentabas conservar? ¿Qué esperabas del rival? ¿Qué otra acción tenías? Si dispones de un video o repetición, revísalo; unas notas también sirven. Elige una mejora para la próxima partida en vez de cambiar todo por una sola derrota.'),
-    { kind: 'paragraph', id: 'fuentes', runs: [
-      ...text('Para ampliar conceptos: '),
-      { text: 'Getting Started', marks: [{ kind: 'link', href: 'https://www.smogon.com/articles/getting-started' }] }, ...text(', '),
-      { text: 'Move Priority', marks: [{ kind: 'link', href: 'https://www.smogon.com/dp/articles/move_priority' }] }, ...text(' y '),
-      { text: 'PKMN 101', marks: [{ kind: 'link', href: 'https://www.smogon.com/xy/articles/pkmn-101' }] },
-      ...text(' de Smogon. Son referencias conceptuales de otros juegos y generaciones, no una autoridad sobre las reglas actuales de PokeMMO.')
-    ] },
+  { id: "introduccion-tipos", blocks: [
+    { kind: 'heading', id: "introduccion-tipos-h", level: 2, runs: text("Tipos", 'introduccion-tipos') },
+    { kind: 'paragraph', id: "introduccion-tipos-1", runs: text("La tabla de tipos es una herramienta básica para atacar y defender. Permite reconocer debilidades, resistencias e inmunidades; cuando un Pokémon tiene dos tipos, ambos influyen en cómo recibe un ataque.", 'introduccion-tipos') },
+    { kind: 'paragraph', id: "introduccion-tipos-2", runs: text("También existe el STAB: la bonificación de daño que recibe un movimiento cuando comparte tipo con el Pokémon que lo utiliza.", 'introduccion-tipos') },
+    { kind: 'paragraph', id: "introduccion-tipos-3", runs: text("Sin embargo, la efectividad no explica por sí sola el resultado de un enfrentamiento. También cuentan las estadísticas, los movimientos, las habilidades y los objetos. Que un Pokémon resista un tipo no significa que pueda entrar sin riesgo ante cualquier rival que lo utilice.", 'introduccion-tipos') },
+    { kind: 'paragraph', id: "introduccion-tipos-4", runs: text("Consultar la tabla y relacionarla con lo que ocurre en combate resulta más útil que intentar memorizarlo todo de una vez.", 'introduccion-tipos') },
+  ] },
+  { id: "introduccion-genetica", blocks: [
+    { kind: 'heading', id: "introduccion-genetica-h", level: 2, runs: text("Genética", 'introduccion-genetica') },
+    { kind: 'paragraph', id: "introduccion-genetica-1", runs: text("Dos Pokémon de la misma especie pueden tener estadísticas diferentes. Parte de esa diferencia está en sus IV, los valores individuales de cada estadística.", 'introduccion-genetica') },
+    { kind: 'paragraph', id: "introduccion-genetica-2", runs: text("La naturaleza también influye: puede favorecer una estadística a costa de otra, aunque existen naturalezas neutras. Por eso, una naturaleza conveniente depende de cómo quieras utilizar al Pokémon.", 'introduccion-genetica') },
+    { kind: 'paragraph', id: "introduccion-genetica-3", runs: text("No todos necesitan los mismos atributos. Un atacante especial no tiene las mismas prioridades que uno físico, y algunas estrategias incluso buscan una velocidad baja. Antes de perseguir valores perfectos, necesitas entender qué características favorecen la función que tendrá tu Pokémon.", 'introduccion-genetica') },
+  ] },
+  { id: "introduccion-entrenamiento", blocks: [
+    { kind: 'heading', id: "introduccion-entrenamiento-h", level: 2, runs: text("Entrenamiento", 'introduccion-entrenamiento') },
+    { kind: 'paragraph', id: "introduccion-entrenamiento-1", runs: text("Los EV son valores de esfuerzo que se obtienen mediante entrenamiento e influyen en las estadísticas. A diferencia de los IV, representan cómo distribuyes esa preparación.", 'introduccion-entrenamiento') },
+    { kind: 'paragraph', id: "introduccion-entrenamiento-2", runs: text("Entrenar no consiste únicamente en subir de nivel. También implica decidir qué estadísticas quieres reforzar: un Pokémon puede necesitar más capacidad ofensiva, mayor resistencia o una combinación adecuada para su tarea.", 'introduccion-entrenamiento') },
+    { kind: 'paragraph', id: "introduccion-entrenamiento-3", runs: text("IV, naturaleza y EV actúan juntos, pero no son lo mismo. Comprender esa diferencia te permitirá seguir después una guía de entrenamiento sin confundir las características del Pokémon con las decisiones que tomas al prepararlo.", 'introduccion-entrenamiento') },
+  ] },
+  { id: "introduccion-crianza", blocks: [
+    { kind: 'heading', id: "introduccion-crianza-h", level: 2, runs: text("Crianza", 'introduccion-crianza') },
+    { kind: 'paragraph', id: "introduccion-crianza-1", runs: text("La crianza es una herramienta para obtener Pokémon con características adecuadas, como determinados IV o una naturaleza conveniente.", 'introduccion-crianza') },
+    { kind: 'paragraph', id: "introduccion-crianza-2", runs: text("En PokeMMO tiene reglas y recursos propios. Por eso, antes de comenzar una crianza conviene definir qué buscas y conocer el proceso, en lugar de invertir primero y decidir después.", 'introduccion-crianza') },
+    { kind: 'paragraph', id: "introduccion-crianza-3", runs: text("Aquí basta con entender su propósito: ayudarte a conseguir una base apropiada para el Pokémon que quieres preparar. Los pasos, la herencia y los costes corresponden a una guía específica.", 'introduccion-crianza') },
+  ] },
+  { id: "introduccion-preparacion", blocks: [
+    { kind: 'heading', id: "introduccion-preparacion-h", level: 2, runs: text("Preparación", 'introduccion-preparacion') },
+    { kind: 'paragraph', id: "introduccion-preparacion-1", runs: text("Un Pokémon preparado para competir necesita más que buenos IV. Sus movimientos, habilidad, objeto, naturaleza y EV deben tener sentido juntos.", 'introduccion-preparacion') },
+    { kind: 'paragraph', id: "introduccion-preparacion-2", runs: text("La comunidad utiliza expresiones como «competitivo» y «semicompetitivo» para describir distintos grados de preparación. No son categorías oficiales con una frontera universal, y la etiqueta por sí sola no explica si un Pokémon es adecuado para tu equipo.", 'introduccion-preparacion') },
+    { kind: 'paragraph', id: "introduccion-preparacion-3", runs: text("Un Pokémon con IV perfectos puede estar mal preparado. Otro sin perfección en todas sus estadísticas puede cumplir bien su función. Lo importante es reconocer qué necesita y qué limitaciones estás aceptando.", 'introduccion-preparacion') },
+  ] },
+  { id: "introduccion-sinergia", blocks: [
+    { kind: 'heading', id: "introduccion-sinergia-h", level: 2, runs: text("Sinergia y cores", 'introduccion-sinergia') },
+    { kind: 'paragraph', id: "introduccion-sinergia-1", runs: text("Un equipo no es simplemente una colección de Pokémon fuertes. Necesita sinergia: que sus integrantes se complementen y se ayuden a cumplir un plan.", 'introduccion-sinergia') },
+    { kind: 'paragraph', id: "introduccion-sinergia-2", runs: text("Un compañero puede responder a una amenaza que incomoda a otro, facilitarle una entrada o debilitar a un rival que dificulta su avance.", 'introduccion-sinergia') },
+    { kind: 'paragraph', id: "introduccion-sinergia-3", runs: text("Un core es un pequeño grupo de Pokémon que colaboran alrededor de una idea. Puede buscar cubrir amenazas, ejercer presión ofensiva o combinar ambas cosas.", 'introduccion-sinergia') },
+    { kind: 'paragraph', id: "introduccion-sinergia-4", runs: text("La pregunta no es solo «¿este Pokémon es bueno?», sino también «¿qué aporta aquí y qué necesita de sus compañeros?».", 'introduccion-sinergia') },
+  ] },
+  { id: "introduccion-arquetipos", blocks: [
+    { kind: 'heading', id: "introduccion-arquetipos-h", level: 2, runs: text("Arquetipos", 'introduccion-arquetipos') },
+    { kind: 'paragraph', id: "introduccion-arquetipos-1", runs: text("Los equipos pueden organizarse alrededor de distintos enfoques, conocidos como arquetipos.", 'introduccion-arquetipos') },
+    { kind: 'paragraph', id: "introduccion-arquetipos-2", runs: text("Los ofensivos buscan mantener la presión y crear oportunidades para atacar. Los defensivos se apoyan más en resistir, recuperarse y desgastar al rival. Los equilibrados combinan herramientas ofensivas y defensivas.", 'introduccion-arquetipos') },
+    { kind: 'paragraph', id: "introduccion-arquetipos-3", runs: text("Son orientaciones generales, no recetas rígidas. Conocerlas ayuda a entender qué intenta conseguir un equipo y por qué sus integrantes han sido elegidos.", 'introduccion-arquetipos') },
+  ] },
+  { id: "introduccion-combate", blocks: [
+    { kind: 'heading', id: "introduccion-combate-h", level: 2, runs: text("El combate", 'introduccion-combate') },
+    { kind: 'paragraph', id: "introduccion-combate-1", runs: text("Durante una partida no solo importa qué puedes hacer, sino qué opciones tiene el rival.", 'introduccion-combate') },
+    { kind: 'paragraph', id: "introduccion-combate-2", runs: text("Atacar puede permitirte avanzar, pero cambiar puede conservar un Pokémon importante o mejorar el enfrentamiento. Ninguna opción es buena por sí misma: depende de la información disponible y del riesgo que aceptas.", 'introduccion-combate') },
+    { kind: 'paragraph', id: "introduccion-combate-3", runs: text("Al comenzar, observa los Pokémon activos, su salud y lo que ya has descubierto. Intenta reconocer qué amenaza tienes delante y qué integrantes de tu equipo necesitarás más adelante.", 'introduccion-combate') },
+    { kind: 'paragraph', id: "introduccion-combate-4", runs: text("No necesitas anticipar cada acción. Primero aprende a comparar opciones y a entender por qué elegiste una.", 'introduccion-combate') },
+  ] },
+  { id: "introduccion-practica", blocks: [
+    { kind: 'heading', id: "introduccion-practica-h", level: 2, runs: text("Práctica", 'introduccion-practica') },
+    { kind: 'paragraph', id: "introduccion-practica-1", runs: text("Elige una modalidad que te interese y familiarízate con sus reglas. Si utilizas un equipo propio, procura saber para qué sirve cada integrante; si juegas Randoms, empieza por reconocer las herramientas disponibles.", 'introduccion-practica') },
+    { kind: 'paragraph', id: "introduccion-practica-2", runs: text("Después de una partida, revisa una decisión concreta: qué querías conseguir, qué información tenías y qué alternativa podrías haber considerado.", 'introduccion-practica') },
+    { kind: 'paragraph', id: "introduccion-practica-3", runs: text("El objetivo inicial no es preparar un equipo perfecto ni ganar siempre. Es comprender cada vez mejor qué ocurre y tomar decisiones con más fundamento.", 'introduccion-practica') },
   ] },
 ];
+
+export const PVP_CONTENTS = PVP_GUIDE.slice(1).map(section => ({
+  id: section.id, title: section.blocks[0].kind === 'heading' ? section.blocks[0].runs[0].text : '',
+}));
