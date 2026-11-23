@@ -33,8 +33,8 @@ describe('Fundamentos del competitivo', () => {
     expect(document.querySelector('meta[name="description"]')?.getAttribute('content')).toContain('PokeMMO');
     const sections = [...page.querySelectorAll('article > section')];
     expect(sections.map(section => section.id)).toEqual(PVP_GUIDE.map(section => section.id));
-    expect([...page.querySelectorAll('article > section h2')].map(h => h.textContent?.trim())).toEqual(['Modalidades', 'Tu Pokémon', 'Tu equipo', 'El combate']);
-    expect([...page.querySelectorAll('article > section h3')].map(h => h.textContent?.trim())).toEqual(['Formas de jugar', 'Tiers', 'Tipos', 'Genética', 'Entrenamiento', 'Crianza', 'Preparación', 'Sinergia y cores', 'Arquetipos', 'Decisiones', 'Práctica']);
+    expect([...page.querySelectorAll('article > section h2')].map(h => h.textContent?.trim())).toEqual(['Formas de jugar al PvP', 'Lo esencial antes de crear un equipo', 'Construcción de equipos', 'La idea detrás de cada combate']);
+    expect([...page.querySelectorAll('article > section h3')].map(h => h.textContent?.trim())).toEqual(['Modalidades', 'Tiers', 'Tipos', 'Genética', 'Entrenamiento', 'Crianza', 'Preparación', 'Sinergia y cores', 'Arquetipos', 'Decisiones', 'Práctica']);
     sections.forEach((section, i) => {
       const actual = [...section.querySelectorAll('h2,h3,p')].map(node => node.textContent?.replace(/\s+/g, ' ').trim());
       const expected = PVP_GUIDE[i].blocks.flatMap(block => block.kind === 'heading' || block.kind === 'paragraph' ? [block.runs.map(run => run.text).join('').replace(/\s+/g, ' ').trim()] : []);

@@ -29,17 +29,17 @@ export class PvpFundamentos {
   readonly openTerm = signal<string | null>(null);
   private readonly hostElement = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
   readonly definitions: Record<string, string> = {
-    Singles: 'Cada jugador tiene un Pokémon en el campo y puede atacar o cambiarlo por otro de su equipo.',
-    Doubles: 'Cada jugador tiene dos Pokémon en el campo, que pueden colaborar durante el combate.',
-    Randoms: 'Juegas con un equipo generado y preparado de antemano, en vez de construirlo tú.',
-    tiers: 'Categorías con reglas que delimitan qué Pokémon pueden participar.',
-    OU: 'Una tier cuyos Pokémon se clasifican, entre otros criterios, según cuánto se usan.',
-    UU: 'Una tier con sus propias reglas y clasificación de Pokémon según su uso.',
-    NU: 'Una tier con sus propias reglas y clasificación de Pokémon según su uso.',
-    STAB: 'Un movimiento hace más daño cuando comparte tipo con el Pokémon que lo usa.',
-    IV: 'Valores individuales que ayudan a explicar por qué dos Pokémon de la misma especie pueden tener estadísticas distintas.',
-    EV: 'Valores obtenidos mediante entrenamiento que permiten reforzar las estadísticas de un Pokémon.',
-    core: 'Un grupo pequeño de Pokémon que se ayudan para llevar adelante una idea.',
+    Singles: 'Término inglés para los combates individuales: cada jugador tiene un Pokémon en el campo a la vez.',
+    Doubles: 'Nombre inglés de los combates dobles, con dos Pokémon por jugador en el campo a la vez.',
+    Randoms: 'Modalidad de equipos aleatorios: cada jugador recibe un equipo generado en lugar de construirlo previamente.',
+    tiers: 'Categorías competitivas que agrupan Pokémon y establecen cuáles pueden participar según sus reglas.',
+    OU: 'OverUsed, en inglés «muy usado»: una tier cuya clasificación de Pokémon considera su uso y restricciones de equilibrio.',
+    UU: 'UnderUsed, en inglés «menos usado»: una tier cuya clasificación de Pokémon considera su uso y restricciones de equilibrio.',
+    NU: 'NeverUsed, literalmente «nunca usado»: nombre de una tier, no una afirmación de que sus Pokémon no se usen.',
+    STAB: 'Same-Type Attack Bonus: bonificación de daño por usar un movimiento del mismo tipo que el Pokémon que lo ejecuta.',
+    IV: 'Individual Values, o valores individuales: valores propios de cada Pokémon que influyen en sus estadísticas.',
+    EV: 'Effort Values, o valores de esfuerzo: valores obtenidos mediante entrenamiento que influyen en las estadísticas.',
+    core: 'Núcleo de un equipo: pequeño grupo de Pokémon cuyas funciones se complementan para cumplir un plan.',
   };
   term(run: InlineRun): string | undefined {
     return run.marks.find(mark => mark.kind === 'glossary')?.term;
