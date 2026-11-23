@@ -32,7 +32,9 @@ export const PVP_GUIDE: readonly GuideSection[] = [
     { kind: 'heading', id: "introduccion-modalidades-h", level: 3, runs: text("Modalidades", 'introduccion-modalidades') },
     { kind: 'paragraph', id: "introduccion-modalidades-1", runs: text("La modalidad cambia cuántos Pokémon participan a la vez y cómo llegas al combate. Conocer esas diferencias te ayuda a elegir qué quieres probar y cómo prepararte.", 'introduccion-modalidades') },
     { kind: 'paragraph', id: "introduccion-modalidades-2", runs: text("En Singles, tú y tu rival tienen un Pokémon cada uno en el campo. Durante el combate puedes atacar o cambiarlo por otro de tu equipo.", 'introduccion-modalidades') },
+    { kind: 'image', id: 'imagen-singles', src: 'compendio/pvp/introduction/combate-singles.png', alt: 'Combate individual entre Scizor y Metagross.', width: 929, height: 415, caption: 'En Singles hay un Pokémon por lado en el campo.', layout: 'wide' },
     { kind: 'paragraph', id: "introduccion-modalidades-3", runs: text("En Doubles, tú y tu rival tienen dos Pokémon cada uno en el campo. Tus compañeros pueden ayudarse entre sí; al elegir un movimiento también tendrás que pensar en sus posibles objetivos.", 'introduccion-modalidades') },
+    { kind: 'image', id: 'imagen-doubles', src: 'compendio/pvp/introduction/combate-doubles.jpg', alt: 'Combate doble con dos Pokémon por lado.', width: 784, height: 391, caption: 'En Doubles participan dos Pokémon por lado a la vez.', layout: 'wide' },
     { kind: 'paragraph', id: "introduccion-modalidades-4", runs: text("En Randoms recibes un equipo generado y preparado de antemano. En lugar de construirlo antes de combatir, descubres qué puede hacer y buscas cómo aprovecharlo.", 'introduccion-modalidades') },
     { kind: 'paragraph', id: "introduccion-modalidades-5", runs: text("Puedes probar estas opciones y elegir cuál te interesa aprender primero. Si decides construir un equipo, también conviene conocer las reglas de la categoría en la que jugarás.", 'introduccion-modalidades') },
   ] },
@@ -52,12 +54,15 @@ export const PVP_GUIDE: readonly GuideSection[] = [
   ] },
   { id: "introduccion-genetica", blocks: [
     { kind: 'heading', id: "introduccion-genetica-h", level: 3, runs: text("Genética", 'introduccion-genetica') },
+    { kind: 'image', id: 'imagen-iv', src: 'compendio/pvp/introduction/resumen-iv.png', alt: 'Panel de valores individuales de un Pokémon.', width: 261, height: 239, caption: 'Un ejemplo de IV en el resumen; no todos los Pokémon necesitan todos sus IV perfectos.', layout: 'aside' },
     { kind: 'paragraph', id: "introduccion-genetica-1", runs: text("Dos Pokémon de la misma especie pueden tener números distintos en sus estadísticas. Una de las razones son sus IV: valores individuales que influyen en cada estadística.", 'introduccion-genetica') },
+    { kind: 'image', id: 'imagen-naturaleza', src: 'compendio/pvp/introduction/resumen-naturaleza-detalle.png', alt: 'Campo Naturaleza del resumen: Alegre (Jolly).', width: 237, height: 37, caption: 'El campo muestra la naturaleza Alegre (Jolly).', layout: 'aside' },
     { kind: 'paragraph', id: "introduccion-genetica-2", runs: text("La naturaleza también influye en las estadísticas: puede favorecer una a costa de otra, aunque algunas son neutras. La que te conviene depende de cómo quieras usar a tu Pokémon.", 'introduccion-genetica') },
     { kind: 'paragraph', id: "introduccion-genetica-3", runs: text("Antes de preparar un Pokémon, piensa qué tarea cumplirá: un atacante especial y uno físico tienen prioridades distintas; algunas estrategias incluso buscan poca velocidad. Así puedes valorar qué atributos necesitas antes de buscar valores perfectos.", 'introduccion-genetica') },
   ] },
   { id: "introduccion-entrenamiento", blocks: [
     { kind: 'heading', id: "introduccion-entrenamiento-h", level: 3, runs: text("Entrenamiento", 'introduccion-entrenamiento') },
+    { kind: 'image', id: 'imagen-ev', src: 'compendio/pvp/introduction/resumen-ev.png', alt: 'Panel de entrenamiento de un Pokémon.', width: 263, height: 221, caption: 'El resumen también muestra el reparto de EV.', layout: 'aside' },
     { kind: 'paragraph', id: "introduccion-entrenamiento-1", runs: text("Los EV son valores de esfuerzo que se obtienen al entrenar y afectan a las estadísticas. A diferencia de los IV, reflejan cómo has repartido ese entrenamiento.", 'introduccion-entrenamiento') },
     { kind: 'paragraph', id: "introduccion-entrenamiento-2", runs: text("Entrenar no es solo subir de nivel. También eliges qué reforzar: según su tarea, un Pokémon puede necesitar más ataque, más resistencia o una combinación de ambos.", 'introduccion-entrenamiento') },
     { kind: 'paragraph', id: "introduccion-entrenamiento-3", runs: text("IV, naturaleza y EV influyen juntos, pero son cosas distintas. Distinguirlos antes de preparar el equipo te ayuda a decidir qué reforzar en cada integrante y a seguir una guía de entrenamiento.", 'introduccion-entrenamiento') },
@@ -77,6 +82,7 @@ export const PVP_GUIDE: readonly GuideSection[] = [
   { id: "introduccion-sinergia", blocks: [
     { kind: 'heading', id: "introduccion-sinergia-grupo-h", level: 2, runs: text("Construcción de equipos", 'introduccion-sinergia') },
     { kind: 'heading', id: "introduccion-sinergia-h", level: 3, runs: text("Sinergia y cores", 'introduccion-sinergia') },
+    { kind: 'image', id: 'imagen-equipo', src: 'compendio/pvp/introduction/equipo-pvp.png', alt: 'Seis integrantes en una lista de equipo.', width: 182, height: 134, caption: 'Un ejemplo de equipo mostrado en el juego, sin que sea una recomendación.', layout: 'aside' },
     { kind: 'paragraph', id: "introduccion-sinergia-1", runs: text("Una vez que conoces las bases, puedes pensar en el equipo como conjunto. Reunir Pokémon fuertes no garantiza que funcionen bien juntos: la sinergia consiste en complementarse para seguir un plan.", 'introduccion-sinergia') },
     { kind: 'paragraph', id: "introduccion-sinergia-2", runs: text("Por ejemplo, si varios compañeros tienen dificultades ante la misma amenaza, puedes buscar una respuesta que cubra esa debilidad. Otro integrante podría ayudar a entrar al campo a quien quieres usar para atacar.", 'introduccion-sinergia') },
     { kind: 'paragraph', id: "introduccion-sinergia-3", runs: text("Un core es un grupo pequeño de Pokémon que colaboran con una idea en común. Pueden cubrir amenazas, ayudar a atacar o combinar ambas funciones.", 'introduccion-sinergia') },
@@ -94,6 +100,7 @@ export const PVP_GUIDE: readonly GuideSection[] = [
     { kind: 'paragraph', id: "introduccion-combate-1", runs: text("El plan del equipo te da una dirección, pero cada partida plantea situaciones distintas. Piensa qué necesitas conseguir para avanzar y ajusta ese objetivo según lo que ocurra.", 'introduccion-combate') },
     { kind: 'paragraph', id: "introduccion-combate-2", runs: text("Atacar puede acercarte a tu objetivo; cambiar puede proteger a un compañero importante o darte un enfrentamiento más favorable. La mejor opción depende de lo que sabes y del riesgo que estás dispuesto a correr.", 'introduccion-combate') },
     { kind: 'paragraph', id: "introduccion-combate-3", runs: text("En cada turno, mira qué Pokémon están en el campo, cuánta salud les queda y qué información has descubierto. Considera las opciones del rival, qué te amenaza ahora y a quién podrías necesitar después.", 'introduccion-combate') },
+    { kind: 'image', id: 'imagen-decision', src: 'compendio/pvp/introduction/decision-combate.png', alt: 'Combate entre Excadrill y Cofagrigus.', width: 930, height: 339, caption: 'La salud y los mensajes del combate aportan información para observar la situación.', layout: 'wide' },
     { kind: 'paragraph', id: "introduccion-combate-4", runs: text("No tienes que adivinar todas las jugadas. Compara tus opciones, acepta que cada una puede tener riesgos y adapta tu plan cuando aparezca nueva información.", 'introduccion-combate') },
   ] },
   { id: "introduccion-practica", blocks: [

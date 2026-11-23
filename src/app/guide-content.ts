@@ -8,5 +8,6 @@ export type GuideBlock =
   | { readonly kind: 'heading'; readonly id: string; readonly level: 2 | 3; readonly runs: readonly InlineRun[] }
   | { readonly kind: 'paragraph'; readonly id: string; readonly runs: readonly InlineRun[] }
   | { readonly kind: 'list'; readonly id: string; readonly ordered: boolean; readonly items: readonly { readonly id: string; readonly runs: readonly InlineRun[] }[] }
+  | { readonly kind: 'image'; readonly id: string; readonly src: string; readonly alt: string; readonly width: number; readonly height: number; readonly caption: string; readonly layout: 'wide' | 'aside' }
   | { readonly kind: 'diagram'; readonly id: string; readonly description: string };
 export interface GuideSection { readonly id: string; readonly blocks: readonly GuideBlock[]; }

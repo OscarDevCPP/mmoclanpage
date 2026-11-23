@@ -19,3 +19,11 @@
 .glossary-trigger { appearance: none; border: 0; padding: 0; background: none; color: inherit; font: inherit; cursor: pointer; text-decoration: underline dotted; text-underline-offset: .2em; }
 .glossary-definition { position: fixed; z-index: 1000; visibility: hidden; box-sizing: border-box; width: max-content; max-width: min(20rem, calc(100vw - 16px)); overflow: auto; padding: .65em .85em; background: var(--surface); color: var(--text); border: 1px solid var(--accent-text); border-radius: .3em; box-shadow: 0 .25rem .8rem #0005; line-height: 1.45; }
 .anchor-alias { display: block; scroll-margin-top: 6rem; }
+
+.guide section { display: flow-root; }
+.guide figure { max-width: min(100%, var(--image-width)); margin: 1.2rem 0; }
+.guide figure img { display: block; width: 100%; height: auto; }
+.guide figcaption { margin-top: .35rem; color: var(--muted); font-size: .85em; line-height: 1.4; }
+@media (min-width: 48rem) {
+  .guide figure.figure-aside { float: right; width: min(40%, var(--image-width)); margin: .25rem 0 1rem 1.5rem; clear: right; }
+}

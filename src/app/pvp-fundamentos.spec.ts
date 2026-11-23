@@ -47,6 +47,36 @@ describe('Fundamentos del competitivo', () => {
     contents[1].click(); await harness.fixture.whenStable();
     expect(TestBed.inject(Router).url).toBe('/compendio/pvp/fundamentos#introduccion-tipos');
   });
+  it('intercala capturas accesibles junto a las explicaciones pertinentes', async () => {
+    TestBed.configureTestingModule({ providers: [provideRouter(routes)] });
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl('/compendio/pvp/fundamentos', PvpFundamentos);
+    const page = harness.routeNativeElement as HTMLElement;
+    const expected = [
+      ['introduccion-modalidades', 'combate-singles.png', 929, 415, 'Singles'],
+      ['introduccion-modalidades', 'combate-doubles.jpg', 784, 391, 'Doubles'],
+      ['introduccion-genetica', 'resumen-iv.png', 261, 239, 'IV'],
+      ['introduccion-genetica', 'resumen-naturaleza-detalle.png', 237, 37, 'Alegre (Jolly)'],
+      ['introduccion-entrenamiento', 'resumen-ev.png', 263, 221, 'EV'],
+      ['introduccion-sinergia', 'equipo-pvp.png', 182, 134, 'equipo'],
+      ['introduccion-combate', 'decision-combate.png', 930, 339, 'salud'],
+    ] as const;
+    const figures = [...page.querySelectorAll<HTMLElement>('section figure')];
+    expect(figures).toHaveLength(expected.length);
+    figures.forEach((figure, i) => {
+      const [section, file, width, height, caption] = expected[i];
+      const image = figure.querySelector('img')!;
+      expect(figure.closest('section')?.id).toBe(section);
+      expect(image.getAttribute('src')).toBe(`compendio/pvp/introduction/${file}`);
+      expect(image.getAttribute('alt')?.trim()).toBeTruthy();
+      expect(image.getAttribute('width')).toBe(String(width));
+      expect(image.getAttribute('height')).toBe(String(height));
+      expect(image.getAttribute('loading')).toBe('lazy');
+      expect(image.getAttribute('decoding')).toBe('async');
+      expect(figure.querySelector('figcaption')?.textContent).toContain(caption);
+      expect(figure.nextElementSibling?.tagName).toBe('P');
+    });
+  });
   it('abre ayudas una vez por término y cierra con Escape o clic exterior sin robar foco', async () => {
     TestBed.configureTestingModule({ providers: [provideRouter(routes)] });
     const harness = await RouterTestingHarness.create();
