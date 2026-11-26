@@ -50,7 +50,19 @@ export class PokemonBuildCard {
   readonly build = input.required<PokemonBuild>();
   readonly imageFailed = signal(false);
   readonly stats = STATS;
-  compact(value: NumericRequirement): string { return value.kind === 'unknown' ? '?' : value.kind === 'any' ? '—' : describeRequirement(value); }
+  readonly statLabels: Record<Stat, string> = { PS: 'PS', Ataque: 'Atq', Defensa: 'Def', 'Ataque Especial': 'Atq. Esp', 'Defensa Especial': 'Def. Esp', Velocidad: 'Vel.' };
+  compact(value: NumericRequirement, iv = false): string {
+    if (value.kind === 'unknown' || value.kind === 'any') return '-';
+    if (iv && value.kind === 'range') {
+      const min = value.min?.inclusive && value.min.value === 0 ? undefined : value.min;
+      const max = value.max?.inclusive && value.max.value === 31 ? undefined : value.max;
+      if (!min && !max) return value.optional ? '- *' : '-';
+      value = { ...value, min, max };
+    }
+    return describeRequirement(value).replace(' (opcional)', ' *');
+  }
   accessible(value: NumericRequirement | NatureRequirement | Requirement<string>): string { return describeRequirement(value).replaceAll('≥', 'mayor o igual que').replaceAll('≤', 'menor o igual que').replaceAll('>', 'mayor que').replaceAll('<', 'menor que'); }
-  readonly describe = describeRequirement;
+  display(value: NumericRequirement | NatureRequirement | Requirement<string>): string {
+    return value.kind === 'unknown' || value.kind === 'any' ? '-' : describeRequirement(value).replace(' (opcional)', ' *');
+  }
 }

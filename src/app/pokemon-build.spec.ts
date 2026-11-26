@@ -14,6 +14,20 @@ describe('Ficha Pokémon reutilizable', () => {
     expect(describeRequirement({kind:'any'})).toBe('Indiferente');
     expect(describeRequirement({kind:'unknown'})).toBe('Sin información');
   });
+  it('compacta exclusivamente límites inclusivos redundantes de IV', () => {
+    const card = TestBed.createComponent(PokemonBuildCard).componentInstance;
+    const bounds = {kind:'range', min:{value:0,inclusive:true}, max:{value:31,inclusive:true}} as const;
+    expect(card.compact(bounds, true)).toBe('-');
+    expect(card.compact(bounds)).toBe('≥ 0 y ≤ 31');
+    expect(card.compact({kind:'range',min:{value:0,inclusive:true},max:{value:25,inclusive:true}}, true)).toBe('≤ 25');
+    expect(card.compact({kind:'exact',value:31,optional:true})).toBe('31 *');
+    expect(card.compact({kind:'unknown'})).toBe('-');
+    expect(card.compact({kind:'any'})).toBe('-');
+    expect(card.accessible({kind:'unknown'})).toBe('Sin información');
+    expect(card.accessible({kind:'any'})).toBe('Indiferente');
+    expect(card.compact({kind:'range',min:{value:10,inclusive:true},max:{value:31,inclusive:true}}, true)).toBe('≥ 10');
+    expect(card.compact({kind:'range',min:{value:0,inclusive:false},max:{value:31,inclusive:false}}, true)).toBe('> 0 y < 31');
+  });
   it('renderiza un ejemplo ajeno a Los seis pilares y un recurso alternativo', () => {
     const unknown = {kind:'unknown'} as const;
     const stats = Object.fromEntries(STATS.map(stat => [stat, unknown])) as PokemonBuild['iv'];
@@ -21,11 +35,17 @@ describe('Ficha Pokémon reutilizable', () => {
     const fixture = TestBed.createComponent(PokemonBuildCard);
     fixture.componentRef.setInput('build', example); fixture.detectChanges();
     const element = fixture.nativeElement as HTMLElement;
-    expect(element.textContent).toContain('Objeto A o Objeto B (opcional)');
+    expect(element.textContent).toContain('Objeto A o Objeto B *');
     expect(element.textContent).toContain('Movimiento A o Movimiento B');
-    expect(element.textContent).toContain('Indiferente');
+    expect(element.querySelector('[aria-label=Indiferente]')?.textContent).toBe('-');
     expect(element.querySelector('img')?.getAttribute('src')).toBe('/pokemon-generic.svg');
     expect(element.querySelector('td')?.getAttribute('aria-label')).toContain('mayor que 5');
+    expect(element.querySelector('details')).toBeNull();
+    expect([...element.querySelectorAll('tbody th')].map(x => x.textContent?.trim())).toEqual(['PS','Atq','Def','Atq. Esp','Def. Esp','Vel.']);
+    expect([...element.querySelectorAll('tbody th span')].map(x => x.getAttribute('aria-label'))).toEqual(STATS);
+    fixture.componentRef.setInput('build', {...example, note:'   '}); fixture.detectChanges();
+    expect(element.querySelector('details')).toBeNull();
+    fixture.componentRef.setInput('build', {...example, note:'Nota'}); fixture.detectChanges();
     expect(element.querySelector('details')?.open).toBe(false);
     element.querySelector('summary')!.click();
     expect(element.querySelector('details')?.open).toBe(true);

@@ -1,9 +1,8 @@
 <article class="build">
   <header><img [src]="!imageFailed() && build().image?.src || '/pokemon-generic.svg'" [alt]="!imageFailed() && build().image?.alt || ''" (error)="imageFailed.set(true)" width="64" height="64"><h3>{{ build().name }}</h3></header>
-  <table><caption>Valores por estadística</caption><thead><tr><th scope="col">Estadística</th><th scope="col">IV</th><th scope="col">EV</th></tr></thead><tbody>
-    @for (stat of stats; track stat) { <tr><th scope="row">{{ stat }}</th><td [attr.aria-label]="accessible(build().iv[stat])">{{ compact(build().iv[stat]) }}</td><td [attr.aria-label]="accessible(build().ev[stat])">{{ compact(build().ev[stat]) }}</td></tr> }
+  <table><caption class="visually-hidden">Valores por estadística</caption><thead><tr><th scope="col">Estadística</th><th scope="col">IV</th><th scope="col">EV</th></tr></thead><tbody>
+    @for (stat of stats; track stat) { <tr><th scope="row"><span [attr.aria-label]="stat">{{ statLabels[stat] }}</span></th><td [attr.aria-label]="accessible(build().iv[stat])">{{ compact(build().iv[stat], true) }}</td><td [attr.aria-label]="accessible(build().ev[stat])">{{ compact(build().ev[stat]) }}</td></tr> }
   </tbody></table>
-  <dl><dt>Naturaleza</dt><dd>{{ describe(build().nature) }}</dd><dt>Habilidad</dt><dd>{{ describe(build().ability) }}</dd><dt>Objeto</dt><dd>{{ describe(build().item) }}</dd><dt>Movimientos</dt><dd><ul>@for (move of build().moves; track $index) { <li>{{ describe(move) }}</li> } @empty { <li>Sin información</li> }</ul></dd></dl>
-  @if (build().note) { <p>{{ build().note }}</p> }
-  <details><summary>Leyenda</summary><p>«?» significa sin información y «—», indiferente explícito. ≥ y ≤ incluyen el límite; &gt; y &lt; lo excluyen. «Opcional» no es obligatorio; «recomendado» indica una sugerencia. «Indiferente» es una libertad explícita; «sin información» no establece una regla.</p></details>
+  <dl><dt>Naturaleza</dt><dd [attr.aria-label]="accessible(build().nature)">{{ display(build().nature) }}</dd><dt>Habilidad</dt><dd [attr.aria-label]="accessible(build().ability)">{{ display(build().ability) }}</dd><dt>Objeto</dt><dd [attr.aria-label]="accessible(build().item)">{{ display(build().item) }}</dd><dt>Movimientos</dt><dd><ul>@for (move of build().moves; track $index) { <li [attr.aria-label]="accessible(move)">{{ display(move) }}</li> } @empty { <li aria-label="Sin información">-</li> }</ul></dd></dl>
+  @if (build().note?.trim()) { <details><summary>Descripción</summary><p>{{ build().note }}</p></details> }
 </article>
