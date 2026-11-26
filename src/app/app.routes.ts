@@ -4,7 +4,7 @@ import { Home } from './home';
 export const routes: Routes = [
   { path: '', component: Home, title: 'Black Talon', pathMatch: 'full' },
   { path: 'compendio/pvp/fundamentos', title: 'Introducción al competitivo · El Compendio · Black Talon', loadComponent: () => import('./pvp-fundamentos').then(m => m.PvpFundamentos) },
-  { path: 'compendio/pve/seis-pilares', title: 'Los seis pilares · El Compendio · Black Talon', loadComponent: () => import('./pve-pilares').then(m => m.PvePilares) },
+  { path: 'compendio/pve/seis-pilares', title: 'LOS SEIS PILARES, FARMEO DE GYMS (AVANZADO) · El Compendio · Black Talon', loadComponent: () => import('./pve-pilares').then(m => m.PvePilares) },
   { path: 'compendio', title: 'El Compendio · Black Talon', loadComponent: () => import('./resources').then(m => m.Resources) },
   { path: 'recuerdos', title: 'Recuerdos · Black Talon', loadComponent: () => import('./memories').then(m => m.Memories) },
   { path: 'actividades', title: 'Actividades · Black Talon', loadComponent: () => import('./activities').then(m => m.Activities) },

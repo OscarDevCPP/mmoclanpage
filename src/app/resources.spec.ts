@@ -56,6 +56,7 @@ describe('El Compendio', () => {
     expect(index.textContent).not.toMatch(/Pendiente|Parcial|Eventos del juego/i);
     expect(index.textContent).toContain('Guías de PvE');
     const pveToggle = page.querySelector<HTMLButtonElement>('#pve .chapter-toggle')!;
+    expect(pveToggle.textContent?.trim()).toBe('LOS SEIS PILARES, FARMEO DE GYMS (AVANZADO)');
     const pveTopics = page.querySelector<HTMLUListElement>('#pve-pillars-topics')!;
     expect(pveTopics.hidden).toBe(true);
     pveToggle.click(); await harness.fixture.whenStable();

@@ -10,7 +10,7 @@ describe('Los seis pilares', () => {
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/compendio/pve/seis-pilares', PvePilares);
     const page = harness.routeNativeElement as HTMLElement;
-    expect(page.querySelector('h1')?.textContent).toBe('Los seis pilares');
+    expect(page.querySelector('h1')?.textContent).toBe('LOS SEIS PILARES, FARMEO DE GYMS (AVANZADO)');
     expect([...page.querySelectorAll('article > section')].map(section => section.id)).toEqual(['preparacion', 'equipo', 'estrategia', 'basica']);
     expect(page.querySelector('#basica h2')?.textContent).toBe('Ruta básica y avanzadas');
     expect([...page.querySelectorAll('article > section > h2')].map(h => h.textContent)).toEqual(['Introducción', 'El equipo', 'La idea principal', 'Ruta básica y avanzadas']);
@@ -22,12 +22,9 @@ describe('Los seis pilares', () => {
     expect(page.querySelector('#variantes a[href*="spreadsheets"]')?.textContent).toBe('Deadly Assault');
     expect(page.textContent).toContain('referencia histórica');
     expect(page.querySelectorAll('#equipo app-pokemon-build')).toHaveLength(6);
-    const term = page.querySelector<HTMLButtonElement>('[data-term=IV]')!;
-    term.click(); harness.detectChanges();
-    expect(term.getAttribute('aria-expanded')).toBe('true');
-    expect(page.querySelector('#definition-IV')?.textContent).toContain('individuales');
-    term.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); harness.detectChanges();
-    expect(term.getAttribute('aria-expanded')).toBe('false');
+    expect(page.querySelector('#equipo [data-term]')).toBeNull();
+    expect(page.querySelector('#equipo')?.textContent).not.toMatch(/valores individuales|valores de esfuerzo/i);
+    expect(page.querySelectorAll('#equipo th[scope=col]')).toHaveLength(18);
     expect(page.querySelectorAll('#variantes a')).toHaveLength(6);
   });
 });
