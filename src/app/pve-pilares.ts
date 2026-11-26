@@ -1,10 +1,12 @@
+import { PokemonBuildCard } from './pokemon-build';
+import { PILLARS } from './pillars-data';
 import { Component, ElementRef, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { popupPosition } from './pvp-fundamentos';
 
 @Component({
   selector: 'app-pve-pilares',
-  imports: [RouterLink],
+  imports: [RouterLink, PokemonBuildCard],
   host: { '(document:click)': 'outside($event)', '(document:focusin)': 'focusChanged($event)', '(document:keydown.escape)': 'escape()', '(window:scroll)': 'reposition()', '(window:resize)': 'reposition()' },
   templateUrl: './pve-pilares.html',
   styleUrls: ['./pvp-fundamentos.css', './pve-pilares.css'],
@@ -12,14 +14,7 @@ import { popupPosition } from './pvp-fundamentos';
 export class PvePilares {
   readonly openTerm = signal<string | null>(null);
   private readonly hostElement = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
-  readonly pillars = [
-    {name:'Typhlosion', ability:'Blaze', iv:'PS y Defensa 10–31; Ataque Especial y Velocidad 31.', ev:'252 Ataque Especial / 4 Defensa Especial / 252 Velocidad', nature:'Modest', item:'Choice Specs', moves:'Eruption, Swift, Incinerate, Cut', note:'La guía menciona Flash Fire como habilidad alternativa.'},
-    {name:'Blastoise', ability:'Torrent', iv:'PS y Defensa 0–25; Ataque Especial y Velocidad 31.', ev:'252 Ataque Especial / 252 Velocidad', nature:'Mild', item:'Choice Scarf', moves:'Water Spout, Blizzard, Helping Hand, Fake Out', note:'Con otra naturaleza, comprueba que Explosion de Weezing lo debilite; la fuente ofrece Modest como alternativa con ajuste de IV.'},
-    {name:'Togekiss', ability:'Hustle', iv:'Ataque Especial y Velocidad 31.', ev:'252 Ataque Especial / 252 Velocidad', nature:'Modest', item:'Choice Specs', moves:'Hyper Voice, Helping Hand, Shock Wave, Fly', note:'Su tipo Volador lo protege del Earthquake de Garchomp.'},
-    {name:'Garchomp', ability:'Sand Veil', iv:'Ataque y Velocidad 31.', ev:'252 Ataque / 26 Defensa Especial / 232 Velocidad', nature:'Lonely', item:'Choice Band', moves:'Earthquake, Dragon Claw, Helping Hand, Sunny Day', note:'Para dos gimnasios, la fuente recomienda PS y Defensa inferiores a 9 y Defensa Especial de al menos 19, con naturaleza Lonely. Son mejoras opcionales; también recomienda Rough Skin sin exigirlo.'},
-    {name:'Weezing', ability:'Neutralizing Gas', iv:'Ataque y Velocidad 31.', ev:'252 Ataque / 252 Velocidad', nature:'Adamant', item:'Choice Band', moves:'Assurance, Explosion, Incinerate, Rain Dance', note:'La fuente admite 22 o más IV de Velocidad para superar a Ninetales de Celadon, aunque recomienda 31 para futuras variantes. Neutralizing Gas anula habilidades mientras está en el campo.'},
-    {name:'Vanilluxe', ability:'Snow Warning', iv:'Ataque Especial y Velocidad 31.', ev:'6 Defensa / 252 Ataque Especial / 252 Velocidad', nature:'Modest', item:'Choice Scarf', moves:'Blizzard, Ice Beam, Hyper Voice', note:'Como mejora opcional para una variante, la fuente propone al menos 28 IV en PS y Defensa. Snow Warning cambia el clima.'},
-  ];
+  readonly pillars = PILLARS;
   toggle(term: string, trigger: HTMLButtonElement) { if (this.openTerm() === term) { this.dismiss(); return; } this.openTerm.set(term); this.position(term, trigger); }
   reposition() { const term = this.openTerm(); if (term) { const trigger = this.hostElement.querySelector<HTMLButtonElement>(`[data-term="${term}"]`); if (trigger) this.position(term, trigger); } }
   private position(term: string, trigger: HTMLButtonElement) {

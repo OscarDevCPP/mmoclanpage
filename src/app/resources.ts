@@ -22,7 +22,7 @@ export class Resources {
   readonly introduction = PVP_CONTENTS;
   readonly introductionOpen = signal(false);
   readonly pillarsOpen = signal(false);
-  readonly pillarsContents = [{id: "preparacion", title: "Preparación"}, {id: "equipo", title: "El equipo"}, {id: "estrategia", title: "Cómo se juega"}, {id: "basica", title: "Rutas de revancha"}, {id: "variantes", title: "Variantes avanzadas"}, {id: "fuentes", title: "Fuentes"}];
+  readonly pillarsContents = [{id: "preparacion", title: "Preparación"}, {id: "equipo", title: "Preparación del equipo"}, {id: "estrategia", title: "Estrategia de combate"}, {id: "basica", title: "Rutas de revancha"}, {id: "variantes", title: "Variantes de ruta"}, {id: "fuentes", title: "Fuentes"}];
   toggleIntroduction() { this.introductionOpen.update(open => !open); }
   readonly scenes = [
     { title: 'Un lugar para compartir', image: 'academy/bienvenida.svg', speaker: 'Socamaru', text: '¡Bienvenidos al Compendio! Aquí reunimos lo que vamos aprendiendo para compartirlo con el clan, jeje.' },

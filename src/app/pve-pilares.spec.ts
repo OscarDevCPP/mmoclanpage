@@ -16,7 +16,7 @@ describe('Los seis pilares', () => {
     expect(page.querySelector('#basica i[lang="en"]')?.textContent).toBe('swap');
     expect(page.querySelector('#variantes a[href*="spreadsheets"]')?.textContent).toBe('Deadly Assault');
     expect(page.textContent).toContain('referencia histórica');
-    expect(page.querySelectorAll('#equipo .pillar-card')).toHaveLength(6);
+    expect(page.querySelectorAll('#equipo app-pokemon-build')).toHaveLength(6);
     const term = page.querySelector<HTMLButtonElement>('[data-term=IV]')!;
     term.click(); harness.detectChanges();
     expect(term.getAttribute('aria-expanded')).toBe('true');
