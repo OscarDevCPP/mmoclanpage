@@ -28,5 +28,9 @@
         <ul id="pvp-introduction-topics" [hidden]="!introductionOpen()">@for (item of introduction; track item.id) { <li><a routerLink="/compendio/pvp/fundamentos" [fragment]="item.id">{{ item.title }}</a></li> }</ul>
       </div>
     </details>
+    <details class="category" id="pve">
+      <summary><h2>Guías de PvE</h2><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
+      <div class="chapter"><div class="chapter-header"><h3><a routerLink="/compendio/pve/seis-pilares">Los seis pilares</a></h3></div></div>
+    </details>
   </nav>
 </div>

@@ -27,7 +27,7 @@ describe('El Compendio', () => {
     expect(page.textContent).toContain('Recopilación de conocimientos prácticos con mucho cariño para la comunidad');
     expect(page.querySelector('nav')?.getAttribute('aria-label')).toBe('Contenido del Compendio');
     const details = [...page.querySelectorAll<HTMLDetailsElement>('.compendium details')];
-    expect(details).toHaveLength(1);
+    expect(details).toHaveLength(2);
     expect(details[0].open).toBe(false);
     expect(details[0].classList.contains('category')).toBe(true);
     details[0].open = true;
@@ -53,7 +53,9 @@ describe('El Compendio', () => {
     toggle.click(); await harness.fixture.whenStable();
     expect(page.querySelectorAll('summary button, summary a')).toHaveLength(0);
     const index = page.querySelector('.compendium nav')!;
-    expect(index.textContent).not.toMatch(/Pendiente|Parcial|Guías de PvE|Eventos del juego/i);
+    expect(index.textContent).not.toMatch(/Pendiente|Parcial|Eventos del juego/i);
+    expect(index.textContent).toContain('Guías de PvE');
+    expect(index.querySelector<HTMLAnchorElement>('a[href="/compendio/pve/seis-pilares"]')).toBeTruthy();
     const links = [...topics.querySelectorAll<HTMLAnchorElement>('a')];
     expect(links.map(link => [link.textContent?.trim(), link.hash])).toEqual([
       ['Formas de jugar al PvP', '#introduccion-modalidades'], ['Lo esencial antes de crear un equipo', '#introduccion-tipos'],
