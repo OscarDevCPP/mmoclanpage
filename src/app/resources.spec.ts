@@ -55,6 +55,13 @@ describe('El Compendio', () => {
     const index = page.querySelector('.compendium nav')!;
     expect(index.textContent).not.toMatch(/Pendiente|Parcial|Eventos del juego/i);
     expect(index.textContent).toContain('Guías de PvE');
+    const pveToggle = page.querySelector<HTMLButtonElement>('#pve .chapter-toggle')!;
+    const pveTopics = page.querySelector<HTMLUListElement>('#pve-pillars-topics')!;
+    expect(pveTopics.hidden).toBe(true);
+    pveToggle.click(); await harness.fixture.whenStable();
+    expect(pveToggle.getAttribute('aria-expanded')).toBe('true');
+    expect([...pveTopics.querySelectorAll('a')].map(a => a.hash)).toEqual(['#preparacion', '#equipo', '#estrategia', '#basica', '#variantes', '#fuentes']);
+    expect(page.querySelector<HTMLAnchorElement>('#pve .chapter-view')?.hash).toBe('');
     expect(index.querySelector<HTMLAnchorElement>('a[href="/compendio/pve/seis-pilares"]')).toBeTruthy();
     const links = [...topics.querySelectorAll<HTMLAnchorElement>('a')];
     expect(links.map(link => [link.textContent?.trim(), link.hash])).toEqual([

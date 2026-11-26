@@ -1,0 +1,6 @@
+.pillar-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr)); gap: 1rem; }
+.pillar-card { border: 1px solid var(--border-color, currentColor); padding: 1rem; min-width: 0; }
+.pillar-card h3 { margin-top: 0; }
+.pillar-card dl { margin: 0; }
+.pillar-card dt { font-weight: bold; margin-top: .6rem; }
+.pillar-card dd { margin: 0; overflow-wrap: anywhere; }
