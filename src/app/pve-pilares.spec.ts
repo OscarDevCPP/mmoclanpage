@@ -22,6 +22,10 @@ describe('Los seis pilares', () => {
     expect(page.querySelector('#variantes a[href*="spreadsheets"]')?.textContent).toBe('Deadly Assault');
     expect(page.textContent).toContain('referencia histórica');
     expect(page.querySelectorAll('#equipo app-pokemon-build')).toHaveLength(6);
+    const typhlosion = page.querySelector('#equipo app-pokemon-build');
+    expect(typhlosion?.textContent).toContain('Typhlosion');
+    expect(typhlosion?.textContent).toContain('Rapidez');
+    expect(typhlosion?.textContent).not.toContain('Meteoros');
     expect(page.querySelector('#equipo [data-term]')).toBeNull();
     expect(page.querySelector('#equipo')?.textContent).not.toMatch(/valores individuales|valores de esfuerzo/i);
     expect(page.querySelectorAll('#equipo th[scope=col]')).toHaveLength(18);
