@@ -3,6 +3,7 @@ import { provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { routes } from './app.routes';
 import { GUIDE_CATALOG } from './guide-catalog';
+import { PvePilares } from './pve-pilares';
 import { GymIntro } from './gym-intro';
 
 describe('INTRODUCCION A RE-RUNS DE GYMS', () => {
@@ -27,4 +28,14 @@ describe('INTRODUCCION A RE-RUNS DE GYMS', () => {
     expect(details.map(detail => detail.querySelectorAll('li').length)).toEqual([6, 4, 5, 2, 7]);
     expect(page.textContent).toContain('Gafas Elegidas');
   });
+  it('enlaza las dos guías desde sus respectivas introducciones', async () => {
+    TestBed.configureTestingModule({ providers: [provideRouter(routes)] });
+    const harness = await RouterTestingHarness.create();
+    const { gymIntro, pve } = GUIDE_CATALOG;
+    await harness.navigateByUrl(gymIntro.path, GymIntro);
+    expect(harness.routeNativeElement?.querySelector('#introduccion a')?.getAttribute('href')).toBe(pve.path);
+    await harness.navigateByUrl(pve.path, PvePilares);
+    expect(harness.routeNativeElement?.querySelector('#preparacion a')?.getAttribute('href')).toBe(gymIntro.path);
+  });
+
 });

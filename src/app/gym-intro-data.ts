@@ -1,3 +1,4 @@
+import { GUIDE_CATALOG } from './guide-catalog';
 import type { GuideBlock, GuideSection, InlineRun } from './guide-content';
 import { STATS, type PokemonBuild, type Stat, type NumericRequirement, type Requirement } from './pokemon-build';
 const run = (text: string): InlineRun[] => [{ text, marks: [] }];
@@ -15,7 +16,13 @@ const builds: PokemonBuild[] = [
 ];
 const route = (id: string, title: string, entries: string[]): GuideBlock => ({ kind: 'disclosure', id, title, blocks: [{ kind: 'list', id: id + '-lista', ordered: true, items: entries.map((text, index) => ({ id: `${id}-${index}`, runs: run(text) })) }] });
 export const GYM_SECTIONS: GuideSection[] = [
-  { id: 'introduccion', blocks: [heading('introduccion-h', 'Qué es un re-run de gimnasios'), paragraph('introduccion-p', 'Un re-run de gimnasios consiste en volver a enfrentarte a varios líderes seguidos para ganar dinero en PokeMMO. En estas revanchas se combate en dobles: no necesitas un equipo distinto para cada líder, sino una apertura que puedas repetir y un respaldo para los combates en los que no funcione.'), paragraph('introduccion-practica', 'Esta guía te enseña a preparar ese equipo, usarlo en combate y seguir una ruta por las cinco regiones. Para tus primeras rondas, puedes practicar en una sola región antes de hacer el recorrido completo.') ] },
+  { id: 'introduccion', blocks: [heading('introduccion-h', 'Qué es un re-run de gimnasios'), paragraph('introduccion-p', 'Un re-run de gimnasios consiste en volver a enfrentarte a varios líderes seguidos para ganar dinero en PokeMMO. En estas revanchas se combate en dobles: no necesitas un equipo distinto para cada líder, sino una apertura que puedas repetir y un respaldo para los combates en los que no funcione.'), paragraph('introduccion-practica', 'Esta guía te enseña a preparar ese equipo, usarlo en combate y seguir una ruta por las cinco regiones. Para tus primeras rondas, puedes practicar en una sola región antes de hacer el recorrido completo.'),
+    { kind: 'paragraph', id: 'introduccion-siguiente', runs: [
+      { text: 'Esta es una guía básica. Cuando domines las revanchas y hayas ahorrado lo suficiente, puedes pasar a un equipo avanzado con la guía de ', marks: [] },
+      { text: 'Los seis pilares', marks: [{ kind: 'link', href: GUIDE_CATALOG.pve.path }] },
+      { text: '.', marks: [] },
+    ] },
+  ] },
   { id: 'requisitos', blocks: [heading('requisitos-h', 'Antes de empezar'), paragraph('requisitos-p', 'Para repetir un gimnasio debes vencer primero al Alto Mando de su región. Tras cada victoria espera 18 horas y derrota a otros cinco entrenadores elegibles, en cualquier región. Solo cuentan los entrenadores con tiempo de espera de revancha; el Alto Mando y el Frente Batalla no cuentan. Los tres líderes de Ciudad Gres cuentan por separado. Los entrenadores normales tienen una espera de seis horas.'), paragraph('requisitos-p2', 'Esta ruta comunitaria propone 21 líderes y tres entrenadores extra. El orden ahorra desplazamientos, pero no es obligatorio. Cura en un centro Pokémon después de cada combate salvo que se indique lo contrario; las ocarinas de Vuelo y Teletransporte ayudan a desplazarse. No hay ganancias garantizadas.') ] },
   { id: 'equipo-inicial', blocks: [
     heading('equipo-h', 'El equipo'),

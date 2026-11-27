@@ -1,4 +1,5 @@
 import type { GuideSection, GuideBlock } from './guide-content';
+import { GUIDE_CATALOG } from './guide-catalog';
 import { PILLARS } from './pillars-data';
 
 export const PVE_GUIDE: readonly GuideSection[] = [
@@ -31,10 +32,27 @@ export const PVE_GUIDE: readonly GuideSection[] = [
         "id": "pve-block-3",
         "runs": [
           {
-            "text": "La fuente recomienda completar las cinco regiones para aprovechar toda la ruta y empezar con estrategias más sencillas antes de invertir en este equipo. Antes de comprar, revisa qué gimnasios incluye la ruta elegida y prepara los movimientos, objetos y valores que necesita. Calcula el coste de crianza, movimientos y objetos según el mercado actual. Lleva un objeto que aumente las ganancias y compara su precio con el beneficio esperado: las cifras de la guía original son estimaciones, no garantías.",
+            "text": "Para aprovechar toda la ruta, conviene haber completado las cinco regiones. Antes de comprar, revisa qué gimnasios incluye la ruta elegida y prepara los movimientos, objetos y valores que necesita. Calcula el coste de crianza, movimientos y objetos según el mercado actual. Lleva un objeto que aumente las ganancias y compara su precio con el beneficio esperado: las cifras de la guía original son estimaciones, no garantías.",
             "marks": []
           }
         ]
+      },
+      {
+        kind: 'paragraph', id: 'pve-intro-practica', runs: [
+          { text: 'Las primeras rondas pueden resultar complicadas. Ten la ruta a mano y síguela paso a paso: comprueba la pareja inicial, los cambios y la respuesta a cada variante. Con la práctica recordarás qué hacer en cada gimnasio sin consultar cada paso.', marks: [] },
+        ],
+      },
+      {
+        kind: 'paragraph', id: 'pve-intro-guia-basica', runs: [
+          { text: 'Si todavía no has hecho revanchas, empieza por la ', marks: [] },
+          { text: 'Introducción a re-runs de gyms', marks: [{ kind: 'link', href: GUIDE_CATALOG.gymIntro.path }] },
+          { text: '. Aprenderás la dinámica con un equipo sencillo antes de invertir en Los seis pilares.', marks: [] },
+        ],
+      },
+      {
+        kind: 'tip', id: 'pve-intro-pc', title: 'Recomendación: juega desde un ordenador', runs: [
+          { text: 'Si puedes, haz este recorrido desde un ordenador: es más fácil cambiar objetos y reorganizar el equipo entre combates.', marks: [] },
+        ],
       }
     ]
   },

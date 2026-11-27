@@ -25,6 +25,7 @@ describe('Catálogo compartido de guías', () => {
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl(GUIDE_CATALOG.pve.path, PvePilares);
     const page = harness.routeNativeElement as HTMLElement;
+    expect(page.querySelector('#preparacion > .gym-tip:last-child')?.textContent).toContain('juega desde un ordenador');
     expect(page.querySelector('.gym-tip a')?.getAttribute('href')).toBe('https://pokemmohub.com/');
     expect(page.querySelector('.gym-tip strong[lang="en"]')?.textContent).toBe('Gym Earnings Calculator');
     expect(page.querySelector('footer time')?.getAttribute('datetime')).toBe('2026-11-26');
