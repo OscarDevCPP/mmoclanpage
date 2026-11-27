@@ -4,6 +4,25 @@ Página de presentación del clan latinoamericano de PokeMMO. La aplicación Ang
 
 ## Desarrollo local
 
+### Vista previa con Nginx
+
+Necesitas Make y Docker con Docker Compose, o Podman con un proveedor Compose instalado. Desde la raíz:
+
+```sh
+make up
+make logs
+```
+
+Espera a que el log muestre `Build published to nginx` y abre `http://localhost:8080`. Para verlo desde el celular, conéctalo a la misma red Wi-Fi y abre `http://IP_LOCAL_DE_TU_PC:8080`. El puerto se publica en todas las interfaces IPv4: úsalo en una red de confianza, no abras el puerto en el router y, si el cortafuegos lo bloquea, permite el acceso solo desde tu red local.
+
+- `make ps`: consulta los contenedores; `make down`: detiene la vista previa.
+- `make up ENGINE=podman`: usa Podman; el valor predeterminado es `docker`. Para usar Podman siempre en este checkout, crea `.docker/local.mk` (ignorado por Git) con `ENGINE = podman`. Una opción de línea de comandos tiene prioridad.
+- `make up SITE_PORT=8081`: cambia el puerto. `make up SITE_HOST=127.0.0.1`: limita el acceso al equipo local.
+
+Al guardar en `src/` o `public/`, el contenedor `builder` vuelve a compilar en modo producción. Nginx sirve el HTML prerenderizado y sus recursos; no ejecuta Node ni Angular CLI. Cuando termine el build, refresca la página en el navegador. Si falla, se conserva la última compilación correcta; consulta `make logs`. Si cambias dependencias, configuración de Angular/TypeScript o archivos de `.docker/nginx/`, ejecuta `make up` de nuevo. No se publica nada en GitHub Pages.
+
+### Sin contenedores
+
 Se utilizó Node.js 22.23.4 y npm 10.9.9. En la raíz del proyecto:
 
 ```sh
