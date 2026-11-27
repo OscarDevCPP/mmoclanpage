@@ -17,7 +17,8 @@ export type GuideBlock =
   | { readonly kind: 'diagram'; readonly id: string; readonly description: string }
   | { readonly kind: 'builds'; readonly id: string; readonly builds: readonly PokemonBuild[] }
   | { readonly kind: 'tip'; readonly id: string; readonly title: string; readonly runs: readonly InlineRun[] }
-  | { readonly kind: 'subsection'; readonly id: string; readonly blocks: readonly GuideBlock[] };
+  | { readonly kind: 'subsection'; readonly id: string; readonly blocks: readonly GuideBlock[] }
+  | { readonly kind: 'disclosure'; readonly id: string; readonly title: string; readonly blocks: readonly GuideBlock[] };
 export interface GuideSection { readonly id: string; readonly blocks: readonly GuideBlock[]; }
 
 export interface GuideDefinition {

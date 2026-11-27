@@ -55,7 +55,7 @@ describe('El Compendio', () => {
     const index = page.querySelector('.compendium nav')!;
     expect(index.textContent).not.toMatch(/Pendiente|Parcial|Eventos del juego/i);
     expect(index.textContent).toContain('Guías de PvE');
-    const pveToggle = page.querySelector<HTMLButtonElement>('#pve .chapter-toggle')!;
+    const pveToggle = page.querySelector<HTMLButtonElement>('#pve .chapter-toggle[aria-controls="pve-pillars-topics"]')!;
     expect(pveToggle.textContent?.trim()).toBe('LOS SEIS PILARES, FARMEO DE GYMS (AVANZADO)');
     const pveTopics = page.querySelector<HTMLUListElement>('#pve-pillars-topics')!;
     expect(pveTopics.hidden).toBe(true);

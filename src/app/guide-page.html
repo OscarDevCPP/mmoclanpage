@@ -30,6 +30,7 @@
           @case ('list') { @if (block.ordered) { <ol>@for (item of block.items; track item.id) { <li><ng-container *ngTemplateOutlet="runs; context: { $implicit: item.runs }" /></li> }</ol> } @else { <ul>@for (item of block.items; track item.id) { <li><ng-container *ngTemplateOutlet="runs; context: { $implicit: item.runs }" /></li> }</ul> } }
           @case ('builds') { <div class="pillar-cards">@for (pillar of block.builds; track pillar.name) { <app-pokemon-build [build]="pillar" /> }</div> }
           @case ('subsection') { <section [id]="block.id"><ng-container *ngTemplateOutlet="renderBlocks; context: { $implicit: block.blocks }" /></section> }
+          @case ('disclosure') { <details class="route-disclosure"><summary>{{ block.title }}</summary><ng-container *ngTemplateOutlet="renderBlocks; context: { $implicit: block.blocks }" /></details> }
           @case ('tip') {
             <aside class="gym-tip" aria-labelledby="gym-tip-title"><p class="gym-tip-title" id="gym-tip-title"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 18h6m-5 3h4m-5-6v-1a6 6 0 1 1 6 0v1" /></svg><strong>{{ block.title }}</strong></p><p><ng-container *ngTemplateOutlet="runs; context: { $implicit: block.runs }" /></p></aside>
           }

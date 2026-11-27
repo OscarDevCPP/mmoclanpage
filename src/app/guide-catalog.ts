@@ -11,6 +11,18 @@ export const GUIDE_CATALOG = {
       { id: 'introduccion-combate', title: 'La idea detrás de cada combate' },
     ],
   },
+  gymIntro: {
+    topicsId: 'pve-gym-intro-topics', loadComponent: () => import('./gym-intro').then(m => m.GymIntro),
+    title: 'INTRODUCCION A RE-RUNS DE GYMS', category: 'PvE', path: '/compendio/pve/introduccion-farmeo-gimnasios',
+    subtitle: 'Aprende a preparar tu equipo y completar tus primeras rondas de revanchas.',
+    contents: [
+      { id: 'introduccion', title: 'Qué es un re-run de gimnasios' },
+      { id: 'requisitos', title: 'Antes de empezar' },
+      { id: 'equipo-inicial', title: 'El equipo' },
+      { id: 'secuencia', title: 'Cómo combatir' },
+      { id: 'ruta', title: 'Ruta por regiones' },
+    ],
+  },
   pve: {
     topicsId: 'pve-pillars-topics', loadComponent: () => import('./pve-pilares').then(m => m.PvePilares),
     title: 'LOS SEIS PILARES, FARMEO DE GYMS (AVANZADO)', category: 'PvE', path: '/compendio/pve/seis-pilares',

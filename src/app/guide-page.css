@@ -50,3 +50,7 @@
   color: var(--tip-color);
 }
 .guide .gym-tip p:last-child { margin: 0; }
+
+.route-disclosure { border: 1px solid var(--muted); margin-block: .75rem; padding: .5rem 1rem; }
+.route-disclosure summary { cursor: pointer; font-weight: bold; padding-block: .5rem; }
+.route-disclosure li { margin-block: .45rem; }
