@@ -1,4 +1,5 @@
 import type { GuideSection } from './guide-content';
+import { GUIDE_CATALOG } from './guide-catalog';
 
 const seen = new Set<string>();
 const glossaryTerms: Record<string, string[]> = {
@@ -111,9 +112,4 @@ export const PVP_GUIDE: readonly GuideSection[] = [
   ] },
 ];
 
-export const PVP_CONTENTS = [
-  { id: 'introduccion-modalidades', title: 'Formas de jugar al PvP' },
-  { id: 'introduccion-tipos', title: 'Lo esencial antes de crear un equipo' },
-  { id: 'introduccion-sinergia', title: 'Construcción de equipos' },
-  { id: 'introduccion-combate', title: 'La idea detrás de cada combate' },
-] as const;
+export const PVP_CONTENTS = GUIDE_CATALOG.pvp.contents;

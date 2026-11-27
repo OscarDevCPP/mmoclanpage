@@ -33,3 +33,20 @@
 .guide .guide-advice h3 { font-family: inherit; font-size: 1.1em; font-weight: bold; line-height: 1.45; margin: 0 0 1rem; }
 .guide .guide-advice p:last-child { margin-bottom: 0; }
 .guide .guide-return { text-align: right; }
+.pillar-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); gap: 1rem; }
+
+.guide .gym-tip {
+  --tip-color: color-mix(in srgb, #238636 35%, var(--text));
+  margin-block: 1rem 1.5rem;
+  padding: .75rem 1rem;
+  border-inline-start: .25rem solid var(--tip-color);
+  background: color-mix(in srgb, #238636 9%, var(--bg));
+}
+.guide .gym-tip-title {
+  display: flex;
+  align-items: center;
+  gap: .45em;
+  margin: 0 0 .3em;
+  color: var(--tip-color);
+}
+.guide .gym-tip p:last-child { margin: 0; }

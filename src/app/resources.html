@@ -18,19 +18,19 @@
     <button class="icon-button replay" type="button" aria-label="Volver a ver la presentación del Compendio" title="Volver a ver la presentación del Compendio" data-tooltip="Volver a ver la presentación del Compendio" (click)="replay()"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="8" width="13" height="11" rx="1"/><path d="M16 11l5-3v11l-5-3z"/><circle cx="7" cy="5" r="2"/><circle cx="13" cy="5" r="2"/></svg></button>
   </header>
   <nav aria-label="Contenido del Compendio">
-    <details class="category" id="pvp">
-      <summary><h2>Guías de PvP</h2><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
-      <div class="chapter">
-        <div class="chapter-header">
-          <h3><button type="button" class="chapter-toggle" [attr.aria-expanded]="introductionOpen()" aria-controls="pvp-introduction-topics" (click)="toggleIntroduction()">Introducción al competitivo<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg></button></h3>
-          <a class="icon-button chapter-view" routerLink="/compendio/pvp/fundamentos" aria-label="Ver Introducción al competitivo" title="Ver Introducción al competitivo" data-tooltip="Ver Introducción al competitivo"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></a>
-        </div>
-        <ul id="pvp-introduction-topics" [hidden]="!introductionOpen()">@for (item of introduction; track item.id) { <li><a routerLink="/compendio/pvp/fundamentos" [fragment]="item.id">{{ item.title }}</a></li> }</ul>
-      </div>
-    </details>
-    <details class="category" id="pve">
-      <summary><h2>Guías de PvE</h2><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
-      <div class="chapter"><div class="chapter-header"><h3><button type="button" class="chapter-toggle" [attr.aria-expanded]="pillarsOpen()" aria-controls="pve-pillars-topics" (click)="pillarsOpen.set(!pillarsOpen())">LOS SEIS PILARES, FARMEO DE GYMS (AVANZADO)<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg></button></h3><a class="icon-button chapter-view" routerLink="/compendio/pve/seis-pilares" aria-label="Ver LOS SEIS PILARES, FARMEO DE GYMS (AVANZADO)" title="Ver LOS SEIS PILARES, FARMEO DE GYMS (AVANZADO)" data-tooltip="Ver LOS SEIS PILARES, FARMEO DE GYMS (AVANZADO)"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></a></div><ul id="pve-pillars-topics" [hidden]="!pillarsOpen()">@for (item of pillarsContents; track item.id) { <li><a routerLink="/compendio/pve/seis-pilares" [fragment]="item.id">{{ item.title }}</a></li> }</ul></div>
-    </details>
+    @for (category of categories; track category.id) {
+      <details class="category" [id]="category.id">
+        <summary><h2>Guías de {{ category.name }}</h2><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
+        @for (entry of category.guides; track entry.path) {
+          <div class="chapter">
+            <div class="chapter-header">
+              <h3><button type="button" class="chapter-toggle" [attr.aria-expanded]="openChapters().has(entry.path)" [attr.aria-controls]="entry.topicsId" (click)="toggleChapter(entry.path)">{{ entry.title }}<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg></button></h3>
+              <a class="icon-button chapter-view" [routerLink]="entry.path" [attr.aria-label]="'Ver ' + entry.title" [attr.title]="'Ver ' + entry.title" [attr.data-tooltip]="'Ver ' + entry.title"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></a>
+            </div>
+            <ul [id]="entry.topicsId" [hidden]="!openChapters().has(entry.path)">@for (item of entry.contents; track item.id) { <li><a [routerLink]="entry.path" [fragment]="item.id">{{ item.title }}</a></li> }</ul>
+          </div>
+        }
+      </details>
+    }
   </nav>
 </div>

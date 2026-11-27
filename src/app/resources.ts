@@ -2,7 +2,7 @@ import { afterNextRender, Component, DestroyRef, ElementRef, inject, signal } fr
 import { NgOptimizedImage } from '@angular/common';
 import { PresentationState } from './presentation-state';
 import { RouterLink } from '@angular/router';
-import { PVP_CONTENTS } from './pvp-guide';
+import { GUIDE_CATEGORIES } from './guide-catalog';
 
 const KEY = 'black-talon.compendio.presentation.v1';
 
@@ -19,11 +19,15 @@ export class Resources {
   private readonly destroyRef = inject(DestroyRef);
   readonly guide = signal(false);
   readonly index = signal(0);
-  readonly introduction = PVP_CONTENTS;
-  readonly introductionOpen = signal(false);
-  readonly pillarsOpen = signal(false);
-  readonly pillarsContents = [{id: "preparacion", title: "Introducción"}, {id: "equipo", title: "El equipo"}, {id: "estrategia", title: "La idea principal"}, {id: "basica", title: "Ruta básica y avanzadas"}];
-  toggleIntroduction() { this.introductionOpen.update(open => !open); }
+  readonly categories = GUIDE_CATEGORIES;
+  readonly openChapters = signal<ReadonlySet<string>>(new Set());
+  toggleChapter(path: string) {
+    this.openChapters.update(previous => {
+      const next = new Set(previous);
+      if (next.has(path)) next.delete(path); else next.add(path);
+      return next;
+    });
+  }
   readonly scenes = [
     { title: 'Un lugar para compartir', image: 'academy/bienvenida.svg', speaker: 'Socamaru', text: '¡Bienvenidos al Compendio! Aquí reunimos lo que vamos aprendiendo para compartirlo con el clan, jeje.' },
     { title: 'Una duda', image: 'academy/temas.svg', speaker: 'GhostyFly', text: '¿Y qué podemos encontrar aquí? 😁' },

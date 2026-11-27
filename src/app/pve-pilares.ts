@@ -1,14 +1,10 @@
-import { PokemonBuildCard } from './pokemon-build';
-import { PILLARS } from './pillars-data';
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { GuidePage } from './guide-page';
+import { GUIDE_CATALOG } from './guide-catalog';
+import { PVE_GUIDE, PVE_FOOTER } from './pve-guide';
+import type { GuideDefinition } from './guide-content';
 
-@Component({
-  selector: 'app-pve-pilares',
-  imports: [RouterLink, PokemonBuildCard],
-  templateUrl: './pve-pilares.html',
-  styleUrls: ['./pvp-fundamentos.css', './pve-pilares.css'],
-})
+@Component({ selector: 'app-pve-pilares', imports: [GuidePage], template: '<app-guide-page [guide]="guide" />' })
 export class PvePilares {
-  readonly pillars = PILLARS;
+  readonly guide: GuideDefinition = { ...GUIDE_CATALOG.pve, sections: PVE_GUIDE, footer: PVE_FOOTER };
 }

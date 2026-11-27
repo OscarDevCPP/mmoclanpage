@@ -38,7 +38,7 @@ describe('Ficha Pokémon reutilizable', () => {
     expect(element.textContent).toContain('Objeto A o Objeto B *');
     expect(element.textContent).toContain('Movimiento A o Movimiento B');
     expect(element.querySelector('[aria-label=Indiferente]')?.textContent).toBe('-');
-    expect(element.querySelector('img')?.getAttribute('src')).toBe('/pokemon-generic.svg');
+    expect(element.querySelector('img')?.getAttribute('src')).toBe('pokemon-generic.svg');
     expect(element.querySelector('td')?.getAttribute('aria-label')).toContain('mayor que 5');
     expect(element.querySelector('details')).toBeNull();
     expect([...element.querySelectorAll('tbody th')].map(x => x.textContent?.trim())).toEqual(['PS','Atq','Def','Atq. Esp','Def. Esp','Vel.']);
@@ -52,7 +52,7 @@ describe('Ficha Pokémon reutilizable', () => {
     fixture.componentRef.setInput('build', {...example, image: {src:'/imagen-inexistente.svg', alt:'Ejemplo ilustrado'}}); fixture.detectChanges();
     expect(element.querySelector('img')?.getAttribute('alt')).toBe('Ejemplo ilustrado');
     element.querySelector('img')!.dispatchEvent(new Event('error')); fixture.detectChanges();
-    expect(element.querySelector('img')?.getAttribute('src')).toBe('/pokemon-generic.svg');
+    expect(element.querySelector('img')?.getAttribute('src')).toBe('pokemon-generic.svg');
     expect(element.querySelector('img')?.getAttribute('alt')).toBe('');
   });
 });

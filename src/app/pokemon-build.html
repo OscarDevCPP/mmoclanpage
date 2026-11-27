@@ -1,5 +1,5 @@
 <article class="build">
-  <header><img [src]="!imageFailed() && build().image?.src || '/pokemon-generic.svg'" [alt]="!imageFailed() && build().image?.alt || ''" (error)="imageFailed.set(true)" width="64" height="64"><h3>{{ build().name }}</h3></header>
+  <header><img [src]="!imageFailed() && build().image?.src || 'pokemon-generic.svg'" [alt]="!imageFailed() && build().image?.alt || ''" (error)="imageFailed.set(true)" width="64" height="64"><h3>{{ build().name }}</h3></header>
   <table><caption class="visually-hidden">Valores por estadística</caption><thead><tr><th scope="col">Estadística</th><th scope="col">IV</th><th scope="col">EV</th></tr></thead><tbody>
     @for (stat of stats; track stat) { <tr><th scope="row"><span [attr.aria-label]="stat">{{ statLabels[stat] }}</span></th><td [attr.aria-label]="accessible(build().iv[stat])">{{ compact(build().iv[stat], true) }}</td><td [attr.aria-label]="accessible(build().ev[stat])">{{ compact(build().ev[stat]) }}</td></tr> }
   </tbody></table>

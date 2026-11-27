@@ -23,8 +23,8 @@ describe('Los seis pilares', () => {
     expect(page.textContent).toContain('referencia histórica');
     expect(page.querySelectorAll('#equipo app-pokemon-build')).toHaveLength(6);
     expect([...page.querySelectorAll('#equipo app-pokemon-build img')].map(img => img.getAttribute('src'))).toEqual([
-      '/pokemon/typhlosion.png', '/pokemon/blastoise.png', '/pokemon/togekiss.png',
-      '/pokemon/garchomp.png', '/pokemon/weezing.png', '/pokemon/vanilluxe.png',
+      'pokemon/typhlosion.png', 'pokemon/blastoise.png', 'pokemon/togekiss.png',
+      'pokemon/garchomp.png', 'pokemon/weezing.png', 'pokemon/vanilluxe.png',
     ]);
     const typhlosion = page.querySelector('#equipo app-pokemon-build');
     expect(typhlosion?.textContent).toContain('Typhlosion');

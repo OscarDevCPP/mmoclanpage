@@ -24,11 +24,24 @@ En las cinco presentaciones, el HTML inicial contiene la primera escena. Tras la
 
 ## El Compendio
 
-El índice central en `/compendio` muestra únicamente la guía publicada: Introducción al competitivo Singles, con cuatro apartados. Los recursos se incorporan progresivamente, sin anunciar un catálogo de páginas aún no publicadas.
+El índice `/compendio` reúne las guías reales de PvP y PvE. La presentación se muestra en la primera visita al índice, guarda su estado en `black-talon.compendio.presentation.v1` y puede repetirse desde allí; las rutas directas no la interceptan. No hay gestor de contenidos ni publicación automática.
 
-La única página temática publicada es `/compendio/pvp/fundamentos`, con la introducción a Singles, sus dos diagramas originales y fuentes conceptuales. Las páginas usan lectura y desplazamiento convencionales. La presentación se muestra en la primera visita al índice, guarda su estado en `black-talon.compendio.presentation.v1` y puede repetirse desde el índice. La ruta directa de la guía no la intercepta.
+### Ampliar una guía
 
-El contenido de la guía está en `src/app/pvp-guide.ts` y los apartados del índice en `src/app/resources.ts`. Antes de publicar un apartado, verificar contenido y fuentes y crear un destino real; solo entonces enlazarlo desde el índice. No hay gestor de contenidos ni publicación automática de guías.
+El catálogo `src/app/guide-catalog.ts` define título, categoría, ruta, cargador diferido y secciones del índice. El índice general y las rutas se derivan del catálogo; el índice interior usa los mismos metadatos. El contenido de cada guía vive en `pvp-guide.ts` o `pve-guide.ts`, usando los tipos de `guide-content.ts` y el renderer `guide-page`. Mantén únicos los identificadores de sección y conserva los fragmentos públicos existentes.
+
+Para incorporar una guía aprobada, crea su contenido y un componente de ruta como `pve-pilares.ts` que entregue al `GuidePage` una `GuideDefinition`; añade una entrada propia al catálogo con su `loadComponent`, `topicsId` y secciones. Por ejemplo, una sección de contenido (ficticia y no publicada) puede tener esta forma:
+
+```ts
+{ id: 'primer-paso', blocks: [
+  { kind: 'heading', id: 'primer-paso-titulo', level: 2,
+    runs: [{ text: 'Primer paso', marks: [] }] },
+  { kind: 'paragraph', id: 'primer-paso-texto',
+    runs: [{ text: 'Contenido verificado.', marks: [] }] },
+] }
+```
+
+Incluye `{ id: 'primer-paso', title: 'Primer paso' }` en `contents` de esa entrada: ambos índices apuntarán al mismo fragmento, sin editar el contenido de otras guías. Antes de enlazar contenido, verifica sus fuentes y el destino real. Para un tipo de bloque nuevo que realmente se necesite, amplía la unión `GuideBlock` y el `@switch` de `guide-page.html`, y añade pruebas de renderizado y accesibilidad; las guías existentes no necesitan modificarse. Ejecuta las pruebas y el build para comprobar rutas, prerender y enlaces.
 
 ## Imágenes del equipo
 
