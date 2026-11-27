@@ -14,6 +14,9 @@ const item = (id: string, label: string, ...runs: (string | InlineRun)[]) => ({
 });
 const list = (id: string, ...items: ReturnType<typeof item>[]): GuideBlock => ({ kind: 'list', id, ordered: false, items });
 const heading = (id: string, title: string): GuideBlock => ({ kind: 'heading', id, level: 3, runs: [text(title)] });
+const figure = (id: string, width: number, height: number, alt: string, caption: string): GuideBlock => ({
+  kind: 'image', id, src: `guias/crianza/${id}.png`, width, height, alt, caption, layout: 'wide',
+});
 const hub = link('PokeMMO Hub', 'https://pokemmohub.com/');
 const guide = GUIDE_CATALOG.breeding;
 const body: Record<typeof guide.contents[number]['id'], readonly GuideBlock[]> = {
@@ -34,6 +37,7 @@ const body: Record<typeof guide.contents[number]['id'], readonly GuideBlock[]> =
       item('fijar-iv', 'Cómo fijar un IV. ', 'Un ', term('brazal'), ' fija el valor de una estadística al IV de quien lo lleva. Cuenta como uno de los tres IVs copiados.'),
       item('fijar-naturaleza', 'Cómo fijar la naturaleza. ', 'La ', term('Piedra Eterna'), ' garantiza la ', term('naturaleza'), ' de quien la lleva. Cada padre solo puede llevar un objeto: si uno usa Piedra Eterna, solo queda espacio para un brazal.'),
     ),
+    figure('vista-previa-criador', 687, 606, 'Pantalla de crianza con un Meowth en la columna central. Tiene 31 en Ataque y naturaleza Firme, ambos resaltados en verde.', 'Mira el resultado en la columna central: el Brazal Recio fija Ataque en 31 y la Piedra Eterna transmite Firme. Los rangos, como 21–23 en PS, indican IVs que no quedan fijados en un solo valor.'),
     heading('ejemplo-de-crianza', 'Ejemplo: tres cruces para un 3×31 Firme'),
     p('cadena', 'Ejemplo: quieres 31 en PS, Ataque y Velocidad, con naturaleza Firme. Supón que las parejas son compatibles y que eliges el sexo necesario para el último cruce.'),
     { kind: 'list', id: 'cadena-3x31', ordered: true, items: [
@@ -51,6 +55,9 @@ const body: Record<typeof guide.contents[number]['id'], readonly GuideBlock[]> =
       item('particulas', 'Partículas. ', 'Las ', term('partícula', 'partículas'), ' son efectos visuales. Según la ', link('guía de partículas del foro', 'https://forums.pokemmo.com/index.php?/topic/149548-particles-guide-previews-and-release-information-20/'), ', la cría reúne las partículas de ambos padres sin duplicar las que comparten. Por ejemplo, si uno tiene Bats y el otro Ghosts, el huevo hereda ambas.'),
       item('particulas-variocolor', 'Excepción variocolor. ', 'Las partículas Shiny y Secret Shiny no se acumulan entre sí: si cruzas un variocolor normal con uno secreto, prevalece Secret Shiny. Un Pokémon variocolor no puede criar con uno normal. Dos variocolor sí garantizan un huevo variocolor; dos padres normales no lo garantizan.'),
     ),
+    heading('objetos-de-crianza', 'Dónde comprar los objetos de crianza'),
+    figure('ubicacion-vendedor-crianza', 743, 409, 'Interior de una guardería con una dependienta detrás del mostrador azul.', 'Busca el mostrador de la guardería y abre el menú de compra.'),
+    figure('vendedor-brazales-pildora', 485, 391, 'Menú de compra con la Pesa Recia seleccionada. Debajo de los seis objetos recios aparece la Píldora Habilidad.', 'El mismo vendedor ofrece los objetos recios y la Píldora Habilidad. En la captura está seleccionada la Pesa Recia, que fija PS; la píldora aparece justo debajo de los seis objetos recios.'),
     heading('entrenador-original', '¿Con qué entrenador original sale la cría?'),
     list('reglas-eo',
       item('eo-normal', 'Cruce normal. ', 'Si la Pokédex registra la especie del huevo como capturada por ti, la cría puede llevar tu ', term('EO'), ' sin asterisco aunque hayas comprado ambos padres. Si no consta como captura propia, puede mostrar tu nombre con asterisco (EO* u OT*). Un intercambio no cuenta como captura propia.'),
@@ -62,6 +69,7 @@ const body: Record<typeof guide.contents[number]['id'], readonly GuideBlock[]> =
       item('incubadoras', 'Coloca el huevo en una ', term('incubadora'), '. Puedes gestionarla sin estar junto a un PC. El ', link('changelog de Shiny Wars 2025', 'https://forums.pokemmo.com/index.php?/topic/189893-changelog-shiny-wars-2025/'), ' documenta hasta ocho incubadoras permanentes.'),
       item('acelerar-eclosion', 'Acorta la espera. ', 'Coloca un Pokémon con Cuerpo Llama (Flame Body) o Escudo Magma (Magma Armor) en la ranura especial del PC para incubación. Llevarlo solo en el equipo no sustituye este paso.'),
     ] },
+    figure('huevo-en-incubadora', 464, 473, 'Ventana de incubadoras con un huevo de Charmander seleccionado en la cuadrícula y un Pokémon en la ranura de aceleración, arriba a la izquierda.', 'En la cuadrícula de la derecha está el huevo de Charmander. Arriba a la izquierda está la ranura para el Pokémon con Cuerpo Llama o Escudo Magma que acelera la eclosión.'),
   ],
   ahorro: [
     p('ivs-utiles', 'Compra IVs que cumplan una función. Si un atacante solo usa movimientos físicos, no pagues por un 31 en Ataque Especial salvo que tu estrategia lo necesite. Aprovecha también los IVs iguales: compartir el valor deseado en ambos padres ahorra un brazal en ese cruce.'),
@@ -71,7 +79,9 @@ const body: Record<typeof guide.contents[number]['id'], readonly GuideBlock[]> =
       item('combinar-ivs-utiles', 'Fija solo los 31 que importan. ', 'Si un padre trae 31 en Ataque y el otro 31 en Velocidad, equipa a cada uno con su brazal. La cría tendrá esos dos 31 y conservará los tres mínimos del ejemplo.'),
       item('naturaleza-semiperfecta', 'Añade naturaleza sin perder lo que ya ganaste. ', 'Busca otro padre con la naturaleza deseada, los mismos mínimos y 31 en Ataque. Dale Piedra Eterna y equipa a la cría anterior con el brazal de Velocidad. Ataque queda en 31 porque ambos padres lo comparten; Velocidad se fija con el brazal.'),
     ),
+    figure('filtros-gtl-crianza', 866, 207, 'Filtros de IV del GTL: mínimo 25 en PS, Defensa y Defensa Especial, y 31 en Velocidad.', 'Ejemplo para buscar el padre que aportará Velocidad. Cambia el filtro de 31 a Ataque para buscar al otro padre del ejemplo.'),
     p('brazales-con-pb', 'Si ya tienes puntos de batalla (PB), puedes canjearlos por brazales en los vendedores de PB en lugar de pagar con Pokéyenes. Puedes ganar PB en combates clasificatorios de PvP y al superar el Alto Mando, incluidas sus revanchas. Consulta la ', link('referencia de puntos de batalla', 'https://pokemmo.fandom.com/wiki/Battle_Point'), '.'),
+    figure('canje-brazales-pb', 502, 385, 'Menú de canje con la Pesa Recia seleccionada por 750 PB y marcada como no intercambiable.', 'El menú muestra la Pesa Recia por 750 PB. Antes de canjear, comprueba que el objeto corresponde al IV que quieres fijar.'),
     p('naturaleza-al-azar', 'Si tu presupuesto admite un cruce extra, puedes dejar la naturaleza para el final. Sin Piedra Eterna, la cría puede salir por azar con la naturaleza que buscas. Si aciertas, te ahorras el cruce que habrías hecho para fijarla; si no, tendrás que preparar otro cruce con Piedra Eterna sin perder los IVs ni los rasgos que ya reuniste. Si no tienes margen para ese coste, es mejor garantizar la naturaleza desde el principio.'),
     p('plan-sexo', 'Paga por elegir el sexo cuando haga falta para el siguiente cruce, para conservar la línea o para cumplir el objetivo final. Si el Pokémon ya está terminado y el sexo no importa, puedes evitar ese gasto. Consulta el coste en la vista del criador y usa el Breeding Simulator de ', hub, ' para estimar cuántos padres necesitas.'),
   ],
@@ -84,6 +94,7 @@ const body: Record<typeof guide.contents[number]['id'], readonly GuideBlock[]> =
       item('apariencia', '¿Quiero Alfa, traje o partículas? ', 'Son extras de presentación, no sustituyen los rasgos que necesita tu estrategia. Pueden encarecer el cruce al limitar tus opciones de padres. Decide cuánto quieres pagar por ellos después de cubrir lo imprescindible.'),
       item('presupuesto', '¿Cuánto puedo gastar? ', 'Calcula padres, objetos y selección de sexo por cruce. Deja margen para los pasos que exigen una pareja concreta y compara el total con el precio del Pokémon terminado.'),
     ),
+    figure('movimientos-huevo-pokedex', 730, 454, 'Pestaña Movimientos de Whimsicott en la Pokédex. Cosquillas, Legado, Silbato y Trapicheo están marcados como HUEVO.', 'En Pokédex → Movimientos, busca «HUEVO» en la primera columna. Así distingues lo que debes planear por crianza de lo que puedes enseñar por MT o tutor.'),
     p('comprobacion', 'Antes de confirmar, compara la vista previa del criador con tu objetivo: especie, sexo si lo elegiste, IVs, naturaleza, movimientos, EO y rasgos extra. Si no puedes confirmar un rasgo imprescindible, no entregues los padres todavía.'),
   ],
   simulador: [

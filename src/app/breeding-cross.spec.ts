@@ -1,4 +1,4 @@
-import { crossPreview, inheritedParticles, shinyPreview, traitPreview } from './breeding-cross';
+import { crossPreview, inheritedParticles, normalizeIv, shinyPreview, traitPreview } from './breeding-cross';
 
 const a = [31, 20, 16, 12, 18, 20];
 const b = [18, 20, 24, 12, 18, 31];
@@ -54,4 +54,8 @@ it('solo garantiza variocolor con dos padres variocolor y prioriza Secret Shiny'
   expect(shinyPreview('shiny', 'secret')).toBe('secret');
   expect(shinyPreview('secret', 'shiny')).toBe('secret');
   expect(shinyPreview('secret', 'secret')).toBe('secret');
+});
+
+it('normaliza IVs vacíos, inválidos, fraccionarios y fuera de rango', () => {
+  expect([NaN, Infinity, -3, 31.8, 40, 12.9, 25].map(normalizeIv)).toEqual([0, 0, 0, 31, 31, 12, 25]);
 });

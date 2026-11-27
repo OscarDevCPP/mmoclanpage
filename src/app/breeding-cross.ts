@@ -1,6 +1,10 @@
 export const STATS = ['PS', 'Ataque', 'Defensa', 'Ataque Especial', 'Defensa Especial', 'Velocidad'] as const;
 export type HeldItem = 'none' | 'everstone' | `${0 | 1 | 2 | 3 | 4 | 5}`;
 
+export function normalizeIv(value: number): number {
+  return Number.isFinite(value) ? Math.max(0, Math.min(31, Math.trunc(value))) : 0;
+}
+
 export function crossPreview(a: readonly number[], b: readonly number[], first: HeldItem, second: HeldItem) {
   if (a.length !== 6 || b.length !== 6 || [...a, ...b].some(iv => !Number.isInteger(iv) || iv < 0 || iv > 31)) {
     return null;

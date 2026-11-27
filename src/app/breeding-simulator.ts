@@ -1,12 +1,12 @@
 import { NgTemplateOutlet } from '@angular/common';
 import { Component, computed, signal } from '@angular/core';
-import { crossPreview, inheritedParticles, shinyPreview, STATS, traitPreview, type HeldItem, type ParentTraits, type ShinyKind } from './breeding-cross';
+import { crossPreview, inheritedParticles, normalizeIv, shinyPreview, STATS, traitPreview, type HeldItem, type ParentTraits, type ShinyKind } from './breeding-cross';
 
 const PARTICLES = ['Bats', 'Ghosts'] as const;
 type Particle = typeof PARTICLES[number];
 const DEFAULT_TRAITS: ParentTraits = { alpha: false, hidden: false, costume: false };
 const DEFAULT_NATURES = ['Firme', 'Alegre'];
-const EXAMPLE = [[31, 20, 16, 12, 18, 20], [18, 20, 24, 12, 18, 31]];
+const EXAMPLE = [[31, 20, 16, 12, 18, 20], [18, 20, 24, 12, 18, 31]].map(row => row.map(String));
 @Component({
   selector: 'app-breeding-simulator',
   imports: [NgTemplateOutlet],
@@ -55,21 +55,26 @@ export class BreedingSimulator {
   }
   protected readonly stats = STATS;
   protected readonly parents = ['A', 'B'];
-  protected readonly ivs = signal(EXAMPLE);
+  protected readonly ivInputs = signal(EXAMPLE);
+  private readonly ivs = computed(() => this.ivInputs().map(row => row.map(value => normalizeIv(Number(value)))));
   protected readonly items = signal<HeldItem[]>(['none', 'none']);
   protected readonly preview = computed(() => crossPreview(this.ivs()[0], this.ivs()[1], this.items()[0], this.items()[1]));
   protected itemUnavailable(parent: number, value: string) {
     return value !== 'none' && this.items()[1 - parent] === value;
   }
-  protected changeIv(parent: number, stat: number, value: number) {
-    this.ivs.update(rows => rows.map((row, p) => p === parent ? row.map((iv, i) => i === stat ? value : iv) : row));
+  protected changeIv(parent: number, stat: number, value: string) {
+    this.ivInputs.update(rows => rows.map((row, p) => p === parent ? row.map((iv, i) => i === stat ? value : iv) : row));
+  }
+  protected commitIv(parent: number, stat: number, input: HTMLInputElement) {
+    input.value = String(normalizeIv(input.valueAsNumber));
+    this.changeIv(parent, stat, input.value);
   }
   protected changeItem(parent: number, value: string) {
     if (this.itemUnavailable(parent, value)) return;
     this.items.update(items => items.map((item, i) => i === parent ? value as HeldItem : item));
   }
   protected reset() {
-    this.ivs.set(EXAMPLE);
+    this.ivInputs.set(EXAMPLE);
     this.selectedNatures.set(DEFAULT_NATURES);
     this.traits.set([DEFAULT_TRAITS, DEFAULT_TRAITS]);
     this.particles.set([[], []]);

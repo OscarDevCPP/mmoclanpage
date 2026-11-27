@@ -85,7 +85,7 @@
     <button type="button" class="icon-button" title="Restablecer ejemplo" aria-label="Restablecer ejemplo" (click)="reset()">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11a8 8 0 1 1 2 7M4 5v6h6" fill="none" stroke="#239ec1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </button>
-    <p class="key"><strong class="guaranteed">✓ Garantizado</strong> · <strong>– No se hereda</strong> · <strong>? Comprueba en el criador</strong>. Los IVs se muestran por separado, no como combinaciones completas. Prueba las partículas Bats (murciélagos) y Ghosts (fantasmas).</p>
+    <p class="key"><strong class="guaranteed">✓ Garantizado</strong> · <strong>– No se hereda</strong> · <strong>? Comprueba en el criador</strong>. Un IV vacío cuenta como 0. Se usan enteros del 0 al 31. Los IVs se muestran por separado, no como combinaciones completas. Prueba las partículas Bats (murciélagos) y Ghosts (fantasmas).</p>
   </div>
   @if (eggShiny() === 'incompatible') {
     <p role="status" class="shiny-warning">Un variocolor no puede criar con un Pokémon no variocolor. Los demás resultados de la tabla son solo un ejemplo: esta pareja no produce un huevo.</p>
@@ -99,8 +99,8 @@
 </div>
 
 <ng-template #ivInput let-p let-stat="stat" let-i="i">
-  <input type="number" min="0" max="31" step="1" required [value]="ivs()[p][i]"
-    [attr.aria-label]="stat + ' del progenitor ' + parents[p]" (input)="changeIv(p, i, $any($event.target).valueAsNumber)">
+  <input #iv type="number" min="0" max="31" step="1" [value]="ivInputs()[p][i]"
+    [attr.aria-label]="stat + ' del progenitor ' + parents[p]" (input)="changeIv(p, i, iv.value)" (blur)="commitIv(p, i, iv)">
 </ng-template>
 <ng-template #itemInput let-p>
   <select [attr.aria-label]="'Objeto del progenitor ' + parents[p]" [value]="items()[p]" (change)="changeItem(p, $any($event.target).value)">
