@@ -1,0 +1,24 @@
+---
+name: compendium-guide-authoring
+description: "Plan, research, assemble, or verify a new or revised PokeMMO Compendium guide (crear o estructurar una guía del Compendio), including extending its shared blocks and components. Use compendio-editorial for standalone Spanish prose edits."
+metadata:
+  author: "OscarDevCPP"
+  version: "1.0.0"
+---
+
+# Author a Compendium Guide
+
+Follow the project workflow and honor the approved scope. Use this skill to coordinate the work, not to authorize publication or to replace the editorial or Angular skills. Write reader-facing guide content in Spanish unless the project requests otherwise.
+
+1. **Define the guide and gather evidence.** Identify the reader, what they should be able to do afterward, and what they already know. Record source URLs, consultation dates, and which claims each source supports. Distinguish current PokeMMO evidence from community recommendations, historical routes, and names from the original Pokémon games. Do not assume a name or mechanic matches PokeMMO just because it matches an original game. If a material claim cannot be confirmed, qualify it, omit it, or keep it as an attributed external reference; do not imply client verification.
+2. **Outline the content.** Give each section and subsection a purpose and a title that tells readers what they will learn. Choose what to explain locally and what to link to, especially routes or reference data that change independently. Identify stable section IDs and preserve existing public fragments or aliases. Resolve material audience, scope, or structure choices before building the affected content.
+3. **Draft and plan visuals together.** Load the `compendio-editorial` skill for Spanish drafting and revision. Decide what each figure, Pokémon build card, callout, or glossary popup helps the reader understand. Do not redefine concepts the intended reader already knows, or repeat a card's data in prose. Verify asset provenance and permission for the intended use; use an approved fallback or omit an optional asset if permission is unclear. Choose meaningful alt text and instructional captions when needed. Keep local asset URLs compatible with the deployment base path.
+4. **Assemble the guide.** Use the `Ampliar una guía` section of the repository `README.md` as the integration reference. Put guide-specific data in its own content file and use the existing `GuidePage` route pattern. Register it in `src/app/guide-catalog.ts` so the route and both indexes use the same metadata; do not hand-code a second index. Reuse shared headings, lists, figures, tips, inline glossary marks, and `PokemonBuildCard` as appropriate. Preserve attribution, source links, and relevant consultation dates.
+5. **Verify and iterate.** Check the claims and names against their sources, ensure assets load, and follow links from both indexes to the expected section. Run relevant tests and the production build. In a browser, check mobile and desktop, light and dark, keyboard navigation, popup and disclosure behavior where used, and direct fragment URLs. Check the configured deployment base when routes or asset URLs are affected. Report what actually ran and what remains unverified. A verified local iteration is ready for feedback, not automatically final or published; apply new observations at the relevant step.
+
+## Extend the shared guide system
+
+- **Reuse first.** If only the data, labels, or options differ, configure an existing block or component. If a guide needs a genuinely different reading or interaction pattern, confirm the scope of the shared change before implementing it. Do not copy another guide's page or add speculative variants.
+- **Define and render.** Add the minimal typed contract to `src/app/guide-content.ts`: use `GuideBlock` for standalone content or `InlineMark` for inline behavior. Connect it to the appropriate rendering branch in `src/app/guide-page.html`. For independent presentation or behavior, use a dedicated Angular component with typed inputs and keep guide-specific data out of it. Reuse the existing glossary and `PokemonBuildCard` rather than reimplementing their behavior.
+- **Style at the right level.** Keep page-wide reading styles in `src/app/guide-page.css`; put component-specific styles beside the component. Follow existing theme tokens and test narrow layouts and keyboard access. Reserve one-guide styling or data for the guide that needs it.
+- **Prove compatibility.** Add coverage for the new block or component, including relevant interactive and accessibility states. Check existing guides for regressions in content, layout, fragment navigation, and prerendering. Existing guide content should not need changes merely because a new block type is available. Update the integration reference if the authoring contract changes.
