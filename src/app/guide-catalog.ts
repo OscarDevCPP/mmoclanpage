@@ -11,6 +11,18 @@ export const GUIDE_CATALOG = {
       { id: 'introduccion-combate', title: 'La idea detrás de cada combate' },
     ],
   },
+  breeding: {
+    topicsId: 'breeding-topics', loadComponent: () => import('./breeding-guide').then(m => m.BreedingGuide),
+    title: 'CRIANZA EN POKEMMO', category: 'PvE', path: '/compendio/pve/crianza',
+    subtitle: 'Planea qué heredará el huevo antes de entregar a los padres.',
+    contents: [
+      { id: 'introduccion', title: 'Introducción' },
+      { id: 'conceptos', title: 'Conceptos fundamentales' },
+      { id: 'ahorro', title: 'Consejos de ahorro' },
+      { id: 'antes-de-criar', title: 'Consejos antes de criar' },
+      { id: 'simulador', title: 'Simulador de cruce' },
+    ],
+  },
   gymIntro: {
     topicsId: 'pve-gym-intro-topics', loadComponent: () => import('./gym-intro').then(m => m.GymIntro),
     title: 'INTRODUCCION A RE-RUNS DE GYMS', category: 'PvE', path: '/compendio/pve/introduccion-farmeo-gimnasios',

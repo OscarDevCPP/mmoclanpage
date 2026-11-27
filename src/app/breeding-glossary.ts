@@ -1,0 +1,17 @@
+export const BREEDING_GLOSSARY = {
+  'grupo huevo': 'Categoría que ayuda a determinar con qué Pokémon puede criar una especie. Compartir grupo no basta en todos los casos.',
+  'línea evolutiva': 'Familia formada por un Pokémon y sus evoluciones, como Magnemite, Magneton y Magnezone.',
+  'IV': 'Valor individual de 0 a 31 que contribuye a una estadística. Cada Pokémon tiene seis, uno por estadística.',
+  '3×31': 'Tres IVs de 31. La abreviatura no indica qué estadísticas tienen ese valor ni cuál es la naturaleza.',
+  'naturaleza': 'Rasgo que normalmente aumenta una estadística y reduce otra. Algunas naturalezas son neutras.',
+  'brazal': 'Objeto de crianza que fija el IV de una estadística en el valor del progenitor que lo lleva.',
+  'Piedra Eterna': 'Objeto que garantiza que la cría herede la naturaleza del progenitor que lo lleva.',
+  'movimiento huevo': 'Movimiento que la cría puede aprender por crianza si uno de sus padres lo conoce y su especie admite el movimiento.',
+  'habilidad oculta': 'Habilidad alternativa disponible para ciertas especies. Tener acceso a ella no significa que esté activa en ese momento.',
+  'Alfa': 'Rasgo especial de algunos Pokémon de PokeMMO. No equivale a tener acceso a la habilidad oculta.',
+  'traje': 'Apariencia especial que no cambia la especie ni las estadísticas del Pokémon.',
+  'GTL': 'Mercado del juego donde los jugadores compran y venden Pokémon y objetos.',
+  'partícula': 'Efecto visual asociado a un Pokémon, como murciélagos o fantasmas al entrar en combate. No cambia sus estadísticas.',
+  'EO': 'Entrenador original (OT, Original Trainer, en inglés). Es el nombre que figura como origen del Pokémon, no necesariamente el de su dueño actual.',
+  'incubadora': 'Espacio donde se coloca un huevo de crianza para que eclosione. No hace falta llevar ese huevo en el equipo.',
+} as const;

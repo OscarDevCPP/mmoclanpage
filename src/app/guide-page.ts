@@ -2,6 +2,7 @@ import { DOCUMENT, NgTemplateOutlet } from '@angular/common';
 import { afterNextRender, Component, DestroyRef, ElementRef, inject, input, signal } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { BreedingSimulator } from './breeding-simulator';
 import { PokemonBuildCard } from './pokemon-build';
 import type { GuideDefinition } from './guide-content';
 import type { InlineRun } from './guide-content';
@@ -19,7 +20,7 @@ export function popupPosition(anchor: DOMRect, popup: DOMRect, width: number, he
 
 @Component({
   selector: 'app-guide-page',
-  imports: [NgTemplateOutlet, RouterLink, PokemonBuildCard],
+  imports: [NgTemplateOutlet, RouterLink, PokemonBuildCard, BreedingSimulator],
   host: { '(document:click)': 'outside($event)', '(document:focusin)': 'focusChanged($event)', '(document:keydown.escape)': 'escape()', '(window:scroll)': 'reposition()', '(window:resize)': 'reposition()' },
   templateUrl: './guide-page.html',
   styleUrl: './guide-page.css',
@@ -59,7 +60,7 @@ export class GuidePage {
     const view = this.hostElement.ownerDocument.defaultView;
     view?.requestAnimationFrame(() => {
       if (this.openTerm() !== term || !trigger.isConnected) return;
-      const popup = this.hostElement.querySelector<HTMLElement>(`#definition-${term}`);
+      const popup = this.hostElement.ownerDocument.getElementById(this.definitionId(term));
       if (!popup) return;
       const header = this.hostElement.ownerDocument.querySelector<HTMLElement>('.site-header');
       const headerRect = header?.getBoundingClientRect();
@@ -111,6 +112,8 @@ export class GuidePage {
       }
     });
   }
+
+  definitionId(term: string): string { return 'definition-' + encodeURIComponent(term); }
 
   href(run: InlineRun): string | undefined { return run.marks.find(mark => mark.kind === 'link')?.href; }
   has(run: InlineRun, kind: 'strong' | 'emphasis' | 'italic'): boolean { return run.marks.some(mark => mark.kind === kind); }

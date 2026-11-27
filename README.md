@@ -61,6 +61,7 @@ Para incorporar una guía aprobada, crea su contenido y un componente de ruta co
 ```
 
 Incluye `{ id: 'primer-paso', title: 'Primer paso' }` en `contents` de esa entrada: ambos índices apuntarán al mismo fragmento, sin editar el contenido de otras guías. Antes de enlazar contenido, verifica sus fuentes y el destino real. Para un tipo de bloque nuevo que realmente se necesite, amplía la unión `GuideBlock` y el `@switch` de `guide-page.html`, y añade pruebas de renderizado y accesibilidad; las guías existentes no necesitan modificarse. Ejecuta las pruebas y el build para comprobar rutas, prerender y enlaces.
+La guía de crianza usa el bloque `breeding-simulator` con un `id` único en su sección interactiva. El bloque renderiza `BreedingSimulator`; las reglas del ejercicio y sus pruebas están en `breeding-cross.ts` y `breeding-cross.spec.ts`. El lector configura los rasgos de dos padres ya compatibles: el bloque no valida especies ni sustituye la vista previa del criador.
 
 ## Imágenes del equipo
 

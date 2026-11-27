@@ -1,0 +1,150 @@
+<div class="workbench">
+  @let result = preview();
+  <table>
+    <caption class="sr-only">Simulador de crianza: padres y resultado del huevo</caption>
+    <thead><tr><th scope="col">Rasgo</th><th scope="col">Padre A</th><th scope="col" class="egg">Huevo</th><th scope="col">Padre B</th></tr></thead>
+    <tbody>
+      @for (stat of stats; track stat; let i = $index) {
+        <tr>
+          <th scope="row"><abbr [title]="stat">{{ ['PS', 'Atq.', 'Def.', 'At. Esp.', 'Def. Esp.', 'Vel.'][i] }}</abbr></th>
+          <td><ng-container *ngTemplateOutlet="ivInput; context: { $implicit: 0, stat, i }" /></td>
+          <td class="egg">
+            @if (result) {
+              @let row = result.stats[i];
+              @if (row.values.length === 1) {
+                <strong class="guaranteed"><span aria-hidden="true">✓</span> {{ row.values[0] }}</strong><span class="sr-only"> {{ row.brace ? 'fijado por el brazal de ' + row.brace : 'garantizado, igual en ambos padres' }}</span>
+              } @else { {{ row.values.join(' / ') }} }
+            } @else { — }
+          </td>
+          <td><ng-container *ngTemplateOutlet="ivInput; context: { $implicit: 1, stat, i }" /></td>
+        </tr>
+      }
+      <tr><th scope="row">Objeto</th>
+        <td><ng-container *ngTemplateOutlet="itemInput; context: { $implicit: 0 }" /></td>
+        <td class="egg">—</td>
+        <td><ng-container *ngTemplateOutlet="itemInput; context: { $implicit: 1 }" /></td>
+      </tr>
+      <tr><th scope="row">Naturaleza</th>
+        <td><ng-container *ngTemplateOutlet="natureInput; context: { $implicit: 0 }" /></td>
+        <td class="egg" aria-live="polite">@if (result?.nature; as from) {
+          <strong class="guaranteed"><span aria-hidden="true">✓</span> {{ selectedNatures()[from === 'A' ? 0 : 1] }}</strong><span class="sr-only"> garantizada por Piedra Eterna de {{ from }}</span>
+        } @else { {{ result ? 'Al azar' : '—' }} }</td>
+        <td><ng-container *ngTemplateOutlet="natureInput; context: { $implicit: 1 }" /></td>
+      </tr>
+      @for (trait of traitButtons; track trait.key) {
+        <tr><th scope="row" [attr.title]="trait.label">{{ trait.short }}</th>
+          <td><ng-container *ngTemplateOutlet="traitInput; context: { $implicit: 0, trait }" /></td>
+          <td class="egg" aria-live="polite">
+            @if (result) {
+              @let state = traitResult(trait.key);
+              <span class="icon-result" [class.guaranteed]="state === 'yes'">
+                <ng-container *ngTemplateOutlet="icon; context: { $implicit: trait.key }" />
+                <span class="check" aria-hidden="true">{{ state === 'yes' ? '✓' : state === 'check' ? '?' : '–' }}</span>
+                <span class="sr-only">{{ trait.label }}: {{ state === 'yes' ? 'herencia garantizada' : state === 'check' ? 'comprueba en el criador' : 'no se hereda' }}.</span>
+              </span>
+            } @else { — }
+          </td>
+          <td><ng-container *ngTemplateOutlet="traitInput; context: { $implicit: 1, trait }" /></td>
+        </tr>
+      }
+      <tr>
+        <th scope="row">Variocolor</th>
+        <td><ng-container *ngTemplateOutlet="shinyInput; context: { $implicit: 0 }" /></td>
+        <td class="egg" aria-live="polite">
+          @switch (eggShiny()) {
+            @case ('shiny') { <strong class="guaranteed"><span aria-hidden="true">✓</span> Shiny</strong> }
+            @case ('secret') { <strong class="guaranteed"><span aria-hidden="true">✓</span> Secret Shiny</strong> }
+            @case ('incompatible') { <strong class="shiny-warning">Sin huevo</strong> }
+            @default { <span>No garantizado</span> }
+          }
+        </td>
+        <td><ng-container *ngTemplateOutlet="shinyInput; context: { $implicit: 1 }" /></td>
+      </tr>
+      <tr>
+        <th scope="row">Partículas</th>
+        <td><ng-container *ngTemplateOutlet="particleInput; context: { $implicit: 0 }" /></td>
+        <td class="egg" aria-live="polite">
+          @if (result && eggParticles().length) {
+            <div class="particle-pair">
+              @for (particle of particleOptions; track particle) {
+                @if (eggParticles().includes(particle)) {
+                  <span class="icon-result guaranteed" [title]="particle">
+                    <ng-container *ngTemplateOutlet="icon; context: { $implicit: particle }" />
+                    <span class="check" aria-hidden="true">✓</span><span class="sr-only">{{ particle }}: herencia garantizada.</span>
+                  </span>
+                }
+              }
+            </div>
+          } @else { — }
+        </td>
+        <td><ng-container *ngTemplateOutlet="particleInput; context: { $implicit: 1 }" /></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="sim-notes">
+    <button type="button" class="icon-button" title="Restablecer ejemplo" aria-label="Restablecer ejemplo" (click)="reset()">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11a8 8 0 1 1 2 7M4 5v6h6" fill="none" stroke="#239ec1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <p class="key"><strong class="guaranteed">✓ Garantizado</strong> · <strong>– No se hereda</strong> · <strong>? Comprueba en el criador</strong>. Los IVs se muestran por separado, no como combinaciones completas. Prueba las partículas Bats (murciélagos) y Ghosts (fantasmas).</p>
+  </div>
+  @if (eggShiny() === 'incompatible') {
+    <p role="status" class="shiny-warning">Un variocolor no puede criar con un Pokémon no variocolor. Los demás resultados de la tabla son solo un ejemplo: esta pareja no produce un huevo.</p>
+  } @else if (eggShiny() !== 'normal') {
+    <p class="key">Los cruces variocolor tienen reglas propias para repartir los IVs. Aquí se muestran los valores posibles por estadística, no su reparto conjunto ni sus probabilidades.</p>
+  }
+  @if (!result) {
+    <p role="status">Introduce un número entero del 0 al 31 para cada IV.</p>
+  }
+  <p class="key">Usa dos padres compatibles. Para habilidad oculta y traje, el ejercicio supone que quien aporta el rasgo pertenece a la línea de la cría: ser compatible no basta para transmitirlo. En el juego se consumen ambos padres y los objetos de crianza equipados.</p>
+</div>
+
+<ng-template #ivInput let-p let-stat="stat" let-i="i">
+  <input type="number" min="0" max="31" step="1" required [value]="ivs()[p][i]"
+    [attr.aria-label]="stat + ' del progenitor ' + parents[p]" (input)="changeIv(p, i, $any($event.target).valueAsNumber)">
+</ng-template>
+<ng-template #itemInput let-p>
+  <select [attr.aria-label]="'Objeto del progenitor ' + parents[p]" [value]="items()[p]" (change)="changeItem(p, $any($event.target).value)">
+    <option value="none">Ninguno</option><option value="everstone" [disabled]="itemUnavailable(p, 'everstone')">Piedra Eterna</option>
+    @for (stat of stats; track stat; let i = $index) { <option [value]="i" [disabled]="itemUnavailable(p, i.toString())">Brazal: {{ stat }}</option> }
+  </select>
+</ng-template>
+<ng-template #shinyInput let-p>
+  <select [attr.aria-label]="'Variocolor del progenitor ' + parents[p]" [value]="shinyParents()[p]" (change)="changeShiny(p, $any($event.target).value)">
+    @for (kind of shinyKinds; track kind.value) { <option [value]="kind.value">{{ kind.label }}</option> }
+  </select>
+</ng-template>
+<ng-template #natureInput let-p>
+  <select [attr.aria-label]="'Naturaleza del progenitor ' + parents[p]" [value]="selectedNatures()[p]" (change)="changeNature(p, $any($event.target).value)">
+    @for (nature of natures; track nature) { <option [value]="nature" [selected]="selectedNatures()[p] === nature">{{ nature }}</option> }
+  </select>
+</ng-template>
+<ng-template #traitInput let-p let-trait="trait">
+  <button type="button" class="icon-button" [attr.aria-label]="trait.label + ' del progenitor ' + parents[p]" [title]="trait.label" [attr.aria-pressed]="traitEnabled(p, trait.key)" (click)="toggle(p, trait.key)">
+    <ng-container *ngTemplateOutlet="icon; context: { $implicit: trait.key }" />
+    @if (traitEnabled(p, trait.key)) { <span class="check" aria-hidden="true">✓</span> }
+  </button>
+</ng-template>
+
+<ng-template #particleInput let-p>
+  <div class="particle-pair">
+    @for (particle of particleOptions; track particle) {
+      <button type="button" class="icon-button" [title]="particle" [attr.aria-label]="particle + ' del progenitor ' + parents[p]"
+        [attr.aria-pressed]="hasParticle(p, particle)" (click)="toggleParticle(p, particle)">
+        <ng-container *ngTemplateOutlet="icon; context: { $implicit: particle }" />
+        @if (hasParticle(p, particle)) { <span class="check" aria-hidden="true">✓</span> }
+      </button>
+    }
+  </div>
+</ng-template>
+
+<ng-template #icon let-kind>
+  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    @switch (kind) {
+      @case ('Bats') { <path d="M12 7 9 4l-1 5C6 6 3 6 1 8l2 7 3-2 2 4 4-2 4 2 2-4 3 2 2-7c-2-2-5-2-7 1l-1-5z" fill="#ae94ec" stroke="#653d95" stroke-width="1.2"/> }
+      @case ('Ghosts') { <path d="M4 11a8 8 0 0 1 16 0v9l-4-2-4 3-4-3-4 2z" fill="#9be1d1" stroke="#328376" stroke-width="1.3"/><circle cx="9" cy="11" r="1.3" fill="#24483f"/><circle cx="15" cy="11" r="1.3" fill="#24483f"/> }
+      @case ('alpha') { <path d="m13 2-9 12h7l-1 8 10-13h-7z" fill="#f9b93e" stroke="#884708" stroke-width="1.4"/> }
+      @case ('hidden') { <path d="m12 2 9 10-9 10L3 12z" fill="#bc8df2" stroke="#643d9e" stroke-width="1.5"/><path d="m12 6 4 6-4 6-4-6z" fill="#f4e6ff"/> }
+      @case ('costume') { <path d="m3 6 5-3c2 4 6 4 8 0l5 3 2 5-5 2v8H6v-8l-5-2z" fill="#ed858e" stroke="#a93858" stroke-width="1.3"/> }
+    }
+  </svg>
+</ng-template>

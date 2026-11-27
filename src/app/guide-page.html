@@ -40,6 +40,7 @@
               <figcaption>{{ block.caption }}</figcaption>
             </figure>
           }
+          @case ('breeding-simulator') { <app-breeding-simulator [id]="block.id" /> }
           @case ('diagram') {
             @if (block.id === 'introduccion-turno-diagrama') {
               <svg class="diagram" viewBox="0 0 300 190" role="img" [attr.aria-label]="block.description"><rect x="25" y="5" width="250" height="38" rx="8"/><text x="150" y="29">¿Qué amenaza hay?</text><path d="M150 43v9 M75 52h150 M75 52v9 M225 52v9 M75 100v20 M225 100v20"/><rect x="12" y="61" width="126" height="39" rx="8"/><rect x="162" y="61" width="126" height="39" rx="8"/><text x="75" y="78">¿Atacar ayuda</text><text x="75" y="94">al plan?</text><text x="225" y="78">¿Cambio útil?</text><text x="225" y="94">¿Qué riesgo?</text><rect x="30" y="120" width="240" height="52" rx="8"/><text x="150" y="141">Elegir, observar</text><text x="150" y="160">y ajustar</text></svg>
@@ -53,7 +54,7 @@
 <ng-template #runs let-items>
   @for (run of items; track $index) {
     @if (term(run); as name) {
-      <span class="glossary"><button type="button" class="glossary-trigger" [attr.data-term]="name" [attr.aria-expanded]="openTerm() === name" [attr.aria-controls]="openTerm() === name ? 'definition-' + name : null" [attr.aria-describedby]="openTerm() === name ? 'definition-' + name : null" #trigger (click)="toggle(name, trigger)">{{ run.text }}</button>@if (openTerm() === name) { <span class="glossary-definition" [id]="'definition-' + name" role="note">{{ guide().glossary?.[name] }}</span> }</span>
+      <span class="glossary"><button type="button" class="glossary-trigger" [attr.data-term]="name" [attr.aria-expanded]="openTerm() === name" [attr.aria-controls]="openTerm() === name ? definitionId(name) : null" [attr.aria-describedby]="openTerm() === name ? definitionId(name) : null" #trigger (click)="toggle(name, trigger)">{{ run.text }}</button>@if (openTerm() === name) { <span class="glossary-definition" [id]="definitionId(name)" role="note">{{ guide().glossary?.[name] }}</span> }</span>
     }
     @else if (href(run); as url) {
       @if (url.startsWith('/') && !url.startsWith('//')) { <a [routerLink]="url"><ng-container *ngTemplateOutlet="marked; context: { $implicit: run }" /></a> }

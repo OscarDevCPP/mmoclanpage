@@ -14,6 +14,7 @@ export type GuideBlock =
   | { readonly kind: 'paragraph'; readonly id: string; readonly runs: readonly InlineRun[] }
   | { readonly kind: 'list'; readonly id: string; readonly ordered: boolean; readonly items: readonly { readonly id: string; readonly runs: readonly InlineRun[] }[] }
   | { readonly kind: 'image'; readonly id: string; readonly src: string; readonly alt: string; readonly width: number; readonly height: number; readonly caption: string; readonly layout: 'wide' | 'aside' }
+  | { readonly kind: 'breeding-simulator'; readonly id: string }
   | { readonly kind: 'diagram'; readonly id: string; readonly description: string }
   | { readonly kind: 'builds'; readonly id: string; readonly builds: readonly PokemonBuild[] }
   | { readonly kind: 'tip'; readonly id: string; readonly title: string; readonly runs: readonly InlineRun[] }
